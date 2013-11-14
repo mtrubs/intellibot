@@ -44,5 +44,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
+        <lang.syntaxHighlighterFactory key="Robot"
+                                       implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
     </extensions>
 </idea-plugin>
