@@ -31,7 +31,7 @@ public class RobotFeatureFileType extends LanguageFileType {
 
     @NotNull
     public String getDefaultExtension() {
-        return "feature";
+        return "rff";
     }
 
     @Nullable

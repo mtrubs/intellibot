@@ -21,7 +21,7 @@ public class RobotKeywordFileType extends LanguageFileType {
 
     @NotNull
     public String getName() {
-        return "Robot Feature";
+        return "Robot Keyword";
     }
 
     @NotNull
@@ -31,7 +31,7 @@ public class RobotKeywordFileType extends LanguageFileType {
 
     @NotNull
     public String getDefaultExtension() {
-        return "keyword";
+        return "rkf";
     }
 
     @Nullable
