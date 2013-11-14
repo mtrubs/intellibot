@@ -1,10 +1,10 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>itelliBot</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">TBD</vendor>
+    <id>com.yourcompany.unique.plugin.id</id>
+    <name>itelliBot</name>
+    <version>1.0</version>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">TBD</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       <h1>Meet intelliBot the smart Robot.</h1>
       <p>The intelliBot plugin for intellij adds features to the Robot Automation Framework such as:</p>
       <ul>
@@ -14,35 +14,35 @@
       </ul>
       ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
       <h2>Initial notes</h2>
       ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="107.105"/>
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="107.105"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
 
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
+    <application-components>
+        <!-- Add your application components here -->
+    </application-components>
 
     <project-components>
-      <component>
-        <implementation-class>com.millennialmedia.intellibot.psi.RobotPsiManager</implementation-class>
-      </component>
+        <component>
+            <implementation-class>com.millennialmedia.intellibot.psi.RobotPsiManager</implementation-class>
+        </component>
     </project-components>
 
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
+    </extensions>
 </idea-plugin>
