@@ -18,6 +18,6 @@ public class RobotSyntaxHighlightingFactory extends SyntaxHighlighterFactory {
     @Override
     public SyntaxHighlighter getSyntaxHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile) {
         // TODO: MTR: robot specific highlighter
-        return new HtmlFileHighlighter();
+        return new RobotHighlighter();
     }
 }
