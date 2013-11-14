@@ -28,9 +28,11 @@
     <!-- Add your application components here -->
   </application-components>
 
-  <project-components>
-    <!-- Add your project components here -->
-  </project-components>
+    <project-components>
+      <component>
+        <implementation-class>com.millennialmedia.intellibot.psi.RobotPsiManager</implementation-class>
+      </component>
+    </project-components>
 
   <actions>
     <!-- Add your actions here -->
