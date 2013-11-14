@@ -1,17 +1,21 @@
 <idea-plugin version="2">
   <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <name>itelliBot</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">TBD</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <small>most HTML tags may be used</small>
+      <h1>Meet intelliBot the smart Robot.</h1>
+      <p>The intelliBot plugin for intellij adds features to the Robot Automation Framework such as:</p>
+      <ul>
+        <li>Syntax Highlighting</li>
+        <li>Code Completion</li>
+        <li>Jump to Source</li>
+      </ul>
       ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
+      <h2>Initial notes</h2>
       ]]>
   </change-notes>
 
