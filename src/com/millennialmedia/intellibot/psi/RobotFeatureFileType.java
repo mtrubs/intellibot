@@ -1,6 +1,7 @@
 /* Jumptap's products may be patented under one or more of the patents listed at www.jumptap.com/intellectual-property */
 package com.millennialmedia.intellibot.psi;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,6 @@ public class RobotFeatureFileType extends LanguageFileType {
 
     @Nullable
     public Icon getIcon() {
-        return null;
+        return AllIcons.FileTypes.Properties;
     }
 }
