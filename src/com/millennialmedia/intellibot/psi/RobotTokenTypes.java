@@ -1,5 +1,7 @@
 package com.millennialmedia.intellibot.psi;
 
+import com.intellij.psi.tree.TokenSet;
+
 public interface RobotTokenTypes {
     RobotElementType HEADING = new RobotElementType("HEADING");
     RobotElementType SETTING = new RobotElementType("SETTING");
@@ -14,5 +16,5 @@ public interface RobotTokenTypes {
     RobotElementType GHERKIN = new RobotElementType("GHERKIN");
     RobotElementType ERROR = new RobotElementType("ERROR");
 
-    //TokenSet KEYWORDS = TokenSet.create(FEATURE_KEYWORD, BACKGROUND_KEYWORD, SCENARIO_KEYWORD, SCENARIO_OUTLINE_KEYWORD, EXAMPLES_KEYWORD, EXAMPLES_KEYWORD, STEP_KEYWORD);
+    TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, IMPORT, COMMENT, SYNTAX, GHERKIN);
 }
