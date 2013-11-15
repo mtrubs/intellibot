@@ -1,8 +1,8 @@
 <idea-plugin version="2">
-    <id>com.yourcompany.unique.plugin.id</id>
-    <name>itelliBot</name>
+    <id>com.millennialmedia.intellibot</id>
+    <name>intelliBot</name>
     <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">TBD</vendor>
+    <vendor email="support@yourcompany.com" url="http://www.millennialmedia.com">TBD</vendor>
 
     <description><![CDATA[
       <h1>Meet intelliBot the smart Robot.</h1>
@@ -46,5 +46,9 @@
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
         <lang.syntaxHighlighterFactory key="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
+        <lang.commenter language="Robot"
+                        implementationClass="com.millennialmedia.intellibot.psi.RobotCommenter"/>
+        <lang.foldingBuilder language="Robot"
+                             implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>
     </extensions>
 </idea-plugin>
