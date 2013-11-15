@@ -17,15 +17,6 @@ Force Tags  Kyle  Advertiser  Dashboard  Component
 
 *** Test Cases ***
 
-Scenario: Test that the numeric columns are sorted largest to smallest by default
-  [Tags]  Sort  Sanity
-    GIVEN I login to tapmatch as admin
-    :FOR  ${index}  IN RANGE  11  25
-    \    WHEN Click Element  xpath=//*[@id="users"]/thead/tr/th[${index}]/a
-    \    ${classes}  Get Element Attribute  xpath=//*[@id="users"]/thead/tr/th[${index}]@class
-    \    THEN Should Contain  ${classes}  order2
-  [Teardown]  Run Keywords  Close All Browsers  Clean Database
-
 Scenario: An admin can see the conversion trend
   [Tags]  Was Flickering
   [Setup]  Prepare advertiser "Robot_Company"
