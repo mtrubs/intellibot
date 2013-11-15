@@ -95,28 +95,28 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
             DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
     );
 
-
-    // todo: more TextAttributeKeys
-
     static {
         keys1 = new THashMap<IElementType, TextAttributesKey>();
         keys2 = new THashMap<IElementType, TextAttributesKey>();
 
-//        keys1.put(PropertiesTokenTypes.VALUE_CHARACTERS, PROPERTY_VALUE);
-//        keys1.put(PropertiesTokenTypes.END_OF_LINE_COMMENT, PROPERTY_COMMENT);
-//        keys1.put(PropertiesTokenTypes.KEY_CHARACTERS, PROPERTY_KEY);
-//        keys1.put(PropertiesTokenTypes.KEY_VALUE_SEPARATOR, PROPERTY_KEY_VALUE_SEPARATOR);
-//
-//        keys1.put(StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN, PROPERTIES_VALID_STRING_ESCAPE);
-//        // in fact all back-slashed escapes are allowed
-//        keys1.put(StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN, PROPERTIES_INVALID_STRING_ESCAPE);
-//        keys1.put(StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN, PROPERTIES_INVALID_STRING_ESCAPE);
+        keys1.put(RobotTokenTypes.HEADING, ROBOT_HEADING);
+        keys1.put(RobotTokenTypes.COMMENT, ROBOT_COMMENT);
+        keys1.put(RobotTokenTypes.ARGUMENT, ROBOT_ARGUMENT);
+        keys1.put(RobotTokenTypes.ERROR, ROBOT_ERROR);
+        keys1.put(RobotTokenTypes.GHERKIN, ROBOT_GHERKIN);
+        keys1.put(RobotTokenTypes.SYNTAX, ROBOT_SYNTAX);
+        keys1.put(RobotTokenTypes.SEPARATOR, ROBOT_SEPARATOR);
+        keys1.put(RobotTokenTypes.VARIABLE, ROBOT_VARIABLE);
+        keys1.put(RobotTokenTypes.KEYWORD, ROBOT_KEYWORD);
+        keys1.put(RobotTokenTypes.TC_KW_NAME, ROBOT_TC_KW_NAME);
+        keys1.put(RobotTokenTypes.BRACKET_SETTING, ROBOT_BRACKET_SETTING);
+        keys1.put(RobotTokenTypes.SETTING, ROBOT_SETTING);
+        keys1.put(RobotTokenTypes.IMPORT, ROBOT_IMPORT);
     }
 
     @NotNull
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-//        return pack(keys1.get(tokenType), keys2.get(tokenType));
-        return null;
+        return pack(keys1.get(tokenType), keys2.get(tokenType));
     }
 
     public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
