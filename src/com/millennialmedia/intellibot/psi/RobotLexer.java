@@ -1,15 +1,12 @@
 package com.millennialmedia.intellibot.psi;
 
+import java.util.*;
+
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class RobotLexer extends LexerBase {
 
@@ -30,6 +27,12 @@ public class RobotLexer extends LexerBase {
     public final static int IN_TEST_CASES_HEADER = 2;
     public final static int IN_KEYWORDS_HEADER = 3;
     public final static int IN_IMPORT = 4;
+    public final static int IN_KEYWORD = 5;
+    public final static int IN_TEST_DEF = 6;
+    public final static int IN_ARG_KEYWORD = 7;
+    public final static int IN_ARG_TEST_DEF = 8;
+    public final static int IN_ARG_SETTING = 9;
+    public final static int IN_KEYWORD_MAYBE = 9;
 
     private enum State {
         InSettings;
@@ -84,38 +87,135 @@ public class RobotLexer extends LexerBase {
                 return;
             } else if (isHeading()) {
                 myCurrentToken = RobotTokenTypes.HEADING;
-                goToStartOfNextWhiteSpace();
-                int end = nextIndexOf('*') -2;
-                String header = end < myEndOffset ? myBuffer.subSequence(myPosition, end).toString().trim() : null;
-
-                if (isSettings(header)) {
+                if (isSettings()) {
                     myState = IN_SETTINGS_HEADER;
-                } else if (isTestCases(header)) {
+                } else if (isTestCases()) {
                     myState = IN_TEST_CASES_HEADER;
-                } else if (isKeywords(header)) {
+                } else if (isKeywords()) {
                     myState = IN_KEYWORDS_HEADER;
                 } else {
-                    // TODO: err?
+                    myCurrentToken = RobotTokenTypes.ERROR;
                 }
-
                 goToStartOfNextLine();
                 return;
             } else {
-                // TODO: err?
+                myCurrentToken = RobotTokenTypes.ERROR;
             }
+            return;
         } else if (myState == IN_SETTINGS_HEADER) {
             if (isImport()) {
                 myState = IN_IMPORT;
                 myCurrentToken = RobotTokenTypes.IMPORT;
+                goToStartOfNextLine();
+                return;
             }
-        } else if (myState == IN_TEST_CASES_HEADER) {
-
-        } else if (myState == IN_KEYWORDS_HEADER) {
-
+            if(isGlobalSettings()){
+                if(myKeywordProvider.getSettingsFollowedByKeywords().contains(getNextWord())){
+                    myState = IN_KEYWORD_MAYBE;
+                    goToStartOfNextLine();
+                    return;
+                } else if (myKeywordProvider.getSettingsFollowedByStrings().contains(getNextWord())) {
+                    myState = IN_ARG_SETTING;
+                    goToStartOfNextLine();
+                    return;
+                }
+            }
+            return;
+        } else if (myState == IN_IMPORT) {
+            myCurrentToken = RobotTokenTypes.ARGUMENT;
+            myState = IN_SETTINGS_HEADER;
+            goToStartOfNextLine();
+            return;
+        } else if (myState == IN_TEST_CASES_HEADER || myState == IN_KEYWORDS_HEADER) {
+            if(areAtStartOfSuperSpace()){
+                myCurrentToken = RobotTokenTypes.ERROR;
+                goToStartOfNextLine();
+            } else {
+                myCurrentToken = RobotTokenTypes.TC_KW_NAME;
+                myState = IN_TEST_DEF;
+                goToStartOfNextLine();
+            }
+            return;
+        } else if (myState == IN_KEYWORD) {
+            goToNextNewLineOrSuperSpace();
+            if (areAtStartOfSuperSpace()) {
+                goToNextThingAfterSuperSpace();
+            }
+            myCurrentToken = RobotTokenTypes.KEYWORD;
+            if (myBuffer.charAt(myPosition) == '\n') {
+                goToStartOfNextLine();
+                myState = IN_TEST_DEF;
+            } else {
+                //we can have spaces after a keyword but not before an arg
+                myState = IN_ARG_KEYWORD;
+            }
+            return;
+        } else if (myState == IN_ARG_KEYWORD || myState == IN_ARG_TEST_DEF || myState == IN_ARG_SETTING) {
+            myCurrentToken = RobotTokenTypes.ARGUMENT;
+            goToNextNewLineOrSuperSpace();
+            if (areAtStartOfSuperSpace()) {
+                goToNextThingAfterSuperSpace();
+            } else if (myBuffer.charAt(myPosition) == '\n') {
+                //we're done with args, pop to previous state based on current state, thanks lack of state stack
+                if (myState == IN_ARG_KEYWORD) {
+                    myState = IN_KEYWORD;
+                } else if (myState == IN_ARG_TEST_DEF) {
+                    myState = IN_TEST_DEF;
+                } else if (myState == IN_ARG_SETTING) {
+                    myState = IN_SETTINGS_HEADER;
+                }
+            }
+            return;
+        } else if (myState == IN_TEST_DEF) {
+            if (!areAtStartOfSuperSpace()) {
+                myState = IN_TEST_CASES_HEADER;
+                return;
+            }
+            if (myBuffer.charAt(myPosition) == '\n') {
+                goToStartOfNextLine();
+                return;
+            }
+            if (areAtStartOfSuperSpace()) {
+                goToNextThingAfterSuperSpace();
+                if (myBuffer.charAt(myPosition) == '\n') {
+                    goToStartOfNextLine();
+                    return;
+                }
+                String nextWord = getNextWord();
+                if (myKeywordProvider.getKeywordsOfType(RobotTokenTypes.BRACKET_SETTING).contains(nextWord)) {
+                    myPosition = myPosition + nextWord.length(); //go after the [thing]
+                    goToNextThingAfterSuperSpace();
+                    if (myKeywordProvider.getSettingsFollowedByStrings().contains(nextWord)) {
+                        myState = IN_ARG_TEST_DEF;
+                        return;
+                    } else if (myKeywordProvider.getSettingsFollowedByKeywords().contains(nextWord)) {
+                        myState = IN_KEYWORD;
+                        return;
+                    }
+                } else {
+                    myState = IN_KEYWORD_MAYBE;
+                    return;
+                }
+            }
+            myCurrentToken = RobotTokenTypes.ERROR;
+            return;
+        } else if (myState == IN_KEYWORD_MAYBE) {
+            myCurrentToken = RobotTokenTypes.GHERKIN;
+            goToStartOfNextWhiteSpace();
+            myState = IN_KEYWORD;
         }
-        // TODO: not right type
-        myCurrentToken = RobotTokenTypes.KEYWORD;
+
+        myCurrentToken = RobotTokenTypes.ERROR;
         goToStartOfNextLine();
+    }
+
+    private int nextIndexOfChar(char target) {
+        int position = myPosition;
+        char c = myBuffer.charAt(myPosition);
+        while (c != target) {
+            position++;
+        }
+        return position;
     }
 
     private boolean isComment() {
@@ -128,21 +228,46 @@ public class RobotLexer extends LexerBase {
         return c == '*';
     }
 
-    private boolean isSettings(String header) {
-        return this.myKeywordProvider.isSettingsHeader(header);
-    }
-
-    private boolean isTestCases(String header) {
-        return this.myKeywordProvider.isTestCasesHeader(header);
-    }
-
-    private boolean isKeywords(String header) {
-        return this.myKeywordProvider.isKeywordHeader(header);
+    private boolean isSettings() {
+        String nextWord = getNextWord();
+        if(nextWord.equals("*** Settings ***") || nextWord == "*** Setting ***"){
+            return true;
+        }
+        return false;
     }
 
     private boolean isImport() {
+        String nextWord = getNextWord();
+        if(myKeywordProvider.getKeywordsOfType(RobotTokenTypes.IMPORT).contains(nextWord)){
+            return true;
+        }
         return false;
     }
+
+    private boolean isGlobalSettings() {
+        String nextWord = getNextWord();
+        if(myKeywordProvider.getGlobalSettings().contains(nextWord)){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isTestCases() {
+        String nextWord = getNextWord();
+        if(nextWord.equals("*** Test Cases ***") || nextWord == "*** Test Case ***"){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isKeywords() {
+        String nextWord = getNextWord();
+        if(nextWord.equals("*** Keywords ***") || nextWord == "*** Keyword ***"){
+            return true;
+        }
+        return false;
+    }
+
 
     public void goToStartOfNextLine() {
         while (myPosition < myEndOffset && myBuffer.charAt(myPosition) != '\n') {
@@ -170,7 +295,7 @@ public class RobotLexer extends LexerBase {
 
     @Override
     public int getTokenEnd() {
-        return myPosition;
+        return myPosition - 1;
     }
 
     @Override

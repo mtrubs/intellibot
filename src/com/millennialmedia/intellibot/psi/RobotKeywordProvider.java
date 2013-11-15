@@ -123,20 +123,30 @@ public class RobotKeywordProvider {
         settingsFollowedByKeywords.add("Test PostCondition");
         settingsFollowedByKeywords.add("Test Template");
         settingsFollowedByKeywords.add("Setup");
+        settingsFollowedByKeywords.add("[Setup]");
         settingsFollowedByKeywords.add("Precondition");
+        settingsFollowedByKeywords.add("[Precondition]");
         settingsFollowedByKeywords.add("Teardown");
+        settingsFollowedByKeywords.add("[Teardown]");
         settingsFollowedByKeywords.add("Postcondition");
+        settingsFollowedByKeywords.add("[Postcondition]");
         settingsFollowedByKeywords.add("Template");
+        settingsFollowedByKeywords.add("[Template]");
 
         settingsFollowedByStrings.add("Documentation");
+        settingsFollowedByStrings.add("[Documentation]");
         settingsFollowedByStrings.add("Metadata");
         settingsFollowedByStrings.add("Force Tags");
         settingsFollowedByStrings.add("Default Tags");
         settingsFollowedByStrings.add("Test Timeout");
         settingsFollowedByStrings.add("Tags");
+        settingsFollowedByStrings.add("[Tags]");
         settingsFollowedByStrings.add("Arguments");
+        settingsFollowedByStrings.add("[Arguments]");
         settingsFollowedByStrings.add("Return");
+        settingsFollowedByStrings.add("[Return]");
         settingsFollowedByStrings.add("Timeout");
+        settingsFollowedByStrings.add("[Timeout]");
 
         keywordsWithNoSpacesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.SYNTAX);
         keywordsWithNewlinesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.HEADING);
