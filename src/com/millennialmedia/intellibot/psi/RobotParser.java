@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @author: Stephen Abrams
  */
 public class RobotParser implements PsiParser {
+
     @NotNull
     @Override
     public ASTNode parse(IElementType root, PsiBuilder builder) {
@@ -21,17 +22,17 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseFileTopLevel(PsiBuilder builder) {
-        while(!builder.eof()) {
-            final IElementType tokenType = builder.getTokenType();
-
-            // todo SMA
-            if (tokenType == RobotTokenTypes.ARGUMENT) {
-//                parseFeature(builder);
-//            } else if (tokenType == GherkinTokenTypes.TAG) {
-//                parseTags(builder);
-//            } else {
-//                builder.advanceLexer();
-            }
-        }
+//        while(!builder.eof()) {
+//            final IElementType tokenType = builder.getTokenType();
+//
+//            // todo SMA
+//            if (tokenType == RobotTokenTypes.ARGUMENT) {
+////                parseFeature(builder);
+////            } else if (tokenType == GherkinTokenTypes.TAG) {
+////                parseTags(builder);
+////            } else {
+////                builder.advanceLexer();
+//            }
+//        }
     }
 }
