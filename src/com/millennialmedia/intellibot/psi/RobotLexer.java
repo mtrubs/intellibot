@@ -84,12 +84,15 @@ public class RobotLexer extends LexerBase {
                 return;
             } else if (isHeading()) {
                 myCurrentToken = RobotTokenTypes.HEADING;
+                goToStartOfNextWhiteSpace();
+                int end = nextIndexOf('*') -2;
+                String header = end < myEndOffset ? myBuffer.subSequence(myPosition, end).toString().trim() : null;
 
-                if (isSettings()) {
+                if (isSettings(header)) {
                     myState = IN_SETTINGS_HEADER;
-                } else if (isTestCases()) {
+                } else if (isTestCases(header)) {
                     myState = IN_TEST_CASES_HEADER;
-                } else if (isKeywords()) {
+                } else if (isKeywords(header)) {
                     myState = IN_KEYWORDS_HEADER;
                 } else {
                     // TODO: err?
@@ -125,19 +128,19 @@ public class RobotLexer extends LexerBase {
         return c == '*';
     }
 
-    private boolean isSettings() {
-        return false;
+    private boolean isSettings(String header) {
+        return this.myKeywordProvider.isSettingsHeader(header);
+    }
+
+    private boolean isTestCases(String header) {
+        return this.myKeywordProvider.isTestCasesHeader(header);
+    }
+
+    private boolean isKeywords(String header) {
+        return this.myKeywordProvider.isKeywordHeader(header);
     }
 
     private boolean isImport() {
-        return false;
-    }
-
-    private boolean isTestCases() {
-        return false;
-    }
-
-    private boolean isKeywords() {
         return false;
     }
 
@@ -178,5 +181,41 @@ public class RobotLexer extends LexerBase {
     @Override
     public int getBufferEnd() {
         return myEndOffset;
+    }
+
+    private int nextIndexOf(char target) {
+        int position = myPosition;
+        while (position < myEndOffset && myBuffer.charAt(position) != target) {
+            position++;
+        }
+        return position;
+    }
+
+    private String getNextWord() {
+        return myBuffer.subSequence(myPosition, nextIndexOf(' ') + 1).toString();
+    }
+
+    private void goToNextNewLineOrSuperSpace() {
+        while (myPosition < myEndOffset && !areAtStartOfSuperSpace() && myBuffer.charAt(myPosition) != '\n') {
+            myPosition++;
+        }
+    }
+
+    private boolean areAtStartOfSuperSpace() {
+        return (myPosition + 1 < myEndOffset && myBuffer.charAt(myPosition) == ' ' && myBuffer.charAt(myPosition + 1) == ' ')
+                || myBuffer.charAt(myPosition) == '\t';
+    }
+
+    public void goToStartOfNextWhiteSpace() {
+        while (myPosition < myEndOffset && !Character.isWhitespace(myBuffer.charAt(myPosition))) {
+            myPosition++;
+        }
+    }
+
+    public void goToNextThingAfterSuperSpace() {
+        while (myPosition < myEndOffset && Character.isWhitespace(myBuffer.charAt(myPosition))) {
+            myPosition++;
+        }
+        myPosition++;
     }
 }
