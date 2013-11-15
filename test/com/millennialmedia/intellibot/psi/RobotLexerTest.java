@@ -90,6 +90,31 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, IN_KEYWORD, "And", RobotTokenTypes.GHERKIN);
         lexer.advance();
         assertState(lexer, IN_TEST_DEF, "I have an Account Manager  MANAGER", RobotTokenTypes.KEYWORD);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORD, "When", RobotTokenTypes.GHERKIN);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "I login to Tapmatch as Staff  ${ACCOUNT_MANAGER.user.name}  ${ACCOUNT_MANAGER.user.password}", RobotTokenTypes.KEYWORD);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORD, "Then", RobotTokenTypes.GHERKIN);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "The 7-day average should be  $0.09", RobotTokenTypes.KEYWORD);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORD, "[Teardown]", RobotTokenTypes.BRACKET_SETTING);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Run Keywords  Close All Browsers  Clean Database", RobotTokenTypes.KEYWORD);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORDS_HEADER, "*** Keywords ***", RobotTokenTypes.HEADING);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Clean Database", RobotTokenTypes.TC_KW_NAME);
+        lexer.advance();
+        assertState(lexer, IN_ARG_TEST_DEF, "[Documentation]", RobotTokenTypes.BRACKET_SETTING);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Cleans the database", RobotTokenTypes.ARGUMENT);
+        lexer.advance();
+//        assertState(lexer, IN_TEST_DEF, "Clean Kyle", RobotTokenTypes.KEYWORD);
+//        lexer.advance();
+//        assertState(lexer, IN_TEST_DEF, "Clean  Ike", RobotTokenTypes.KEYWORD);
+//        lexer.advance();
     }
 
     private static void assertState(RobotLexer lexer, int state, String data, RobotElementType token) {

@@ -223,6 +223,10 @@ public class RobotLexer extends LexerBase {
                 myPosition++;
                 advance();
                 return;
+            } else if (isHeading()) {
+                myState = IN_START;
+                advance();
+                return;
             }
 
             String nextWord = getNextWord();
