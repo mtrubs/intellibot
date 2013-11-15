@@ -70,6 +70,26 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, IN_ARG_SETTING, "Force Tags", RobotTokenTypes.SETTING);
         lexer.advance();
         assertState(lexer, IN_SETTINGS_HEADER, "Kyle  Advertiser  Dashboard  Component", RobotTokenTypes.ARGUMENT);
+        lexer.advance();
+        assertState(lexer, IN_TEST_CASES_HEADER, "*** Test Cases ***", RobotTokenTypes.HEADING);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Scenario: An admin can see the conversion trend", RobotTokenTypes.TC_KW_NAME);
+        lexer.advance();
+        assertState(lexer, IN_ARG_TEST_DEF, "[Tags]", RobotTokenTypes.BRACKET_SETTING);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Was Flickering", RobotTokenTypes.ARGUMENT);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORD, "[Setup]", RobotTokenTypes.BRACKET_SETTING);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Prepare advertiser \"Robot_Company\"", RobotTokenTypes.KEYWORD);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORD, "Given", RobotTokenTypes.GHERKIN);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "Advertiser has performance data", RobotTokenTypes.KEYWORD);
+        lexer.advance();
+        assertState(lexer, IN_KEYWORD, "And", RobotTokenTypes.GHERKIN);
+        lexer.advance();
+        assertState(lexer, IN_TEST_DEF, "I have an Account Manager  MANAGER", RobotTokenTypes.KEYWORD);
     }
 
     private static void assertState(RobotLexer lexer, int state, String data, RobotElementType token) {

@@ -20,30 +20,15 @@ Force Tags  Kyle  Advertiser  Dashboard  Component
 Scenario: An admin can see the conversion trend
   [Tags]  Was Flickering
   [Setup]  Prepare advertiser "Robot_Company"
-    GIVEN Advertiser has performance data
-    AND I have an Account Manager  MANAGER
-    WHEN I login to Tapmatch as Staff  ${ACCOUNT_MANAGER.user.name}  ${ACCOUNT_MANAGER.user.password}
-    AND Staff user goes to All Accounts view
-    AND I view the recent advertiser performance trend
-    THEN The 7-day average should be  $0.09
+    Given Advertiser has performance data
+    And I have an Account Manager  MANAGER
+    When I login to Tapmatch as Staff  ${ACCOUNT_MANAGER.user.name}  ${ACCOUNT_MANAGER.user.password}
+    Then The 7-day average should be  $0.09
   [Teardown]  Run Keywords  Close All Browsers  Clean Database
 
-Scenario: The manage accounts page is properly filters by "Accounts w/Performance Data"
-    GIVEN Prepare advertiser "comp_w_perf_data"
-    AND Advertiser has performance data
-    AND Prepare advertiser "comp_w_oas_camp" with OAS campaign
-    AND Prepare advertiser "comp_w_old_perf"
-    AND Advertiser has performance data  20  27
-    AND I have an Account Manager  MANAGER
-    WHEN I login to Tapmatch as Staff  ${ACCOUNT_MANAGER.user.name}  ${ACCOUNT_MANAGER.user.password}  false
-    AND Staff user goes to All Accounts view  false
-    AND The daterangepicker is set to  Last 7 days
-    THEN The view is filtered with performance data
-    AND The advertiser "comp_w_perf_data" is displayed
-    AND The advertiser "comp_w_oas_camp" is displayed
-    AND The advertiser "comp_w_old_perf" is not displayed
-    WHEN Toggle View With Performance Data filter
-    THEN The advertiser "comp_w_perf_data" is displayed
-    AND The advertiser "comp_w_oas_camp" is displayed
-    AND The advertiser "comp_w_old_perf" is displayed
-  [Teardown]  Run Keywords  Close All Browsers  Clean Database
+*** Keywords ***
+
+Clean Database
+  [Documentation]  Cleans the database
+    Clean  Kyle
+    Clean  Ike
