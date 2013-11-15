@@ -175,6 +175,10 @@ public class RobotKeywordProvider {
         return keywordsWithSuperSpaceAfterThem;
     }
 
+    public Set<String> getKeywordsOfType(RobotElementType type){
+        return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
+    }
+
     //we"re good here
 
     public Set<String> getAllKeywords(String language) {
