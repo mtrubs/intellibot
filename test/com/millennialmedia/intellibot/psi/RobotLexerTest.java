@@ -116,6 +116,14 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, IN_SETTINGS_HEADER, "Collections", RobotTokenTypes.ARGUMENT);
         lexer.advance();
         assertState(lexer, IN_SETTINGS_HEADER, "\n", RobotTokenTypes.TEXT);
+        lexer.advance();
+        assertState(lexer, IN_SETTINGS_HEADER, "\n", RobotTokenTypes.TEXT);
+        lexer.advance();
+        assertState(lexer, IN_ARG_SETTING, "Force Tags", RobotTokenTypes.SETTING);
+        lexer.advance();
+        assertState(lexer, IN_ARG_SETTING, "  ", RobotTokenTypes.TEXT);
+        lexer.advance();
+        assertState(lexer, IN_SETTINGS_HEADER, "Kyle  Advertiser  Dashboard  Component", RobotTokenTypes.ARGUMENT);
     }
 
     private static void assertState(RobotLexer lexer, int state, String data, RobotElementType token) {
