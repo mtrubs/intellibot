@@ -35,19 +35,22 @@ public class RobotParser implements PsiParser {
                 marker.done(RobotElementTypes.HEADING);
                 while (true) {
                     builder.advanceLexer();
-                    if (builder.getTokenType() == RobotTokenTypes.SETTING)
+                    final IElementType childTokenType = builder.getTokenType();
+                    if (childTokenType == RobotTokenTypes.SETTING)
                         parseSetting(builder);
-                    if (builder.getTokenType() == RobotTokenTypes.KEYWORD)
+                    if (childTokenType == RobotTokenTypes.KEYWORD)
                         parseKeyword(builder);
-                    if (builder.getTokenType() == RobotTokenTypes.TC_KW_NAME)
+                    if (childTokenType == RobotTokenTypes.TC_KW_NAME)
                         parseKeywordDefinition(builder);
-                    if (builder.eof()) break;
+                    if (builder.eof())
+                        break;
                 }
             } else {
                 builder.advanceLexer();
             }
         }
     }
+
 
     private static void parseKeywordDefinition(PsiBuilder builder) {
         assert builder.getTokenType() == RobotTokenTypes.TC_KW_NAME;
@@ -85,7 +88,7 @@ public class RobotParser implements PsiParser {
             builder.advanceLexer();
             if (builder.getTokenType() == RobotTokenTypes.ARGUMENT) {
                 parseArgument(builder);
-            } else {
+            } else if (builder.getTokenType() != RobotTokenTypes.WHITESPACE) {
                 break;
             }
         }

@@ -39,6 +39,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                     keywords.add("YOYOYOYO!");
                     keywords.add("Please vote this hackmatch a winner!");
 
+//                    keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));
                     for (String keyword : keywords) {
                         LookupElement element = createKeywordLookupElement(keyword);
 

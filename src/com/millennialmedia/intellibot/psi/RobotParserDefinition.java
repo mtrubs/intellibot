@@ -66,6 +66,7 @@ public class RobotParserDefinition implements ParserDefinition {
         if (node.getElementType() == RobotElementTypes.KEYWORD_DEFINTION) return new KeywordDefinitionImpl(node);
         if (node.getElementType() == RobotElementTypes.SETTING_KEYWORD_INVOKEABLE) return new SettingKeywordInvokeableImpl(node);
         if (node.getElementType() == RobotElementTypes.HEADING) return new HeaderImpl(node);
+        if (node.getElementType() == RobotElementTypes.ARGUEMENT) return new ArguementImpl(node);
 
         return PsiUtilCore.NULL_PSI_ELEMENT;
 
