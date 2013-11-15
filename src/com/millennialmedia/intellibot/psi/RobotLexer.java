@@ -218,41 +218,6 @@ public class RobotLexer extends LexerBase {
         return position;
     }
 
-    private String getNextWord() {
-        return myBuffer.subSequence(myPosition, nextIndexOfChar(' ') + 1).toString();
-    }
-
-    private void goToNextNewLineOrSuperSpace() {
-        char c = myBuffer.charAt(myPosition);
-        while (c != ' ' && c != '\n') {
-            myPosition++;
-        }
-    }
-
-    private boolean areAtStartOfSuperSpace() {
-        if ((myBuffer.charAt(myPosition) == ' ' && myBuffer.charAt(myPosition + 1) == ' ') || myBuffer.charAt(myPosition) == '\t') {
-            return true;
-        }
-        return false;
-    }
-
-    public void goToStartOfNextWhiteSpace() {
-        char c = myBuffer.charAt(myPosition);
-        while (c != ' ' && c != '\t') {
-            myPosition++;
-            c = myBuffer.charAt(myPosition);
-        }
-    }
-
-    public void goToNextThingAfterSuperSpace() {
-        char c = myBuffer.charAt(myPosition);
-        while (c == ' ' && c == '\t') {
-            myPosition++;
-            c = myBuffer.charAt(myPosition);
-        }
-        myPosition++;
-    }
-
     private boolean isComment() {
         char c = myBuffer.charAt(myPosition);
         return c == '#';
@@ -341,5 +306,41 @@ public class RobotLexer extends LexerBase {
     @Override
     public int getBufferEnd() {
         return myEndOffset;
+    }
+
+    private int nextIndexOf(char target) {
+        int position = myPosition;
+        while (position < myEndOffset && myBuffer.charAt(position) != target) {
+            position++;
+        }
+        return position;
+    }
+
+    private String getNextWord() {
+        return myBuffer.subSequence(myPosition, nextIndexOf(' ') + 1).toString();
+    }
+
+    private void goToNextNewLineOrSuperSpace() {
+        while (myPosition < myEndOffset && !areAtStartOfSuperSpace() && myBuffer.charAt(myPosition) != '\n') {
+            myPosition++;
+        }
+    }
+
+    private boolean areAtStartOfSuperSpace() {
+        return (myPosition + 1 < myEndOffset && myBuffer.charAt(myPosition) == ' ' && myBuffer.charAt(myPosition + 1) == ' ')
+                || myBuffer.charAt(myPosition) == '\t';
+    }
+
+    public void goToStartOfNextWhiteSpace() {
+        while (myPosition < myEndOffset && !Character.isWhitespace(myBuffer.charAt(myPosition))) {
+            myPosition++;
+        }
+    }
+
+    public void goToNextThingAfterSuperSpace() {
+        while (myPosition < myEndOffset && Character.isWhitespace(myBuffer.charAt(myPosition))) {
+            myPosition++;
+        }
+        myPosition++;
     }
 }

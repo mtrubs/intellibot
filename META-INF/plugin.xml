@@ -48,7 +48,8 @@
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
                         implementationClass="com.millennialmedia.intellibot.psi.RobotCommenter"/>
-        <lang.foldingBuilder language="Robot"
-                             implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>
+        <!--<lang.foldingBuilder language="Robot"-->
+                             <!--implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>-->
+        <lang.parserDefinition language="Robot" implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
     </extensions>
 </idea-plugin>
