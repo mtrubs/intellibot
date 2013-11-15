@@ -16,6 +16,7 @@ public interface RobotTokenTypes {
     RobotElementType SYNTAX             = new RobotElementType("SYNTAX");
     RobotElementType GHERKIN            = new RobotElementType("GHERKIN");
     RobotElementType ERROR              = new RobotElementType("ERROR");
+    RobotElementType TEXT               = new RobotElementType("TEXT");
 
-    TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, BRACKET_SETTING, IMPORT, COMMENT, SYNTAX, GHERKIN);
+    TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, BRACKET_SETTING, IMPORT, COMMENT, SYNTAX, GHERKIN, TEXT);
 }
