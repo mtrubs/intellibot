@@ -85,9 +85,10 @@ public class RobotLexer extends LexerBase {
                 goToEndOfLine();
                 return;
             } else if (isNewLine()) {
-                myStartOffset++;
+//                myStartOffset++;
                 myPosition++;
-                advance();
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
+//                advance();
                 return;
             } else if (isHeading()) {
                 myCurrentToken = RobotTokenTypes.HEADING;
@@ -113,9 +114,10 @@ public class RobotLexer extends LexerBase {
                 goToEndOfLine();
                 return;
             } else if (isNewLine()) {
-                myStartOffset++;
+//                myStartOffset++;
                 myPosition++;
-                advance();
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
+//                advance();
                 return;
             } else if (isHeading()) {
                 myState = IN_START;
@@ -146,8 +148,9 @@ public class RobotLexer extends LexerBase {
             }
         } else if (myState == IN_IMPORT) {
             if (areAtStartOfSuperSpace()) {
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
                 skipWhitespace();
-                advance();
+//                advance();
                 return;
             }
             myCurrentToken = RobotTokenTypes.ARGUMENT;
@@ -160,9 +163,10 @@ public class RobotLexer extends LexerBase {
                 goToEndOfLine();
                 return;
             } else if (isNewLine()) {
-                myStartOffset++;
+//                myStartOffset++;
                 myPosition++;
-                advance();
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
+//                advance();
                 return;
             } else if (isHeading()) {
                 myState = IN_START;
@@ -179,12 +183,14 @@ public class RobotLexer extends LexerBase {
             return;
         } else if (myState == IN_KEYWORD) {
             if (areAtStartOfSuperSpace()) {
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
                 skipWhitespace();
-                advance();
+//                advance();
                 return;
             } else if (areAtStartOfSpace()) {
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
                 skipWhitespace();
-                advance();
+//                advance();
                 return;
             }
             myCurrentToken = RobotTokenTypes.KEYWORD;
@@ -198,8 +204,9 @@ public class RobotLexer extends LexerBase {
             return;
         } else if (myState == IN_ARG_KEYWORD || myState == IN_ARG_TEST_DEF || myState == IN_ARG_SETTING) {
             if (areAtStartOfSuperSpace()) {
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
                 skipWhitespace();
-                advance();
+//                advance();
                 return;
             }
             myCurrentToken = RobotTokenTypes.ARGUMENT;
@@ -215,13 +222,15 @@ public class RobotLexer extends LexerBase {
             return;
         } else if (myState == IN_TEST_DEF) {
             if (areAtStartOfSuperSpace()) {
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
                 skipWhitespace();
-                advance();
+//                advance();
                 return;
             } else if (isNewLine()) {
-                myStartOffset++;
+//                myStartOffset++;
+                myCurrentToken = RobotTokenTypes.WHITESPACE;
                 myPosition++;
-                advance();
+//                advance();
                 return;
             } else if (isHeading()) {
                 myState = IN_START;
@@ -375,7 +384,7 @@ public class RobotLexer extends LexerBase {
     private void skipWhitespace() {
         while (myPosition < myBuffer.length() && Character.isWhitespace(myBuffer.charAt(myPosition))) {
             myPosition++;
-            myStartOffset++;
+//            myStartOffset++;
         }
     }
 
