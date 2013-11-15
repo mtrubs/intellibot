@@ -55,19 +55,19 @@ public class RobotKeywordTable {
 
     @NotNull
     public static RobotKeywordTable getKeywordsTable(PsiFile originalFile, Project project) {
-        final RobotKeywordProvider provider = RobotLanguageService.getInstance(project).getKeywordProvider();
+        final RobotKeywordProvider provider = new RobotKeywordProvider();// todo SMA need a service here?
 
         // find language comment
-        final String language = getFeatureLanguage(originalFile);
+        final String language = "dontcare"; //todo SMA right? getFeatureLanguage(originalFile);
         return provider.getKeywordsTable(language);
     }
 
-    @NotNull
-    public static String getFeatureLanguage(PsiFile originalFile) {
-        return originalFile instanceof RobotFile
-                ? ((RobotFile) originalFile).getLocaleLanguage()
-                : RobotFileImpl.getDefaultLocale();
-    }
+//    @NotNull
+//    public static String getFeatureLanguage(PsiFile originalFile) {
+//        return originalFile instanceof RobotFile
+//                ? ((RobotFile) originalFile).getLocaleLanguage()
+//                : RobotFileImpl.getDefaultLocale();
+//    }
 
     public Set<IElementType> getTypes() {
         return myType2KeywordsTable.keySet();

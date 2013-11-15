@@ -19,9 +19,15 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
     private static final Map<IElementType, TextAttributesKey> keys1;
     private static final Map<IElementType, TextAttributesKey> keys2;
 
+    private final RobotKeywordProvider myKeywordProvider;
+
+    public RobotHighlighter(RobotKeywordProvider keywordProvider) {
+        myKeywordProvider = keywordProvider;
+    }
+
     @NotNull
     public Lexer getHighlightingLexer() {
-        return new RobotLexer();
+        return new RobotLexer(myKeywordProvider);
     }
 
     public static final TextAttributesKey ROBOT_HEADING = TextAttributesKey.createTextAttributesKey(
@@ -52,6 +58,7 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
     }
 
     public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
+
     static {
 //        DISPLAY_NAMES.put(PROPERTY_KEY, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.property.key"),null));
 //        DISPLAY_NAMES.put(PROPERTY_VALUE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.property.value"), null));

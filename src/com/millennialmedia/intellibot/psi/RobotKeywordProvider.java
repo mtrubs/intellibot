@@ -57,6 +57,17 @@ public class RobotKeywordProvider {
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Tags");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Timeout");
 
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Setup]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Precondition]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Teardown]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Arguments]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Postcondition]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Template]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Documentation]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Tags]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Timeout]");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Return]");
+
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Library");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Resource");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Variables");
@@ -87,22 +98,21 @@ public class RobotKeywordProvider {
         globalSettings.add("Default Tags");
         globalSettings.add("Test Timeout");
 
-        testCaseSettings.add("Setup");
-        testCaseSettings.add("Precondition");
-        testCaseSettings.add("Teardown");
-        testCaseSettings.add("Postcondition");
-        testCaseSettings.add("Template");
-        testCaseSettings.add("Documentation");
-        testCaseSettings.add("Tags");
-        testCaseSettings.add("Timeout");
+        testCaseSettings.add("[Setup]");
+        testCaseSettings.add("[Precondition]");
+        testCaseSettings.add("[Teardown]");
+        testCaseSettings.add("[Postcondition]");
+        testCaseSettings.add("[Template]");
+        testCaseSettings.add("[Documentation]");
+        testCaseSettings.add("[Tags]");
+        testCaseSettings.add("[Timeout]");
 
-        keywordSettings.add("Teardown");
-        keywordSettings.add("Documentation");
-        keywordSettings.add("Arguments");
-        keywordSettings.add("Return");
-        keywordSettings.add("Timeout");
+        keywordSettings.add("[Teardown]");
+        keywordSettings.add("[Documentation]");
+        keywordSettings.add("[Arguments]");
+        keywordSettings.add("[Return]");
+        keywordSettings.add("[Timeout]");
 
-        settingsFollowedByKeywords.add("Suite Setup");
         settingsFollowedByKeywords.add("Suite Setup");
         settingsFollowedByKeywords.add("Suite Precondition");
         settingsFollowedByKeywords.add("Suite Teardown");
@@ -119,7 +129,6 @@ public class RobotKeywordProvider {
         settingsFollowedByKeywords.add("Template");
 
         settingsFollowedByStrings.add("Documentation");
-        settingsFollowedByStrings.add("Documentation");
         settingsFollowedByStrings.add("Metadata");
         settingsFollowedByStrings.add("Force Tags");
         settingsFollowedByStrings.add("Default Tags");
@@ -132,7 +141,9 @@ public class RobotKeywordProvider {
         keywordsWithNoSpacesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.SYNTAX);
         keywordsWithNewlinesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.HEADING);
         keywordsWithSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.GHERKIN);
-        keywordsWithSuperSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfTypes(RobotTokenTypes.SETTING, RobotTokenTypes.IMPORT);
+        keywordsWithSuperSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfTypes(RobotTokenTypes.SETTING,
+                                                                                   RobotTokenTypes.BRACKET_SETTING,
+                                                                                   RobotTokenTypes.IMPORT);
 
     }
 
@@ -173,6 +184,10 @@ public class RobotKeywordProvider {
 
     public Set<String> keywordsWithSuperSpacesAfterThem(String language, String keyword) {
         return keywordsWithSuperSpaceAfterThem;
+    }
+
+    public Set<String> getKeywordsOfType(RobotElementType type){
+        return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
     }
 
     //we"re good here
