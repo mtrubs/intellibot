@@ -147,7 +147,7 @@ public class RobotKeywordProvider {
 
     }
 
-    public boolean isKeywordHeader(String header) {
+    public boolean isSettingsHeader(String header) {
         // TODO: Better way
         return "Setting".equals(header) || "Settings".equals(header);
     }
@@ -157,7 +157,7 @@ public class RobotKeywordProvider {
         return "Test Case".equals(header) || "Test Cases".equals(header);
     }
 
-    public boolean isSettingsHeader(String header) {
+    public boolean isKeywordHeader(String header) {
         // TODO: Better way
         return "Keyword".equals(header) || "Keywords".equals(header);
     }
