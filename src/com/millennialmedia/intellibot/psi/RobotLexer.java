@@ -117,6 +117,10 @@ public class RobotLexer extends LexerBase {
                 myPosition++;
                 advance();
                 return;
+            } else if (isHeading()) {
+                myState = IN_START;
+                advance();
+                return;
             }
             String nextWord = getNextWord();
             if (isImport(nextWord)) {
@@ -127,6 +131,7 @@ public class RobotLexer extends LexerBase {
             } else if (isGlobalSettings(nextWord)) {
                 if (myKeywordProvider.getSettingsFollowedByKeywords().contains(nextWord)) {
                     myState = IN_KEYWORD_MAYBE;
+                    advance();
                     return;
                 } else if (myKeywordProvider.getSettingsFollowedByStrings().contains(nextWord)) {
                     myCurrentToken = RobotTokenTypes.SETTING;
@@ -154,6 +159,15 @@ public class RobotLexer extends LexerBase {
                 myCurrentToken = RobotTokenTypes.COMMENT;
                 goToEndOfLine();
                 return;
+            } else if (isNewLine()) {
+                myStartOffset++;
+                myPosition++;
+                advance();
+                return;
+            } else if (isHeading()) {
+                myState = IN_START;
+                advance();
+                return;
             } else if (areAtStartOfSuperSpace()) {
                 myCurrentToken = RobotTokenTypes.ERROR;
                 goToEndOfLine();
@@ -164,12 +178,17 @@ public class RobotLexer extends LexerBase {
             }
             return;
         } else if (myState == IN_KEYWORD) {
-            goToNextNewLineOrSuperSpace();
             if (areAtStartOfSuperSpace()) {
-                goToNextThingAfterSuperSpace();
+                skipWhitespace();
+                advance();
+                return;
+            } else if (areAtStartOfSpace()) {
+                skipWhitespace();
+                advance();
+                return;
             }
             myCurrentToken = RobotTokenTypes.KEYWORD;
-            if (myBuffer.charAt(myPosition) == '\n') {
+            if (!isNewLine()) {
                 goToEndOfLine();
                 myState = IN_TEST_DEF;
             } else {
@@ -195,35 +214,33 @@ public class RobotLexer extends LexerBase {
             }
             return;
         } else if (myState == IN_TEST_DEF) {
-            if (!areAtStartOfSuperSpace()) {
-                myState = IN_TEST_CASES_HEADER;
-                return;
-            }
-            if (myBuffer.charAt(myPosition) == '\n') {
-                goToEndOfLine();
-                return;
-            }
             if (areAtStartOfSuperSpace()) {
-                goToNextThingAfterSuperSpace();
-                if (myBuffer.charAt(myPosition) == '\n') {
-                    goToEndOfLine();
+                skipWhitespace();
+                advance();
+                return;
+            } else if (isNewLine()) {
+                myStartOffset++;
+                myPosition++;
+                advance();
+                return;
+            }
+
+            String nextWord = getNextWord();
+            if (myKeywordProvider.getKeywordsOfType(RobotTokenTypes.BRACKET_SETTING).contains(nextWord)) {
+                goToNextNewLineOrSuperSpace();
+                if (myKeywordProvider.getSettingsFollowedByStrings().contains(nextWord)) {
+                    myState = IN_ARG_TEST_DEF;
+                    myCurrentToken = RobotTokenTypes.BRACKET_SETTING;
+                    return;
+                } else if (myKeywordProvider.getSettingsFollowedByKeywords().contains(nextWord)) {
+                    myState = IN_KEYWORD;
+                    myCurrentToken = RobotTokenTypes.BRACKET_SETTING;
                     return;
                 }
-                String nextWord = getNextWord();
-                if (myKeywordProvider.getKeywordsOfType(RobotTokenTypes.BRACKET_SETTING).contains(nextWord)) {
-                    myPosition = myPosition + nextWord.length(); //go after the [thing]
-                    goToNextThingAfterSuperSpace();
-                    if (myKeywordProvider.getSettingsFollowedByStrings().contains(nextWord)) {
-                        myState = IN_ARG_TEST_DEF;
-                        return;
-                    } else if (myKeywordProvider.getSettingsFollowedByKeywords().contains(nextWord)) {
-                        myState = IN_KEYWORD;
-                        return;
-                    }
-                } else {
-                    myState = IN_KEYWORD_MAYBE;
-                    return;
-                }
+            } else {
+                myState = IN_KEYWORD_MAYBE;
+                advance();
+                return;
             }
             myCurrentToken = RobotTokenTypes.ERROR;
             return;
@@ -231,6 +248,7 @@ public class RobotLexer extends LexerBase {
             myCurrentToken = RobotTokenTypes.GHERKIN;
             goToStartOfNextWhiteSpace();
             myState = IN_KEYWORD;
+            return;
         }
 
         myCurrentToken = RobotTokenTypes.ERROR;
@@ -238,18 +256,15 @@ public class RobotLexer extends LexerBase {
     }
 
     private boolean isComment() {
-        char c = myBuffer.charAt(myPosition);
-        return c == '#';
+        return charAtEquals(myPosition, '#');
     }
 
     private boolean isNewLine() {
-        char c = myBuffer.charAt(myPosition);
-        return c == '\n';
+        return charAtEquals(myPosition, '\n');
     }
 
     private boolean isHeading() {
-        char c = myBuffer.charAt(myPosition);
-        return c == '*';
+        return charAtEquals(myPosition, '*');
     }
 
     private boolean isSettings(String nextWord) {
@@ -276,8 +291,8 @@ public class RobotLexer extends LexerBase {
         return "*** Keywords ***".equals(nextWord) || "*** Keyword ***".equals(nextWord);
     }
 
-    public void goToEndOfLine() {
-        while (myPosition < myEndOffset && myBuffer.charAt(myPosition) != '\n') {
+    private void goToEndOfLine() {
+        while (!isNewLine()) {
             myPosition++;
         }
     }
@@ -315,59 +330,65 @@ public class RobotLexer extends LexerBase {
 
     private int nextIndexOf(char target) {
         int position = myPosition;
-        while (position < myEndOffset && myBuffer.charAt(position) != target) {
+        while (!charAtEquals(position, target)) {
             position++;
         }
         return position;
     }
 
     private String getNextWord() {
-        int nextSpace = indexOfNextSuperSpace();
-        return nextSpace < myEndOffset ? myBuffer.subSequence(myPosition, nextSpace).toString() : null;
+        int nextSpace = indexOfNextSuperSpaceOrNewLine();
+        return nextSpace <= myEndOffset ? myBuffer.subSequence(myPosition, nextSpace).toString() : null;
     }
 
     private void goToNextNewLineOrSuperSpace() {
-        while (myPosition < myEndOffset && !areAtStartOfSuperSpace() && myBuffer.charAt(myPosition) != '\n') {
+        while (myPosition <= myBuffer.length() && !areAtStartOfSuperSpace() && !isNewLine()) {
             myPosition++;
         }
     }
 
     private boolean areAtStartOfSuperSpace() {
-        return (myPosition + 1 < myEndOffset && myBuffer.charAt(myPosition) == ' ' && myBuffer.charAt(myPosition + 1) == ' ')
-                || myBuffer.charAt(myPosition) == '\t';
+        return (charAtEquals(myPosition, ' ') && charAtEquals(myPosition + 1, ' '))
+                || charAtEquals(myPosition, '\t');
+    }
+
+    private boolean areAtStartOfSpace() {
+        return charAtEquals(myPosition, ' ');
     }
 
     private void goToStartOfNextWhiteSpace() {
-        while (myPosition < myEndOffset && !Character.isWhitespace(myBuffer.charAt(myPosition))) {
+        while (myPosition < myBuffer.length() && !Character.isWhitespace(myBuffer.charAt(myPosition))) {
             myPosition++;
         }
     }
 
     private void goToNextThingAfterSuperSpace() {
-        while (myPosition < myEndOffset && Character.isWhitespace(myBuffer.charAt(myPosition))) {
+        while (myPosition < myBuffer.length() && Character.isWhitespace(myBuffer.charAt(myPosition))) {
             myPosition++;
         }
     }
 
     private void skipWhitespace() {
-        while (myPosition < myEndOffset && Character.isWhitespace(myBuffer.charAt(myPosition))) {
+        while (myPosition < myBuffer.length() && Character.isWhitespace(myBuffer.charAt(myPosition))) {
             myPosition++;
             myStartOffset++;
         }
     }
 
-    private int indexOfNextSuperSpace() {
+    private int indexOfNextSuperSpaceOrNewLine() {
         int position = myPosition;
-        while (!isSuperSpace(position)) {
+        while (position < myBuffer.length() && !isSuperSpace(position) && !isNewLine()) {
             position++;
         }
-
-
         return position;
     }
 
     private boolean isSuperSpace(int index) {
-        return (index + 1 < myEndOffset && myBuffer.charAt(index) == ' ' && myBuffer.charAt(index + 1) == ' ')
-                || myBuffer.charAt(index) == '\t';
+        return (charAtEquals(index, ' ') && charAtEquals(index + 1, ' '))
+                || (charAtEquals(index, '\t'));
+    }
+
+    private boolean charAtEquals(int index, char c) {
+        return index < myBuffer.length() && myBuffer.charAt(index) == c;
     }
 }
