@@ -85,8 +85,9 @@ public class RobotLexer extends LexerBase {
                 goToEndOfLine();
                 return;
             } else if (isNewLine()) {
-                myCurrentToken = RobotTokenTypes.TEXT;
+                myStartOffset++;
                 myPosition++;
+                advance();
                 return;
             } else if (isHeading()) {
                 myCurrentToken = RobotTokenTypes.HEADING;
@@ -112,8 +113,9 @@ public class RobotLexer extends LexerBase {
                 goToEndOfLine();
                 return;
             } else if (isNewLine()) {
-                myCurrentToken = RobotTokenTypes.TEXT;
+                myStartOffset++;
                 myPosition++;
+                advance();
                 return;
             }
             String nextWord = getNextWord();
@@ -139,8 +141,8 @@ public class RobotLexer extends LexerBase {
             }
         } else if (myState == IN_IMPORT) {
             if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.TEXT;
-                goToNextThingAfterSuperSpace();
+                skipWhitespace();
+                advance();
                 return;
             }
             myCurrentToken = RobotTokenTypes.ARGUMENT;
@@ -177,23 +179,19 @@ public class RobotLexer extends LexerBase {
             return;
         } else if (myState == IN_ARG_KEYWORD || myState == IN_ARG_TEST_DEF || myState == IN_ARG_SETTING) {
             if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.TEXT;
-                goToNextThingAfterSuperSpace();
+                skipWhitespace();
+                advance();
                 return;
             }
             myCurrentToken = RobotTokenTypes.ARGUMENT;
-            goToNextNewLineOrSuperSpace();
-            if (areAtStartOfSuperSpace()) {
-                goToNextThingAfterSuperSpace();
-            } else if (myBuffer.charAt(myPosition) == '\n') {
-                //we're done with args, pop to previous state based on current state, thanks lack of state stack
-                if (myState == IN_ARG_KEYWORD) {
-                    myState = IN_KEYWORD;
-                } else if (myState == IN_ARG_TEST_DEF) {
-                    myState = IN_TEST_DEF;
-                } else if (myState == IN_ARG_SETTING) {
-                    myState = IN_SETTINGS_HEADER;
-                }
+            goToEndOfLine();
+            //we're done with args, pop to previous state based on current state, thanks lack of state stack
+            if (myState == IN_ARG_KEYWORD) {
+                myState = IN_KEYWORD;
+            } else if (myState == IN_ARG_TEST_DEF) {
+                myState = IN_TEST_DEF;
+            } else if (myState == IN_ARG_SETTING) {
+                myState = IN_SETTINGS_HEADER;
             }
             return;
         } else if (myState == IN_TEST_DEF) {
@@ -324,7 +322,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private String getNextWord() {
-        int nextSpace = nextIndexOf(' ');
+        int nextSpace = indexOfNextSuperSpace();
         return nextSpace < myEndOffset ? myBuffer.subSequence(myPosition, nextSpace).toString() : null;
     }
 
@@ -339,15 +337,37 @@ public class RobotLexer extends LexerBase {
                 || myBuffer.charAt(myPosition) == '\t';
     }
 
-    public void goToStartOfNextWhiteSpace() {
+    private void goToStartOfNextWhiteSpace() {
         while (myPosition < myEndOffset && !Character.isWhitespace(myBuffer.charAt(myPosition))) {
             myPosition++;
         }
     }
 
-    public void goToNextThingAfterSuperSpace() {
+    private void goToNextThingAfterSuperSpace() {
         while (myPosition < myEndOffset && Character.isWhitespace(myBuffer.charAt(myPosition))) {
             myPosition++;
         }
+    }
+
+    private void skipWhitespace() {
+        while (myPosition < myEndOffset && Character.isWhitespace(myBuffer.charAt(myPosition))) {
+            myPosition++;
+            myStartOffset++;
+        }
+    }
+
+    private int indexOfNextSuperSpace() {
+        int position = myPosition;
+        while (!isSuperSpace(position)) {
+            position++;
+        }
+
+
+        return position;
+    }
+
+    private boolean isSuperSpace(int index) {
+        return (index + 1 < myEndOffset && myBuffer.charAt(index) == ' ' && myBuffer.charAt(index + 1) == ' ')
+                || myBuffer.charAt(index) == '\t';
     }
 }
