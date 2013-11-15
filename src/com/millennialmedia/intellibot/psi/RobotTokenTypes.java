@@ -5,6 +5,7 @@ import com.intellij.psi.tree.TokenSet;
 public interface RobotTokenTypes {
     RobotElementType HEADING = new RobotElementType("HEADING");
     RobotElementType SETTING = new RobotElementType("SETTING");
+    RobotElementType BRACKET_SETTING = new RobotElementType("TEST_CASE_SETTING");
     RobotElementType IMPORT = new RobotElementType("IMPORT");
     RobotElementType TC_KW_NAME = new RobotElementType("TC_KW_NAME");
     RobotElementType KEYWORD = new RobotElementType("KEYWORD");
@@ -16,5 +17,5 @@ public interface RobotTokenTypes {
     RobotElementType GHERKIN = new RobotElementType("GHERKIN");
     RobotElementType ERROR = new RobotElementType("ERROR");
 
-    TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, IMPORT, COMMENT, SYNTAX, GHERKIN);
+    TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, BRACKET_SETTING, IMPORT, COMMENT, SYNTAX, GHERKIN);
 }
