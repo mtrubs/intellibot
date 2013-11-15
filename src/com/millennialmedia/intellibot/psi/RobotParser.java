@@ -22,6 +22,7 @@ public class RobotParser implements PsiParser {
 
     }
 
+    //    TC_KW_NAME todo this is definition of a new keyword
     private static void parseFileTopLevel(PsiBuilder builder) {
         while (!builder.eof()) {
 
@@ -38,12 +39,22 @@ public class RobotParser implements PsiParser {
                         parseSetting(builder);
                     if (builder.getTokenType() == RobotTokenTypes.KEYWORD)
                         parseKeyword(builder);
+                    if (builder.getTokenType() == RobotTokenTypes.TC_KW_NAME)
+                        parseKeywordDefinition(builder);
                     if (builder.eof()) break;
                 }
             } else {
                 builder.advanceLexer();
             }
         }
+    }
+
+    private static void parseKeywordDefinition(PsiBuilder builder) {
+        assert builder.getTokenType() == RobotTokenTypes.TC_KW_NAME;
+        final PsiBuilder.Marker keywordDefMarker;
+        keywordDefMarker = builder.mark();
+
+        keywordDefMarker.done(RobotElementTypes.KEYWORD_DEFINTION);
     }
 
     private static void parseSetting(PsiBuilder builder) {

@@ -12,10 +12,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
-import com.millennialmedia.intellibot.psi.impl.HeaderImpl;
-import com.millennialmedia.intellibot.psi.impl.KeywordInvokeableImpl;
-import com.millennialmedia.intellibot.psi.impl.RobotFileImpl;
-import com.millennialmedia.intellibot.psi.impl.SettingKeywordInvokeableImpl;
+import com.millennialmedia.intellibot.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -66,6 +63,7 @@ public class RobotParserDefinition implements ParserDefinition {
         // todo SMA: need scott's definitions
 
         if (node.getElementType() == RobotElementTypes.KEYWORD_INVOKEABLE) return new KeywordInvokeableImpl(node);
+        if (node.getElementType() == RobotElementTypes.KEYWORD_DEFINTION) return new KeywordDefinitionImpl(node);
         if (node.getElementType() == RobotElementTypes.SETTING_KEYWORD_INVOKEABLE) return new SettingKeywordInvokeableImpl(node);
         if (node.getElementType() == RobotElementTypes.HEADING) return new HeaderImpl(node);
 

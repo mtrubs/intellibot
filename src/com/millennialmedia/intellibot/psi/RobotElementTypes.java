@@ -14,6 +14,7 @@ public interface RobotElementTypes {
     IFileElementType FILE = new IStubFileElementType(LANG);
 
     IElementType KEYWORD_INVOKEABLE = new RobotElementType("keyword_invokable");
+    IElementType KEYWORD_DEFINTION = new RobotElementType("keyword_definition");
     IElementType SETTING_KEYWORD_INVOKEABLE = new RobotElementType("setting_keyword_invokable");
     IElementType HEADING = new RobotElementType("heading");
     IElementType ARGUEMENT = new RobotElementType("arguement");

@@ -292,7 +292,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private void goToEndOfLine() {
-        while (!isNewLine()) {
+        while (!isNewLine() && myPosition < myEndOffset) {
             myPosition++;
         }
     }
@@ -330,7 +330,7 @@ public class RobotLexer extends LexerBase {
 
     private int nextIndexOf(char target) {
         int position = myPosition;
-        while (!charAtEquals(position, target)) {
+        while (!charAtEquals(position, target) && myEndOffset != position) {
             position++;
         }
         return position;
