@@ -31,9 +31,71 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
     }
 
     public static final TextAttributesKey ROBOT_HEADING = TextAttributesKey.createTextAttributesKey(
-            "ROBOT.HEADING",
+            "HEADING",
+            DefaultLanguageHighlighterColors.STRING
+    );
+
+    public static final TextAttributesKey ROBOT_SETTING = TextAttributesKey.createTextAttributesKey(
+            "SETTING",
             DefaultLanguageHighlighterColors.KEYWORD
     );
+
+    public static final TextAttributesKey ROBOT_BRACKET_SETTING = TextAttributesKey.createTextAttributesKey(
+            "TEST_CASE_SETTING",
+            DefaultLanguageHighlighterColors.LABEL
+    );
+
+    public static final TextAttributesKey ROBOT_IMPORT = TextAttributesKey.createTextAttributesKey(
+            "IMPORT",
+            DefaultLanguageHighlighterColors.IDENTIFIER
+    );
+
+    public static final TextAttributesKey ROBOT_TC_KW_NAME = TextAttributesKey.createTextAttributesKey(
+            "TC_KW_NAME",
+            DefaultLanguageHighlighterColors.KEYWORD
+    );
+
+    public static final TextAttributesKey ROBOT_KEYWORD = TextAttributesKey.createTextAttributesKey(
+            "KEYWORD",
+            DefaultLanguageHighlighterColors.FUNCTION_DECLARATION
+    );
+
+    public static final TextAttributesKey ROBOT_ARGUMENT = TextAttributesKey.createTextAttributesKey(
+            "ARGUMENT",
+            DefaultLanguageHighlighterColors.PARENTHESES
+    );
+
+    public static final TextAttributesKey ROBOT_VARIABLE = TextAttributesKey.createTextAttributesKey(
+            "VARIABLE",
+            DefaultLanguageHighlighterColors.LOCAL_VARIABLE
+    );
+
+    public static final TextAttributesKey ROBOT_COMMENT = TextAttributesKey.createTextAttributesKey(
+            "COMMENT",
+            DefaultLanguageHighlighterColors.BLOCK_COMMENT
+    );
+
+    public static final TextAttributesKey ROBOT_SEPARATOR = TextAttributesKey.createTextAttributesKey(
+            "SEPARATOR",
+            DefaultLanguageHighlighterColors.COMMA
+    );
+
+    public static final TextAttributesKey ROBOT_SYNTAX = TextAttributesKey.createTextAttributesKey(
+            "SYNTAX",
+            DefaultLanguageHighlighterColors.BRACES
+    );
+
+    public static final TextAttributesKey ROBOT_GHERKIN = TextAttributesKey.createTextAttributesKey(
+            "GHERKIN",
+            DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR
+    );
+
+    public static final TextAttributesKey ROBOT_ERROR = TextAttributesKey.createTextAttributesKey(
+            "ERROR",
+            DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
+    );
+
+
     // todo: more TextAttributeKeys
 
     static {
