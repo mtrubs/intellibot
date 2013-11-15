@@ -43,13 +43,20 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="Robot"
+                                implementationClass="com.millennialmedia.intellibot.completion.RobotCompletionContributor"/>
+
+        <lang.findUsagesProvider language="Robot"
+                                 implementationClass="com.millennialmedia.intellibot.psi.RobotFindUsagesProvider"/>
+
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
         <lang.syntaxHighlighterFactory key="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
                         implementationClass="com.millennialmedia.intellibot.psi.RobotCommenter"/>
         <!--<lang.foldingBuilder language="Robot"-->
-                             <!--implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>-->
-        <lang.parserDefinition language="Robot" implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
+        <!--implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>-->
+        <lang.parserDefinition language="Robot"
+                               implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
     </extensions>
 </idea-plugin>

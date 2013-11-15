@@ -11,7 +11,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.millennialmedia.intellibot.psi.impl.RobotFileImpl;
+import com.intellij.psi.util.PsiUtilCore;
+import com.millennialmedia.intellibot.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -60,7 +61,14 @@ public class RobotParserDefinition implements ParserDefinition {
     @Override
     public PsiElement createElement(ASTNode node) {
         // todo SMA: need scott's definitions
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+        if (node.getElementType() == RobotElementTypes.KEYWORD_INVOKEABLE) return new KeywordInvokeableImpl(node);
+        if (node.getElementType() == RobotElementTypes.KEYWORD_DEFINTION) return new KeywordDefinitionImpl(node);
+        if (node.getElementType() == RobotElementTypes.SETTING_KEYWORD_INVOKEABLE) return new SettingKeywordInvokeableImpl(node);
+        if (node.getElementType() == RobotElementTypes.HEADING) return new HeaderImpl(node);
+
+        return PsiUtilCore.NULL_PSI_ELEMENT;
+
     }
 
     @Override
