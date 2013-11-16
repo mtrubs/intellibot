@@ -8,7 +8,10 @@ import com.intellij.codeInsight.lookup.TailTypeDecorator;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
-import com.millennialmedia.intellibot.psi.*;
+import com.millennialmedia.intellibot.psi.RobotFile;
+import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
+import com.millennialmedia.intellibot.psi.RobotKeywordTable;
+import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ import java.util.List;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotCompletionContributor extends CompletionContributor {
 
@@ -26,7 +29,7 @@ public class RobotCompletionContributor extends CompletionContributor {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters,
                                           ProcessingContext context,
-                                          CompletionResultSet result) {
+                                          @NotNull CompletionResultSet result) {
                 final PsiFile psiFile = parameters.getOriginalFile();
                 if (psiFile instanceof RobotFile) {
 
@@ -36,10 +39,8 @@ public class RobotCompletionContributor extends CompletionContributor {
 
                     if (table.getKeywordsOfType(RobotTokenTypes.TC_KW_NAME) != null)
                         keywords.addAll(table.getKeywordsOfType(RobotTokenTypes.TC_KW_NAME));
-                    keywords.add("YOYOYOYO!");
-                    keywords.add("Please vote this hackmatch a winner!");
 
-//                    keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));
+                    keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));
                     for (String keyword : keywords) {
                         LookupElement element = createKeywordLookupElement(keyword);
 

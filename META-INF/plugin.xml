@@ -46,8 +46,8 @@
         <completion.contributor language="Robot"
                                 implementationClass="com.millennialmedia.intellibot.completion.RobotCompletionContributor"/>
 
-        <lang.findUsagesProvider language="Robot"
-                                 implementationClass="com.millennialmedia.intellibot.psi.RobotFindUsagesProvider"/>
+        <!--<lang.findUsagesProvider language="Robot"-->
+        <!--implementationClass="com.millennialmedia.intellibot.psi.RobotFindUsagesProvider"/>-->
 
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
         <lang.syntaxHighlighterFactory key="Robot"

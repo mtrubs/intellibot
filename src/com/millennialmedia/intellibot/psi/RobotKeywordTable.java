@@ -1,12 +1,15 @@
 package com.millennialmedia.intellibot.psi;
 
-import java.util.*;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class RobotKeywordTable {
     private Map<IElementType, Set<String>> myType2KeywordsTable = new HashMap<IElementType, Set<String>>();
@@ -57,17 +60,8 @@ public class RobotKeywordTable {
     public static RobotKeywordTable getKeywordsTable(PsiFile originalFile, Project project) {
         final RobotKeywordProvider provider = new RobotKeywordProvider();// todo SMA need a service here?
 
-        // find language comment
-        final String language = "dontcare"; //todo SMA right? getFeatureLanguage(originalFile);
-        return provider.getKeywordsTable(language);
+        return provider.getKeywordsTable(RobotLanguage.INSTANCE.getID());
     }
-
-//    @NotNull
-//    public static String getFeatureLanguage(PsiFile originalFile) {
-//        return originalFile instanceof RobotFile
-//                ? ((RobotFile) originalFile).getLocaleLanguage()
-//                : RobotFileImpl.getDefaultLocale();
-//    }
 
     public Set<IElementType> getTypes() {
         return myType2KeywordsTable.keySet();
