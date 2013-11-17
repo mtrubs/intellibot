@@ -13,7 +13,7 @@ Library  db.orm.Orm
 Library  OperatingSystem
 Library  Collections
 
-Force Tags  Kyle  Advertiser  Dashboard  Component
+Force Tags  Kyle  Advertiser  Dashboard  Component  #Other Tag
 
 *** Test Cases ***
 
@@ -32,3 +32,4 @@ Clean Database
   [Documentation]  Cleans the database
     Clean  Kyle
     Clean  Ike
+    Close All Browsers

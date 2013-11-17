@@ -3,405 +3,304 @@ package com.millennialmedia.intellibot.psi;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Stack;
 
 public class RobotLexer extends LexerBase {
 
-    protected CharSequence myBuffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
-    protected int myStartOffset = 0;
-    protected int myEndOffset = 0;
-    private int myPosition;
-    private IElementType myCurrentToken;
-    private int myCurrentTokenStart;
-    private List<String> myKeywords;
-    private int myState;
+    private static final int RATE = 10;
 
-    private final RobotKeywordProvider myKeywordProvider;
-    private String myCurLanguage;
+    private CharSequence buffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
+    private int startOffset;
+    private int endOffset;
+    private int position;
+    private IElementType currentToken;
 
-    public final static int IN_START = 0;
-    public final static int IN_SETTINGS_HEADER = 1;
-    public final static int IN_TEST_CASES_HEADER = 2;
-    public final static int IN_KEYWORDS_HEADER = 3;
-    public final static int IN_IMPORT = 4;
-    public final static int IN_KEYWORD = 5;
-    public final static int IN_TEST_DEF = 6;
-    public final static int IN_ARG_KEYWORD = 7;
-    public final static int IN_ARG_TEST_DEF = 8;
-    public final static int IN_ARG_SETTING = 9;
-    public final static int IN_KEYWORD_MAYBE = 10;
+    private final RobotKeywordProvider keywordProvider;
+
+    private Stack<Integer> level = new Stack<Integer>();
+    protected static final int SETTINGS_HEADING = 1;
+    protected static final int TEST_CASES_HEADING = 2;
+    protected static final int KEYWORDS_HEADING = 3;
+    protected static final int IMPORT = 4;
+    protected static final int KEYWORD = 5;
+    protected static final int ARG = 6;
+    protected static final int KEYWORD_DEFINITION = 7;
+    protected static final int SYNTAX = 8;
+    protected static final int GHERKIN = 9;
 
     public RobotLexer(RobotKeywordProvider provider) {
-        myKeywordProvider = provider;
-        updateLanguage("en");
-    }
-
-    private void updateLanguage(String language) {
-        myCurLanguage = language;
-        myKeywords = new ArrayList<String>(myKeywordProvider.getAllKeywords(language));
-        Collections.sort(myKeywords, new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return o2.length() - o1.length();
-            }
-        });
+        keywordProvider = provider;
     }
 
     @Override
     public void start(CharSequence buffer, int startOffset, int endOffset, int initialState) {
-        myBuffer = buffer;
-        myStartOffset = startOffset;
-        myEndOffset = endOffset;
-        myPosition = startOffset;
-        myState = initialState;
+        this.buffer = buffer;
+        this.startOffset = startOffset;
+        this.endOffset = endOffset;
+        this.position = startOffset;
+        this.level = fromState(initialState);
         advance();
-    }
-
-    @Nullable
-    public static String fetchLocationLanguage(final @NotNull String commentText) {
-        if (commentText.startsWith("language:")) {
-            return commentText.substring(9).trim();
-        }
-        return null;
     }
 
     @Override
     public void advance() {
-        if (myPosition >= myEndOffset) {
-            myCurrentToken = null;
+        if (position >= endOffset) {
+            currentToken = null;
             return;
         }
+        startOffset = position;
 
-        myCurrentTokenStart = myPosition;
-        if (myState == IN_START) {
-            // comment
-            if (isComment()) {
-                myCurrentToken = RobotTokenTypes.COMMENT;
-                goToEndOfLine();
-                return;
-            } else if (isNewLine()) {
-//                myStartOffset++;
-                myPosition++;
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-//                advance();
-                return;
-            } else if (isHeading()) {
-                myCurrentToken = RobotTokenTypes.HEADING;
-                String nextWord = subSequence(myPosition, nextIndexOf('\n'));
-                if (isSettings(nextWord)) {
-                    myState = IN_SETTINGS_HEADER;
-                } else if (isTestCases(nextWord)) {
-                    myState = IN_TEST_CASES_HEADER;
-                } else if (isKeywords(nextWord)) {
-                    myState = IN_KEYWORDS_HEADER;
-                } else {
-                    myCurrentToken = RobotTokenTypes.ERROR;
-                }
-                goToEndOfLine();
-                return;
-            } else {
-                myCurrentToken = RobotTokenTypes.ERROR;
-            }
+        // these are based on the characters of a row at any given time
+        if (isComment()) {
+            currentToken = RobotTokenTypes.COMMENT;
+            goToEndOfLine();
             return;
-        } else if (myState == IN_SETTINGS_HEADER) {
-            if (isComment()) {
-                myCurrentToken = RobotTokenTypes.COMMENT;
-                goToEndOfLine();
-                return;
-            } else if (isNewLine()) {
-//                myStartOffset++;
-                myPosition++;
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-//                advance();
-                return;
-            } else if (isHeading()) {
-                myState = IN_START;
-                advance();
-                return;
-            }
-            String nextWord = getNextWord();
-            if (isImport(nextWord)) {
-                myState = IN_IMPORT;
-                myCurrentToken = RobotTokenTypes.IMPORT;
-                goToNextNewLineOrSuperSpace();
-                return;
-            } else if (isGlobalSettings(nextWord)) {
-                if (myKeywordProvider.getSettingsFollowedByKeywords().contains(nextWord)) {
-                    myState = IN_KEYWORD_MAYBE;
+        } else if (isNewLine()) {
+            if (this.level.peek() != null) {
+                int state = this.level.peek();
+                if (ARG == state || IMPORT == state || KEYWORD == state || SYNTAX == state) {
+                    level.pop();
                     advance();
                     return;
-                } else if (myKeywordProvider.getSettingsFollowedByStrings().contains(nextWord)) {
-                    myCurrentToken = RobotTokenTypes.SETTING;
-                    myState = IN_ARG_SETTING;
-                    goToNextNewLineOrSuperSpace();
-                    return;
                 }
-            } else {
-                // TODO: err?
-                goToEndOfLine();
-                return;
             }
-        } else if (myState == IN_IMPORT) {
-            if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-                skipWhitespace();
-//                advance();
-                return;
-            }
-            myCurrentToken = RobotTokenTypes.ARGUMENT;
-            myState = IN_SETTINGS_HEADER;
+            currentToken = RobotTokenTypes.WHITESPACE;
+            position++;
+            return;
+        } else if (isHeading()) {
             goToEndOfLine();
-            return;
-        } else if (myState == IN_TEST_CASES_HEADER || myState == IN_KEYWORDS_HEADER) {
-            if (isComment()) {
-                myCurrentToken = RobotTokenTypes.COMMENT;
-                goToEndOfLine();
-                return;
-            } else if (isNewLine()) {
-//                myStartOffset++;
-                myPosition++;
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-//                advance();
-                return;
-            } else if (isHeading()) {
-                myState = IN_START;
-                advance();
-                return;
-            } else if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.ERROR;
-                goToEndOfLine();
+            String line = buffer.subSequence(startOffset, position).toString();
+            this.currentToken = RobotTokenTypes.HEADING;
+            if (isSettings(line)) {
+                this.level.clear();
+                this.level.push(SETTINGS_HEADING);
+            } else if (isTestCases(line)) {
+                this.level.clear();
+                this.level.push(TEST_CASES_HEADING);
+            } else if (isKeywords(line)) {
+                this.level.clear();
+                this.level.push(KEYWORDS_HEADING);
             } else {
-                myCurrentToken = RobotTokenTypes.TC_KW_NAME;
-                myState = IN_TEST_DEF;
-                goToEndOfLine();
+                this.currentToken = RobotTokenTypes.ERROR;
             }
-            return;
-        } else if (myState == IN_KEYWORD) {
-            if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-                skipWhitespace();
-//                advance();
-                return;
-            } else if (areAtStartOfSpace()) {
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-                skipWhitespace();
-//                advance();
-                return;
-            }
-            myCurrentToken = RobotTokenTypes.KEYWORD;
-            if (!isNewLine()) {
-                goToEndOfLine();
-                myState = IN_TEST_DEF;
-            } else {
-                //we can have spaces after a keyword but not before an arg
-                myState = IN_ARG_KEYWORD;
-            }
-            return;
-        } else if (myState == IN_ARG_KEYWORD || myState == IN_ARG_TEST_DEF || myState == IN_ARG_SETTING) {
-            if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-                skipWhitespace();
-//                advance();
-                return;
-            }
-            myCurrentToken = RobotTokenTypes.ARGUMENT;
-            goToEndOfLine();
-            //we're done with args, pop to previous state based on current state, thanks lack of state stack
-            if (myState == IN_ARG_KEYWORD) {
-                myState = IN_KEYWORD;
-            } else if (myState == IN_ARG_TEST_DEF) {
-                myState = IN_TEST_DEF;
-            } else if (myState == IN_ARG_SETTING) {
-                myState = IN_SETTINGS_HEADER;
-            }
-            return;
-        } else if (myState == IN_TEST_DEF) {
-            if (areAtStartOfSuperSpace()) {
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-                skipWhitespace();
-//                advance();
-                return;
-            } else if (isNewLine()) {
-//                myStartOffset++;
-                myCurrentToken = RobotTokenTypes.WHITESPACE;
-                myPosition++;
-//                advance();
-                return;
-            } else if (isHeading()) {
-                myState = IN_START;
-                advance();
-                return;
-            }
-
-            String nextWord = getNextWord();
-            if (myKeywordProvider.getKeywordsOfType(RobotTokenTypes.BRACKET_SETTING).contains(nextWord)) {
-                goToNextNewLineOrSuperSpace();
-                if (myKeywordProvider.getSettingsFollowedByStrings().contains(nextWord)) {
-                    myState = IN_ARG_TEST_DEF;
-                    myCurrentToken = RobotTokenTypes.BRACKET_SETTING;
-                    return;
-                } else if (myKeywordProvider.getSettingsFollowedByKeywords().contains(nextWord)) {
-                    myState = IN_KEYWORD;
-                    myCurrentToken = RobotTokenTypes.BRACKET_SETTING;
-                    return;
-                }
-            } else {
-                myState = IN_KEYWORD_MAYBE;
-                advance();
-                return;
-            }
-            myCurrentToken = RobotTokenTypes.ERROR;
-            return;
-        } else if (myState == IN_KEYWORD_MAYBE) {
-            myCurrentToken = RobotTokenTypes.GHERKIN;
-            goToStartOfNextWhiteSpace();
-            myState = IN_KEYWORD;
             return;
         }
 
-        myCurrentToken = RobotTokenTypes.ERROR;
-        goToEndOfLine();
+        // the rest is based on state
+        if (level.peek() == null) {
+            // TODO: not sure
+            goToEndOfLine();
+            this.currentToken = RobotTokenTypes.ERROR;
+        } else {
+            int state = level.peek();
+            if (SETTINGS_HEADING == state) {
+                goToNextNewLineOrSuperSpace();
+                String word = buffer.subSequence(startOffset, position).toString();
+                if (isImport(word)) {
+                    this.level.push(IMPORT);
+                    this.currentToken = RobotTokenTypes.IMPORT;
+                } else if (keywordProvider.getGlobalSettings().contains(word)) {
+                    this.currentToken = RobotTokenTypes.SETTING;
+                    if (keywordProvider.getSettingsFollowedByKeywords().contains(word)) {
+                        this.level.push(SYNTAX);
+                    } else if (keywordProvider.getSettingsFollowedByStrings().contains(word)) {
+                        this.level.push(KEYWORD);
+                    } else {
+                        goToEndOfLine();
+                        this.currentToken = RobotTokenTypes.ERROR;
+                    }
+                } else {
+                    goToEndOfLine();
+                    this.currentToken = RobotTokenTypes.ERROR;
+                }
+            } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
+                goToNextNewLineOrSuperSpace();
+                this.level.push(KEYWORD_DEFINITION);
+                this.currentToken = RobotTokenTypes.TC_KW_NAME;
+            } else if (KEYWORD_DEFINITION == state) {
+                if (areAtStartOfSuperSpace()) {
+                    skipWhitespace();
+                    this.currentToken = RobotTokenTypes.WHITESPACE;
+                } else {
+                    goToStartOfNextWhiteSpace();
+                    String word = this.buffer.subSequence(this.startOffset, this.position).toString();
+                    if (keywordProvider.getKeywordsOfType(RobotTokenTypes.GHERKIN).contains(word)) {
+                        currentToken = RobotTokenTypes.GHERKIN;
+                        level.push(GHERKIN);
+                    } else {
+                        goToNextNewLineOrSuperSpace();
+                        word = this.buffer.subSequence(this.startOffset, this.position).toString();
+                        if (keywordProvider.getKeywordsOfType(RobotTokenTypes.BRACKET_SETTING).contains(word)) {
+                            this.currentToken = RobotTokenTypes.BRACKET_SETTING;
+                            if (keywordProvider.getSettingsFollowedByKeywords().contains(word)) {
+                                this.level.push(SYNTAX);
+                            } else if (keywordProvider.getSettingsFollowedByStrings().contains(word)) {
+                                this.level.push(KEYWORD);
+                            } else {
+                                goToEndOfLine();
+                                this.currentToken = RobotTokenTypes.ERROR;
+                            }
+                        } else {
+                            this.currentToken = RobotTokenTypes.KEYWORD;
+                            level.push(KEYWORD);
+                        }
+                    }
+                }
+            } else if (KEYWORD == state || IMPORT == state) {
+                if (areAtStartOfSuperSpace()) {
+                    skipWhitespace();
+                    this.currentToken = RobotTokenTypes.WHITESPACE;
+                } else {
+                    goToNextNewLineOrSuperSpace();
+                    level.push(ARG);
+                    this.currentToken = RobotTokenTypes.ARGUMENT;
+                }
+            } else if (SYNTAX == state) {
+                if (areAtStartOfSuperSpace()) {
+                    skipWhitespace();
+                    this.currentToken = RobotTokenTypes.WHITESPACE;
+                } else {
+                    goToNextNewLineOrSuperSpace();
+                    level.push(KEYWORD);
+                    this.currentToken = RobotTokenTypes.KEYWORD;
+                }
+            } else if (ARG == state) {
+                level.pop();
+                if (!areAtStartOfSuperSpace()) {
+                    level.pop();
+                }
+                advance();
+            } else if (GHERKIN == state) {
+                level.pop();
+                currentToken = RobotTokenTypes.WHITESPACE;
+                position++;
+            } else {
+                throw new RuntimeException("Unknown State: " + state);
+            }
+        }
     }
 
     private boolean isComment() {
-        return charAtEquals(myPosition, '#');
+        return charAtEquals(position, '#');
     }
 
     private boolean isNewLine() {
-        return charAtEquals(myPosition, '\n');
+        return charAtEquals(position, '\n');
     }
 
     private boolean isHeading() {
-        return charAtEquals(myPosition, '*');
+        return charAtEquals(position, '*') &&
+                charAtEquals(position + 1, '*') &&
+                charAtEquals(position + 2, '*') &&
+                charAtEquals(position + 3, ' ');
     }
 
-    private boolean isSettings(String nextWord) {
-        return "*** Settings ***".equals(nextWord) || "*** Setting ***".equals(nextWord);
+    private boolean isSettings(String line) {
+        return "*** Settings ***".equals(line) || "*** Setting ***".equals(line);
     }
 
-    private String subSequence(int start, int end) {
-        return end < myEndOffset ? myBuffer.subSequence(start, end).toString() : null;
+    private boolean isTestCases(String line) {
+        return "*** Test Cases ***".equals(line) || "*** Test Case ***".equals(line);
+    }
+
+    private boolean isKeywords(String line) {
+        return "*** Keywords ***".equals(line) || "*** Keyword ***".equals(line);
     }
 
     private boolean isImport(String nextWord) {
-        return myKeywordProvider.getKeywordsOfType(RobotTokenTypes.IMPORT).contains(nextWord);
-    }
-
-    private boolean isGlobalSettings(String nextWord) {
-        return myKeywordProvider.getGlobalSettings().contains(nextWord);
-    }
-
-    private boolean isTestCases(String nextWord) {
-        return "*** Test Cases ***".equals(nextWord) || "*** Test Case ***".equals(nextWord);
-    }
-
-    private boolean isKeywords(String nextWord) {
-        return "*** Keywords ***".equals(nextWord) || "*** Keyword ***".equals(nextWord);
+        return keywordProvider.getKeywordsOfType(RobotTokenTypes.IMPORT).contains(nextWord);
     }
 
     private void goToEndOfLine() {
-        while (!isNewLine() && myPosition < myEndOffset) {
-            myPosition++;
+        while (position < endOffset && !isNewLine()) {
+            position++;
         }
     }
 
     @Override
     public int getState() {
-        return myState;
+        return toState(this.level);
+    }
+
+    public int peekState() {
+        return this.level.isEmpty() ? 0 : this.level.peek();
+    }
+
+    protected static int toState(Stack<Integer> stack) {
+        int value = 0;
+        if (!stack.isEmpty()) {
+            int rate = 1;
+            for (Integer i : stack) {
+                value += i * rate;
+                rate *= RATE;
+            }
+        }
+        return value;
+    }
+
+    protected static Stack<Integer> fromState(int state) {
+        Stack<Integer> stack = new Stack<Integer>();
+        if (state > 0) {
+            while (state > 0) {
+                stack.push(state % RATE);
+                state /= RATE;
+            }
+        }
+        return stack;
     }
 
     @Nullable
     @Override
     public IElementType getTokenType() {
-        return myCurrentToken;
+        return currentToken;
     }
 
     @Override
     public int getTokenStart() {
-        return myCurrentTokenStart;
+        return startOffset;
     }
 
     @Override
     public int getTokenEnd() {
-        return myPosition;
+        return position;
     }
 
     @Override
     public CharSequence getBufferSequence() {
-        return myBuffer;
+        return buffer;
     }
 
     @Override
     public int getBufferEnd() {
-        return myEndOffset;
-    }
-
-    private int nextIndexOf(char target) {
-        int position = myPosition;
-        while (!charAtEquals(position, target) && myEndOffset != position) {
-            position++;
-        }
-        return position;
-    }
-
-    private String getNextWord() {
-        int nextSpace = indexOfNextSuperSpaceOrNewLine();
-        return nextSpace <= myEndOffset ? myBuffer.subSequence(myPosition, nextSpace).toString() : null;
+        return endOffset;
     }
 
     private void goToNextNewLineOrSuperSpace() {
-        while (myPosition <= myBuffer.length() && !areAtStartOfSuperSpace() && !isNewLine()) {
-            myPosition++;
+        while (position < endOffset && !areAtStartOfSuperSpace() && !isNewLine()) {
+            position++;
         }
     }
 
     private boolean areAtStartOfSuperSpace() {
-        return (charAtEquals(myPosition, ' ') && charAtEquals(myPosition + 1, ' '))
-                || charAtEquals(myPosition, '\t');
-    }
-
-    private boolean areAtStartOfSpace() {
-        return charAtEquals(myPosition, ' ');
+        return (charAtEquals(position, ' ') && charAtEquals(position + 1, ' '))
+                || charAtEquals(position, '\t');
     }
 
     private void goToStartOfNextWhiteSpace() {
-        while (myPosition < myBuffer.length() && !Character.isWhitespace(myBuffer.charAt(myPosition))) {
-            myPosition++;
-        }
-    }
-
-    private void goToNextThingAfterSuperSpace() {
-        while (myPosition < myBuffer.length() && Character.isWhitespace(myBuffer.charAt(myPosition))) {
-            myPosition++;
+        while (position < endOffset && !Character.isWhitespace(buffer.charAt(position))) {
+            position++;
         }
     }
 
     private void skipWhitespace() {
-        while (myPosition < myBuffer.length() && Character.isWhitespace(myBuffer.charAt(myPosition))) {
-            myPosition++;
-//            myStartOffset++;
-        }
-    }
-
-    private int indexOfNextSuperSpaceOrNewLine() {
-        int position = myPosition;
-        while (position < myBuffer.length() && !isSuperSpace(position) && !isNewLine()) {
+        while (position < endOffset && Character.isWhitespace(buffer.charAt(position))) {
             position++;
         }
-        return position;
     }
 
-    private boolean isSuperSpace(int index) {
-        return (charAtEquals(index, ' ') && charAtEquals(index + 1, ' '))
-                || (charAtEquals(index, '\t'));
-    }
-
-    private boolean charAtEquals(int index, char c) {
-        return index < myBuffer.length() && myBuffer.charAt(index) == c;
+    private boolean charAtEquals(int position, char c) {
+        return position < endOffset && buffer.charAt(position) == c;
     }
 }
