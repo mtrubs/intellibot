@@ -20,7 +20,7 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
 
     private static final String ELLIPSIS = "...";
 
-    private static final TokenSet BLOCKS_TO_FOLD = TokenSet.create(RobotTokenTypes.TC_KW_NAME, RobotTokenTypes.SETTING);
+    private static final TokenSet BLOCKS_TO_FOLD = TokenSet.create(RobotTokenTypes.KEYWORD_DEFINITION, RobotTokenTypes.SETTING);
 
     @NotNull
     public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {

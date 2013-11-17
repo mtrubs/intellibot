@@ -64,6 +64,10 @@ public class RobotLexer extends LexerBase {
                     level.pop();
                     advance();
                     return;
+                } else if (KEYWORD_DEFINITION == state && !isWhitespace(position + 1)) {
+                    level.pop();
+                    advance();
+                    return;
                 }
             }
             currentToken = RobotTokenTypes.WHITESPACE;
@@ -118,13 +122,13 @@ public class RobotLexer extends LexerBase {
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
                 goToNextNewLineOrSuperSpace();
                 this.level.push(KEYWORD_DEFINITION);
-                this.currentToken = RobotTokenTypes.TC_KW_NAME;
+                this.currentToken = RobotTokenTypes.KEYWORD_DEFINITION;
             } else if (KEYWORD_DEFINITION == state) {
                 if (areAtStartOfSuperSpace()) {
                     skipWhitespace();
                     this.currentToken = RobotTokenTypes.WHITESPACE;
                 } else {
-                    goToStartOfNextWhiteSpace();
+                    skipNonWhitespace();
                     String word = this.buffer.subSequence(this.startOffset, this.position).toString();
                     if (keywordProvider.getKeywordsOfType(RobotTokenTypes.GHERKIN).contains(word)) {
                         currentToken = RobotTokenTypes.GHERKIN;
@@ -288,19 +292,23 @@ public class RobotLexer extends LexerBase {
                 || charAtEquals(position, '\t');
     }
 
-    private void goToStartOfNextWhiteSpace() {
-        while (position < endOffset && !Character.isWhitespace(buffer.charAt(position))) {
+    private void skipNonWhitespace() {
+        while (position < endOffset && !isWhitespace(position)) {
             position++;
         }
     }
 
     private void skipWhitespace() {
-        while (position < endOffset && Character.isWhitespace(buffer.charAt(position))) {
+        while (position < endOffset && isWhitespace(position)) {
             position++;
         }
     }
 
     private boolean charAtEquals(int position, char c) {
         return position < endOffset && buffer.charAt(position) == c;
+    }
+
+    private boolean isWhitespace(int position) {
+        return position < endOffset && Character.isWhitespace(buffer.charAt(position));
     }
 }

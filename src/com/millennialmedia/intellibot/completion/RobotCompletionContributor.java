@@ -37,8 +37,8 @@ public class RobotCompletionContributor extends CompletionContributor {
                     final RobotKeywordTable table = RobotKeywordTable.getKeywordsTable(psiFile, project);
                     final List<String> keywords = new ArrayList<String>();
 
-                    if (table.getKeywordsOfType(RobotTokenTypes.TC_KW_NAME) != null)
-                        keywords.addAll(table.getKeywordsOfType(RobotTokenTypes.TC_KW_NAME));
+                    if (table.getKeywordsOfType(RobotTokenTypes.KEYWORD_DEFINITION) != null)
+                        keywords.addAll(table.getKeywordsOfType(RobotTokenTypes.KEYWORD_DEFINITION));
 
                     keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));
                     for (String keyword : keywords) {

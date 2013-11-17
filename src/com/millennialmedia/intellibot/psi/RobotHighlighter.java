@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotHighlighter extends SyntaxHighlighterBase {
     private static final Map<IElementType, TextAttributesKey> keys1;
@@ -31,67 +31,67 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
     }
 
     public static final TextAttributesKey ROBOT_HEADING = TextAttributesKey.createTextAttributesKey(
-            "HEADING",
+            RobotTokenTypes.HEADING.toString(),
             DefaultLanguageHighlighterColors.STRING
     );
 
     public static final TextAttributesKey ROBOT_SETTING = TextAttributesKey.createTextAttributesKey(
-            "SETTING",
+            RobotTokenTypes.SETTING.toString(),
             DefaultLanguageHighlighterColors.KEYWORD
     );
 
     public static final TextAttributesKey ROBOT_BRACKET_SETTING = TextAttributesKey.createTextAttributesKey(
-            "TEST_CASE_SETTING",
+            RobotTokenTypes.BRACKET_SETTING.toString(),
             DefaultLanguageHighlighterColors.LABEL
     );
 
     public static final TextAttributesKey ROBOT_IMPORT = TextAttributesKey.createTextAttributesKey(
-            "IMPORT",
+            RobotTokenTypes.IMPORT.toString(),
             DefaultLanguageHighlighterColors.IDENTIFIER
     );
 
     public static final TextAttributesKey ROBOT_TC_KW_NAME = TextAttributesKey.createTextAttributesKey(
-            "TC_KW_NAME",
+            RobotTokenTypes.KEYWORD_DEFINITION.toString(),
             DefaultLanguageHighlighterColors.KEYWORD
     );
 
     public static final TextAttributesKey ROBOT_KEYWORD = TextAttributesKey.createTextAttributesKey(
-            "KEYWORD",
+            RobotTokenTypes.KEYWORD.toString(),
             DefaultLanguageHighlighterColors.FUNCTION_DECLARATION
     );
 
     public static final TextAttributesKey ROBOT_ARGUMENT = TextAttributesKey.createTextAttributesKey(
-            "ARGUMENT",
-            DefaultLanguageHighlighterColors.PARENTHESES
+            RobotTokenTypes.ARGUMENT.toString(),
+            DefaultLanguageHighlighterColors.INSTANCE_FIELD
     );
 
     public static final TextAttributesKey ROBOT_VARIABLE = TextAttributesKey.createTextAttributesKey(
-            "VARIABLE",
+            RobotTokenTypes.VARIABLE.toString(),
             DefaultLanguageHighlighterColors.LOCAL_VARIABLE
     );
 
     public static final TextAttributesKey ROBOT_COMMENT = TextAttributesKey.createTextAttributesKey(
-            "COMMENT",
-            DefaultLanguageHighlighterColors.BLOCK_COMMENT
+            RobotTokenTypes.COMMENT.toString(),
+            DefaultLanguageHighlighterColors.LINE_COMMENT
     );
 
-    public static final TextAttributesKey ROBOT_SEPARATOR = TextAttributesKey.createTextAttributesKey(
-            "SEPARATOR",
-            DefaultLanguageHighlighterColors.COMMA
-    );
+//    public static final TextAttributesKey ROBOT_SEPARATOR = TextAttributesKey.createTextAttributesKey(
+//            "SEPARATOR",
+//            DefaultLanguageHighlighterColors.COMMA
+//    );
 
     public static final TextAttributesKey ROBOT_SYNTAX = TextAttributesKey.createTextAttributesKey(
-            "SYNTAX",
-            DefaultLanguageHighlighterColors.BRACES
+            RobotTokenTypes.SYNTAX.toString(),
+            DefaultLanguageHighlighterColors.CLASS_NAME
     );
 
     public static final TextAttributesKey ROBOT_GHERKIN = TextAttributesKey.createTextAttributesKey(
-            "GHERKIN",
-            DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR
+            RobotTokenTypes.GHERKIN.toString(),
+            DefaultLanguageHighlighterColors.METADATA
     );
 
     public static final TextAttributesKey ROBOT_ERROR = TextAttributesKey.createTextAttributesKey(
-            "ERROR",
+            RobotTokenTypes.ERROR.toString(),
             DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
     );
 
@@ -105,10 +105,10 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         keys1.put(RobotTokenTypes.ERROR, ROBOT_ERROR);
         keys1.put(RobotTokenTypes.GHERKIN, ROBOT_GHERKIN);
         keys1.put(RobotTokenTypes.SYNTAX, ROBOT_SYNTAX);
-        keys1.put(RobotTokenTypes.SEPARATOR, ROBOT_SEPARATOR);
+//        keys1.put(RobotTokenTypes.SEPARATOR, ROBOT_SEPARATOR);
         keys1.put(RobotTokenTypes.VARIABLE, ROBOT_VARIABLE);
         keys1.put(RobotTokenTypes.KEYWORD, ROBOT_KEYWORD);
-        keys1.put(RobotTokenTypes.TC_KW_NAME, ROBOT_TC_KW_NAME);
+        keys1.put(RobotTokenTypes.KEYWORD_DEFINITION, ROBOT_TC_KW_NAME);
         keys1.put(RobotTokenTypes.BRACKET_SETTING, ROBOT_BRACKET_SETTING);
         keys1.put(RobotTokenTypes.SETTING, ROBOT_SETTING);
         keys1.put(RobotTokenTypes.IMPORT, ROBOT_IMPORT);
@@ -119,14 +119,14 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         return pack(keys1.get(tokenType), keys2.get(tokenType));
     }
 
-    public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
-
-    static {
+//    public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
+//
+//    static {
 //        DISPLAY_NAMES.put(PROPERTY_KEY, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.property.key"),null));
 //        DISPLAY_NAMES.put(PROPERTY_VALUE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.property.value"), null));
 //        DISPLAY_NAMES.put(PROPERTY_KEY_VALUE_SEPARATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
 //        DISPLAY_NAMES.put(PROPERTY_COMMENT, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.comment"), null));
 //        DISPLAY_NAMES.put(PROPERTIES_VALID_STRING_ESCAPE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.valid.string.escape"), null));
 //        DISPLAY_NAMES.put(PROPERTIES_INVALID_STRING_ESCAPE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.invalid.string.escape"), HighlightSeverity.WARNING));
-    }
+//    }
 }

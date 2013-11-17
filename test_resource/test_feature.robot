@@ -22,9 +22,15 @@ Scenario: An admin can see the conversion trend
   [Setup]  Prepare advertiser "Robot_Company"
     Given Advertiser has performance data
     And I have an Account Manager  MANAGER
+
     When I login to Tapmatch as Staff  ${ACCOUNT_MANAGER.user.name}  ${ACCOUNT_MANAGER.user.password}
     Then The 7-day average should be  $0.09
   [Teardown]  Run Keywords  Close All Browsers  Clean Database
+
+Scenario: This is also a keyword definition
+  [Documentation]  adding another keyword will be classified correctly
+    Given this works
+    Then I will be happy
 
 *** Keywords ***
 
@@ -33,3 +39,10 @@ Clean Database
     Clean  Kyle
     Clean  Ike
     Close All Browsers
+
+
+This works
+    its a new keyword
+
+I will be happy
+    there is a smile on my face

@@ -7,7 +7,7 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotParser implements PsiParser {
 
@@ -22,7 +22,7 @@ public class RobotParser implements PsiParser {
 
     }
 
-    //    TC_KW_NAME todo this is definition of a new keyword
+    //    KEYWORD_DEFINITION todo this is definition of a new keyword
     private static void parseFileTopLevel(PsiBuilder builder) {
         while (!builder.eof()) {
 
@@ -40,7 +40,7 @@ public class RobotParser implements PsiParser {
                         parseSetting(builder);
                     if (childTokenType == RobotTokenTypes.KEYWORD)
                         parseKeyword(builder);
-                    if (childTokenType == RobotTokenTypes.TC_KW_NAME)
+                    if (childTokenType == RobotTokenTypes.KEYWORD_DEFINITION)
                         parseKeywordDefinition(builder);
                     if (builder.eof())
                         break;
@@ -53,7 +53,7 @@ public class RobotParser implements PsiParser {
 
 
     private static void parseKeywordDefinition(PsiBuilder builder) {
-        assert builder.getTokenType() == RobotTokenTypes.TC_KW_NAME;
+        assert builder.getTokenType() == RobotTokenTypes.KEYWORD_DEFINITION;
         final PsiBuilder.Marker keywordDefMarker;
         keywordDefMarker = builder.mark();
 
