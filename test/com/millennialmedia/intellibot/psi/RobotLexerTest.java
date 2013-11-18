@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Stack;
 
 import static com.millennialmedia.intellibot.psi.RobotLexer.*;
 
@@ -15,29 +14,15 @@ import static com.millennialmedia.intellibot.psi.RobotLexer.*;
  */
 public class RobotLexerTest extends TestCase {
 
-    public void testFromState() {
-        assertStack(RobotLexer.fromState(0));
-        assertStack(RobotLexer.fromState(1), 1);
-        assertStack(RobotLexer.fromState(4), 4);
-        assertStack(RobotLexer.fromState(41), 1, 4);
-        assertStack(RobotLexer.fromState(14), 4, 1);
-        assertStack(RobotLexer.fromState(341), 1, 4, 3);
-        assertStack(RobotLexer.fromState(431), 1, 3, 4);
-        assertStack(RobotLexer.fromState(441), 1, 4, 4);
-    }
-
-    public void testToState() {
-        assertEquals(RobotLexer.toState(stack()), 0);
-        assertEquals(RobotLexer.toState(stack(1)), 1);
-        assertEquals(RobotLexer.toState(stack(4)), 4);
-        assertEquals(RobotLexer.toState(stack(1, 4)), 41);
-        assertEquals(RobotLexer.toState(stack(4, 1)), 14);
-        assertEquals(RobotLexer.toState(stack(1, 4, 3)), 341);
-        assertEquals(RobotLexer.toState(stack(1, 3, 4)), 431);
-        assertEquals(RobotLexer.toState(stack(1, 4, 4)), 441);
+    public void testState() {
+        // translate the state back and forth a couple thousand ways
+        for (int i = 0; i < 5000; i++) {
+            assertEquals(RobotLexer.toState(RobotLexer.fromState(i)), i);
+        }
     }
 
     public void testParse() {
+        // TODO: weak
         String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\test_resource\\test_feature.robot");
 
         RobotLexer lexer = new RobotLexer(new RobotKeywordProvider());
@@ -395,26 +380,6 @@ public class RobotLexerTest extends TestCase {
         assertEquals("Data", data, lexer.getBufferSequence().subSequence(lexer.getTokenStart(), lexer.getTokenEnd()));
         assertEquals("State", state, lexer.peekState());
         assertEquals("Token", token, lexer.getTokenType());
-    }
-
-    private static void assertStack(Stack<Integer> actual, int... expected) {
-        if (expected == null) {
-            assertNull(actual);
-        } else {
-            assertNotNull(actual);
-            assertEquals(actual.size(), expected.length);
-            for (int i = 0; i < expected.length; i++) {
-                assertEquals((int) actual.get(i), expected[i]);
-            }
-        }
-    }
-
-    private static Stack<Integer> stack(int... values) {
-        Stack<Integer> stack = new Stack<Integer>();
-        for (int value : values) {
-            stack.push(value);
-        }
-        return stack;
     }
 
     private String getData(String file) {
