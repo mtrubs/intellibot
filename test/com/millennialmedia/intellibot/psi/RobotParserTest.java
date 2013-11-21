@@ -16,7 +16,8 @@ public class RobotParserTest extends ParsingTestCase {
 
     @Override
     protected String getTestDataPath() {
-        return "/testData";
+//        return "/testData";
+        return "C:\\Users\\mrubino\\hack\\intellibot\\testData";
     }
 
     @Override

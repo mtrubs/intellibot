@@ -22,11 +22,6 @@ public class RobotParser implements PsiParser {
 
     }
 
-    private static String getSafeTokenText(PsiBuilder builder) {
-        String tokenText = builder.getTokenText();
-        return tokenText == null ? "" : tokenText.trim();
-    }
-
     private static void parseFileTopLevel(PsiBuilder builder) {
         while (!builder.eof()) {
             IElementType tokenType = builder.getTokenType();
@@ -39,27 +34,70 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseHeading(PsiBuilder builder) {
+        assert RobotTokenTypes.HEADING == builder.getTokenType();
         PsiBuilder.Marker headingMarker = null;
-        while (!builder.eof()) {
+        while (true) {
             IElementType type = builder.getTokenType();
             if (RobotTokenTypes.HEADING == type) {
                 if (headingMarker != null) {
                     headingMarker.done(RobotTokenTypes.HEADING);
                 }
                 headingMarker = builder.mark();
+                builder.advanceLexer();
             }
 
-            builder.advanceLexer();
-            if (!builder.eof()) {
+            if (builder.eof()) {
+                if (headingMarker != null) {
+                    headingMarker.done(RobotTokenTypes.HEADING);
+                }
+                break;
+            } else {
+                type = builder.getTokenType();
                 if (RobotTokenTypes.IMPORT == type) {
                     parseImport(builder);
                 } else if (RobotTokenTypes.SETTING == type) {
                     parseSetting(builder);
+                } else if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
+                    parseKeywordDefinition(builder);
                 } else {
-                    System.out.println(builder.getTokenType());
+                    // TODO: other types
+                    System.out.println(type);
+                    builder.advanceLexer();
                 }
-            } else if (headingMarker != null) {
-                headingMarker.done(RobotTokenTypes.HEADING);
+            }
+        }
+    }
+
+    private static void parseKeywordDefinition(PsiBuilder builder) {
+        assert RobotTokenTypes.KEYWORD_DEFINITION == builder.getTokenType();
+
+        PsiBuilder.Marker keywordMarker = null;
+        while (true) {
+            IElementType type = builder.getTokenType();
+            if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
+                if (keywordMarker != null) {
+                    keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
+                }
+                keywordMarker = builder.mark();
+                builder.advanceLexer();
+            }
+
+            if (builder.eof()) {
+                if (keywordMarker != null) {
+                    keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
+                }
+                break;
+            } else {
+                    // TODO: other types
+                type = builder.getTokenType();
+                if (RobotTokenTypes.HEADING == type) {
+                    if (keywordMarker != null) {
+                        keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
+                    }
+                    break;
+                }
+                System.out.println(type);
+                builder.advanceLexer();
             }
         }
     }
@@ -77,10 +115,10 @@ public class RobotParser implements PsiParser {
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
         do {
+            builder.advanceLexer();
             if (builder.eof()) {
                 break;
             }
-            builder.advanceLexer();
             type = builder.getTokenType();
             if (RobotTokenTypes.ARGUMENT == type) {
                 parseArgument(builder);
@@ -89,40 +127,10 @@ public class RobotParser implements PsiParser {
         importMarker.done(markType);
     }
 
-
-    private static void parseKeywordDefinition(PsiBuilder builder) {
-        assert builder.getTokenType() == RobotTokenTypes.KEYWORD_DEFINITION;
-        final PsiBuilder.Marker keywordDefMarker;
-        keywordDefMarker = builder.mark();
-
-        keywordDefMarker.done(RobotElementTypes.KEYWORD_DEFINTION);
-    }
-
-    private static void parseKeyword(PsiBuilder builder) {
-        assert builder.getTokenType() == RobotTokenTypes.KEYWORD;
-        final PsiBuilder.Marker keywordMarker;
-        keywordMarker = builder.mark();
-        parseArguements(builder);
-        keywordMarker.done(RobotElementTypes.KEYWORD_INVOKEABLE);
-
-    }
-
     private static void parseArgument(PsiBuilder builder) {
         PsiBuilder.Marker argumentMarker = builder.mark();
         assert builder.getTokenType() == RobotTokenTypes.ARGUMENT;
         argumentMarker.done(RobotTokenTypes.ARGUMENT);
     }
-
-    private static void parseArguements(PsiBuilder builder) {
-        while (true) {
-            builder.advanceLexer();
-            if (builder.getTokenType() == RobotTokenTypes.ARGUMENT) {
-                parseArgument(builder);
-            } else if (builder.getTokenType() != RobotTokenTypes.WHITESPACE) {
-                break;
-            }
-        }
-    }
-
 }
 
