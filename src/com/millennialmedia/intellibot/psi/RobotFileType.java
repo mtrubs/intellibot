@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotFileType extends LanguageFileType {
     public static final RobotFileType INSTANCE = new RobotFileType();

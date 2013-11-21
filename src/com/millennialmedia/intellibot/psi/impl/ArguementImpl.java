@@ -6,7 +6,7 @@ import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class ArguementImpl extends RobotPsiElementBase implements KeywordInvokeable {
     public ArguementImpl(@NotNull final ASTNode node) {

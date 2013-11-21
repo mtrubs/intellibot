@@ -9,7 +9,7 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotFindUsagesProvider implements FindUsagesProvider {
     @Override

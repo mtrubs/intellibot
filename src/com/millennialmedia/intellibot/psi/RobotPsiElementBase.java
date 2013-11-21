@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public abstract class RobotPsiElementBase extends ASTWrapperPsiElement {
     public RobotPsiElementBase(@NotNull final ASTNode node) {

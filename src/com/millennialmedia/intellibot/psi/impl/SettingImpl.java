@@ -5,13 +5,12 @@ import com.millennialmedia.intellibot.psi.KeywordInvokeable;
 import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
 import org.jetbrains.annotations.NotNull;
 
-
 /**
- * @author Stephen Abrams
+ * @author mrubino
  */
-public class KeywordInvokeableImpl extends RobotPsiElementBase implements KeywordInvokeable {
+public class SettingImpl extends RobotPsiElementBase implements KeywordInvokeable {
 
-    public KeywordInvokeableImpl(@NotNull final ASTNode node) {
+    public SettingImpl(@NotNull final ASTNode node) {
         super(node);
     }
 }

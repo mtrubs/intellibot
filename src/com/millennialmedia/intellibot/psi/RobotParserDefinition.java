@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
@@ -16,17 +15,18 @@ import com.millennialmedia.intellibot.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotParserDefinition implements ParserDefinition {
 
-    private static final TokenSet WHITESPACE = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(RobotTokenTypes.COMMENT);     // todo SMA are there comments?
+    private static final TokenSet WHITESPACE_SET = TokenSet.create(RobotTokenTypes.WHITESPACE);
+    private static final TokenSet COMMENTS_SET = TokenSet.create(RobotTokenTypes.COMMENT);
+    private static final TokenSet STRING_SET = TokenSet.create(RobotTokenTypes.GHERKIN);
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new RobotLexer(new RobotKeywordProvider()); // todo SMA: do we need something as advanced as in GherkinParserDefinition?
+        return new RobotLexer(new RobotKeywordProvider());
     }
 
     @Override
@@ -42,31 +42,31 @@ public class RobotParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getWhitespaceTokens() {
-        return WHITESPACE;
+        return WHITESPACE_SET;
     }
 
     @NotNull
     @Override
     public TokenSet getCommentTokens() {
-        return COMMENTS;
+        return COMMENTS_SET;
     }
 
     @NotNull
     @Override
     public TokenSet getStringLiteralElements() {
-        return TokenSet.EMPTY;
+        return STRING_SET;
     }
 
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
-        // todo SMA: need scott's definitions
-
-        if (node.getElementType() == RobotElementTypes.KEYWORD_INVOKEABLE) return new KeywordInvokeableImpl(node);
-        if (node.getElementType() == RobotElementTypes.KEYWORD_DEFINTION) return new KeywordDefinitionImpl(node);
-        if (node.getElementType() == RobotElementTypes.SETTING_KEYWORD_INVOKEABLE) return new SettingKeywordInvokeableImpl(node);
-        if (node.getElementType() == RobotElementTypes.HEADING) return new HeaderImpl(node);
-        if (node.getElementType() == RobotElementTypes.ARGUEMENT) return new ArguementImpl(node);
+        // TODO: most of what these do need to be flushed out
+        if (node.getElementType() == RobotTokenTypes.KEYWORD_DEFINITION) return new KeywordDefinitionImpl(node);
+        if (node.getElementType() == RobotTokenTypes.KEYWORD) return new SettingKeywordInvokeableImpl(node);
+        if (node.getElementType() == RobotTokenTypes.HEADING) return new HeaderImpl(node);
+        if (node.getElementType() == RobotTokenTypes.ARGUMENT) return new ArguementImpl(node);
+        if (node.getElementType() == RobotTokenTypes.IMPORT) return new ImportImpl(node);
+        if (node.getElementType() == RobotTokenTypes.SETTING) return new SettingImpl(node);
 
         return PsiUtilCore.NULL_PSI_ELEMENT;
 

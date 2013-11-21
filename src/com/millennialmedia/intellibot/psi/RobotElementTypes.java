@@ -6,7 +6,7 @@ import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public interface RobotElementTypes {
     RobotLanguage LANG = RobotLanguage.INSTANCE;

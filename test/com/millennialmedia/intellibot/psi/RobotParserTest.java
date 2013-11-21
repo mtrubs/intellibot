@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot;
+package com.millennialmedia.intellibot.psi;
 
 
 import com.intellij.testFramework.ParsingTestCase;
@@ -16,12 +16,12 @@ public class RobotParserTest extends ParsingTestCase {
 
     @Override
     protected String getTestDataPath() {
-        return "/Users/steveabrams/workspace/github/sabrams/intellibot/test/com/millennialmedia/intellibot/testData";
+        return "/testData";
     }
 
     @Override
     protected boolean skipSpaces() {
-        return false;
+        return true;
     }
 
     @Override

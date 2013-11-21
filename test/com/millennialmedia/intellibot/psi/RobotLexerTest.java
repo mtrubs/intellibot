@@ -1,4 +1,3 @@
-/* Jumptap's products may be patented under one or more of the patents listed at www.jumptap.com/intellectual-property */
 package com.millennialmedia.intellibot.psi;
 
 import junit.framework.TestCase;
@@ -23,7 +22,7 @@ public class RobotLexerTest extends TestCase {
 
     public void testParse() {
         // TODO: weak
-        String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\test_resource\\test_feature.robot");
+        String data = getData("/testData/test_feature.robot");
 
         RobotLexer lexer = new RobotLexer(new RobotKeywordProvider());
         lexer.start(data);

@@ -6,7 +6,7 @@ import com.millennialmedia.intellibot.psi.SettingKeywordInvokeable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class SettingKeywordInvokeableImpl extends RobotPsiElementBase implements SettingKeywordInvokeable {
 

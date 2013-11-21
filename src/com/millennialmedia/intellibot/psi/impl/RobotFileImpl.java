@@ -9,7 +9,7 @@ import com.millennialmedia.intellibot.psi.RobotLanguage;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public class RobotFileImpl extends PsiFileBase implements RobotFile {
 
