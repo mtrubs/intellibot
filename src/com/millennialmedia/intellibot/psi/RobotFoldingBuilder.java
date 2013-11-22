@@ -3,9 +3,12 @@ package com.millennialmedia.intellibot.psi;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.tree.TokenSet;
+import com.millennialmedia.intellibot.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +22,7 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
 
     private static final String ELLIPSIS = "...";
 
-    private static final TokenSet BLOCKS_TO_FOLD = TokenSet.create(RobotTokenTypes.KEYWORD_DEFINITION, RobotTokenTypes.SETTING);
+    private static final TokenSet BLOCKS_TO_FOLD = TokenSet.create(RobotTokenTypes.KEYWORD_DEFINITION, RobotTokenTypes.HEADING);
 
     @NotNull
     public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {
@@ -41,10 +44,24 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
 
     @Nullable
     public String getPlaceholderText(@NotNull ASTNode node) {
+        if (node.getPsi() instanceof HeadingImpl ||
+                node.getPsi() instanceof KeywordDefinitionImpl) {
+            ItemPresentation presentation = ((NavigationItem) node.getPsi()).getPresentation();
+            if (presentation != null) {
+                return presentation.getPresentableText();
+            }
+        }
         return ELLIPSIS;
     }
 
     public boolean isCollapsedByDefault(@NotNull ASTNode node) {
+        if (node.getPsi() instanceof HeadingImpl) {
+            ItemPresentation presentation = ((NavigationItem) node.getPsi()).getPresentation();
+            if (presentation != null) {
+                String text = presentation.getPresentableText();
+                return text != null && text.startsWith("*** Setting");
+            }
+        }
         return false;
     }
 }

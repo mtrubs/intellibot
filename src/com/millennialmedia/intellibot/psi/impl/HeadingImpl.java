@@ -9,16 +9,16 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Stephen Abrams
  */
-public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordInvokeable {
+public class HeadingImpl extends RobotPsiElementBase implements KeywordInvokeable {
 
-    public KeywordDefinitionImpl(@NotNull final ASTNode node) {
+    public HeadingImpl(@NotNull final ASTNode node) {
         super(node);
     }
 
     @Override
     protected String getPresentableText() {
         ASTNode node = getNode();
-        ASTNode firstText = node.findChildByType(RobotTokenTypes.KEYWORD_DEFINITION);
+        ASTNode firstText = node.findChildByType(RobotTokenTypes.HEADING);
         if (firstText != null) {
             return firstText.getText();
         }
