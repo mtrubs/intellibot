@@ -60,8 +60,8 @@ public class RobotParser implements PsiParser {
                 } else if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
                     parseKeywordDefinition(builder);
                 } else {
-                    // TODO: other types
-                    System.out.println(type);
+                    // TODO: other types; error
+                    //System.out.println(type);
                     builder.advanceLexer();
                 }
             }
@@ -88,7 +88,6 @@ public class RobotParser implements PsiParser {
                 }
                 break;
             } else {
-                // TODO: other types
                 type = builder.getTokenType();
                 if (RobotTokenTypes.HEADING == type) {
                     if (keywordMarker != null) {
@@ -97,12 +96,22 @@ public class RobotParser implements PsiParser {
                     break;
                 } else if (RobotTokenTypes.BRACKET_SETTING == type) {
                     parseBracketSetting(builder);
+                } else if (RobotTokenTypes.KEYWORD == type) {
+                    parseKeyword(builder);
+                } else if (RobotTokenTypes.GHERKIN == type) {
+                    // nothing to do for this
+                    builder.advanceLexer();
                 } else {
-                    System.out.println(type);
+                    // TODO: other types; error?
+                    //System.out.println(type);
                     builder.advanceLexer();
                 }
             }
         }
+    }
+
+    private static void parseKeyword(PsiBuilder builder) {
+        parseWithArguments(builder, RobotTokenTypes.KEYWORD);
     }
 
     private static void parseBracketSetting(PsiBuilder builder) {
