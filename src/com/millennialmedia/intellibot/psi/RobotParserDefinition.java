@@ -67,6 +67,7 @@ public class RobotParserDefinition implements ParserDefinition {
         if (node.getElementType() == RobotTokenTypes.ARGUMENT) return new ArguementImpl(node);
         if (node.getElementType() == RobotTokenTypes.IMPORT) return new ImportImpl(node);
         if (node.getElementType() == RobotTokenTypes.SETTING) return new SettingImpl(node);
+        if (node.getElementType() == RobotTokenTypes.BRACKET_SETTING) return new BracketSettingImpl(node);
 
         return PsiUtilCore.NULL_PSI_ELEMENT;
 

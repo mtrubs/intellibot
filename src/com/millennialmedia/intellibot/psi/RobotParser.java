@@ -88,18 +88,25 @@ public class RobotParser implements PsiParser {
                 }
                 break;
             } else {
-                    // TODO: other types
+                // TODO: other types
                 type = builder.getTokenType();
                 if (RobotTokenTypes.HEADING == type) {
                     if (keywordMarker != null) {
                         keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
                     }
                     break;
+                } else if (RobotTokenTypes.BRACKET_SETTING == type) {
+                    parseBracketSetting(builder);
+                } else {
+                    System.out.println(type);
+                    builder.advanceLexer();
                 }
-                System.out.println(type);
-                builder.advanceLexer();
             }
         }
+    }
+
+    private static void parseBracketSetting(PsiBuilder builder) {
+        parseWithArguments(builder, RobotTokenTypes.BRACKET_SETTING);
     }
 
     private static void parseImport(PsiBuilder builder) {
