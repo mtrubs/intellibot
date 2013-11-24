@@ -15,6 +15,7 @@ import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -25,6 +26,9 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 public class RobotCompletionContributor extends CompletionContributor {
 
     public RobotCompletionContributor() {
+
+        // SMA todo: better honed "places"
+
         extend(CompletionType.BASIC, psiElement().inFile(psiElement(RobotFile.class)), new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters,
@@ -37,20 +41,45 @@ public class RobotCompletionContributor extends CompletionContributor {
                     final RobotKeywordTable table = RobotKeywordTable.getKeywordsTable(psiFile, project);
                     final List<String> keywords = new ArrayList<String>();
 
-                    if (table.getKeywordsOfType(RobotTokenTypes.KEYWORD_DEFINITION) != null)
-                        keywords.addAll(table.getKeywordsOfType(RobotTokenTypes.KEYWORD_DEFINITION));
-
                     keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));
                     for (String keyword : keywords) {
                         LookupElement element = createKeywordLookupElement(keyword);
 
                         result.addElement(PrioritizedLookupElement.withPriority(element, 0));
                     }
+
+
                 }
 
             }
 
         });
+
+        extend(CompletionType.BASIC, psiElement().inFile(psiElement(RobotFile.class)), new CompletionProvider<CompletionParameters>() {
+            @Override
+            protected void addCompletions(@NotNull CompletionParameters parameters,
+                                          ProcessingContext context,
+                                          @NotNull CompletionResultSet result) {
+                addRobotKeywords(result, parameters.getOriginalFile());
+            }
+        });
+    }
+
+    private static void addRobotKeywords(CompletionResultSet result, PsiFile file) {
+        if (!(file instanceof RobotFile)) return;
+        final RobotFile robotFile = (RobotFile) file;
+
+        addKeywordsToResult(robotFile.getKeywords(), result, 0);
+    }
+
+    private static void addKeywordsToResult(final Collection<String> keywords,
+                                            final CompletionResultSet result,
+                                            int priority) {
+        for (String keyword : keywords) {
+            LookupElement element = createKeywordLookupElement(keyword);
+
+            result.addElement(PrioritizedLookupElement.withPriority(element, priority));
+        }
     }
 
     private static LookupElement createKeywordLookupElement(final String keyword) {
