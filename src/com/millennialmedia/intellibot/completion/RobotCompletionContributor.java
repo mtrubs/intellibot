@@ -5,13 +5,10 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.TailTypeDecorator;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.millennialmedia.intellibot.psi.RobotFile;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
-import com.millennialmedia.intellibot.psi.RobotKeywordTable;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -36,9 +33,6 @@ public class RobotCompletionContributor extends CompletionContributor {
                                           @NotNull CompletionResultSet result) {
                 final PsiFile psiFile = parameters.getOriginalFile();
                 if (psiFile instanceof RobotFile) {
-
-                    final Project project = psiFile.getProject();
-                    final RobotKeywordTable table = RobotKeywordTable.getKeywordsTable(psiFile, project);
                     final List<String> keywords = new ArrayList<String>();
 
                     keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));

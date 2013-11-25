@@ -1,9 +1,12 @@
 package com.millennialmedia.intellibot.psi;
 
+import com.intellij.psi.tree.IFileElementType;
+import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.psi.tree.TokenSet;
 
 public interface RobotTokenTypes {
 
+    IFileElementType FILE = new IStubFileElementType(RobotLanguage.INSTANCE);
     RobotElementType HEADING = new RobotElementType("HEADING");
     RobotElementType SETTING = new RobotElementType("SETTING");
     RobotElementType BRACKET_SETTING = new RobotElementType("BRACKET_SETTING");

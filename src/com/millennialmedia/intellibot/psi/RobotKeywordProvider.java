@@ -1,10 +1,13 @@
 package com.millennialmedia.intellibot.psi;
 
-import java.util.*;
-
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yole
@@ -152,8 +155,8 @@ public class RobotKeywordProvider {
         keywordsWithNewlinesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.HEADING);
         keywordsWithSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.GHERKIN);
         keywordsWithSuperSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfTypes(RobotTokenTypes.SETTING,
-                                                                                   RobotTokenTypes.BRACKET_SETTING,
-                                                                                   RobotTokenTypes.IMPORT);
+                RobotTokenTypes.BRACKET_SETTING,
+                RobotTokenTypes.IMPORT);
 
     }
 
@@ -210,7 +213,7 @@ public class RobotKeywordProvider {
         return keywordsWithSuperSpaceAfterThem;
     }
 
-    public Set<String> getKeywordsOfType(RobotElementType type){
+    public Set<String> getKeywordsOfType(RobotElementType type) {
         return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
     }
 

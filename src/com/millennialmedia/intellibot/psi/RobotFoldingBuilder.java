@@ -8,7 +8,8 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.tree.TokenSet;
-import com.millennialmedia.intellibot.psi.impl.*;
+import com.millennialmedia.intellibot.psi.impl.HeadingImpl;
+import com.millennialmedia.intellibot.psi.impl.KeywordDefinitionImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

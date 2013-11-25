@@ -36,7 +36,7 @@ public class RobotParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return RobotElementTypes.FILE;
+        return RobotTokenTypes.FILE;
     }
 
     @NotNull
@@ -64,7 +64,7 @@ public class RobotParserDefinition implements ParserDefinition {
         if (node.getElementType() == RobotTokenTypes.KEYWORD_DEFINITION) return new KeywordDefinitionImpl(node);
         if (node.getElementType() == RobotTokenTypes.KEYWORD) return new SettingKeywordInvokeableImpl(node);
         if (node.getElementType() == RobotTokenTypes.HEADING) return new HeadingImpl(node);
-        if (node.getElementType() == RobotTokenTypes.ARGUMENT) return new ArguementImpl(node);
+        if (node.getElementType() == RobotTokenTypes.ARGUMENT) return new ArgumentImpl(node);
         if (node.getElementType() == RobotTokenTypes.IMPORT) return new ImportImpl(node);
         if (node.getElementType() == RobotTokenTypes.SETTING) return new SettingImpl(node);
         if (node.getElementType() == RobotTokenTypes.BRACKET_SETTING) return new BracketSettingImpl(node);

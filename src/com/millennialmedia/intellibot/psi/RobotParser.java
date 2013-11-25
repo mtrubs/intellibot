@@ -17,7 +17,7 @@ public class RobotParser implements PsiParser {
 
         final PsiBuilder.Marker marker = builder.mark();
         parseFileTopLevel(builder);
-        marker.done(RobotElementTypes.FILE);
+        marker.done(RobotTokenTypes.FILE);
         return builder.getTreeBuilt();
 
     }
