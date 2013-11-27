@@ -1,6 +1,7 @@
 IntelliJ Plugin for Robot Automation Framework
 
 This is a work in progress (the product of a 24 hour hack match).
+Related Feature request to JetBrains: http://youtrack.jetbrains.com/issue/IDEA-97678
 For Robot Framework files ending with ".robot", this currently supports:
 
 1. Syntax highlighting
