@@ -1,6 +1,7 @@
 IntelliJ Plugin for Robot Automation Framework
 
-This is a work in progress. For Robot Framework files ending with ".robot", this currently supports:
+This is a work in progress (the product of a 24 hour hack match).
+For Robot Framework files ending with ".robot", this currently supports:
 
 1. Syntax highlighting
 2. Code folding
