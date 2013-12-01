@@ -19,7 +19,6 @@ public interface RobotTokenTypes {
     RobotElementType SYNTAX = new RobotElementType("SYNTAX");
     RobotElementType GHERKIN = new RobotElementType("GHERKIN");
 
-    RobotElementType SEPARATOR = new RobotElementType("SEPARATOR");
     RobotElementType ERROR = new RobotElementType("ERROR");
     RobotElementType WHITESPACE = new RobotElementType("WHITESPACE");
 

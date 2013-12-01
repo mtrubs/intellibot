@@ -43,16 +43,6 @@ public class RobotKeywordTable {
         return myType2KeywordsTable.get(type);
     }
 
-    public Set<String> getKeywordsOfTypes(RobotElementType... types) {
-        HashSet<String> keywords = new HashSet<String>();
-        for (RobotElementType type : types) {
-            for (String word : myType2KeywordsTable.get(type)) {
-                keywords.add(word);
-            }
-        }
-        return keywords;
-    }
-
     public Set<IElementType> getTypes() {
         return myType2KeywordsTable.keySet();
     }

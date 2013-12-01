@@ -5,5 +5,5 @@ import com.intellij.psi.PsiElement;
 /**
  * @author Stephen Abrams
  */
-public interface KeywordInvokeable extends PsiElement {
+public interface KeywordInvokable extends PsiElement {
 }

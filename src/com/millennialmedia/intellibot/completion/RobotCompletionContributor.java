@@ -35,7 +35,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 if (psiFile instanceof RobotFile) {
                     final List<String> keywords = new ArrayList<String>();
 
-                    keywords.addAll(new RobotKeywordProvider().getAllKeywords("en"));
+                    keywords.addAll(new RobotKeywordProvider().getAllKeywords());
                     for (String keyword : keywords) {
                         LookupElement element = createKeywordLookupElement(keyword);
 

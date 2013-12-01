@@ -43,7 +43,6 @@
         <!--<lang.findUsagesProvider language="Robot"-->
         <!--implementationClass="com.millennialmedia.intellibot.psi.RobotFindUsagesProvider"/>-->
 
-        <!--<lang.commenter language="Robot" implementationClass="com.millennialmedia.intellibot.psi.RobotCommenter"/>-->
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
         <lang.syntaxHighlighterFactory key="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
