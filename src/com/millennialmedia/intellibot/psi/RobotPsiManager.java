@@ -1,7 +1,6 @@
 package com.millennialmedia.intellibot.psi;
 
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.AbstractModificationTracker;
 import com.intellij.psi.impl.PsiManagerImpl;
@@ -14,10 +13,6 @@ public class RobotPsiManager extends AbstractModificationTracker implements Proj
 
     public RobotPsiManager(PsiManagerImpl psiManager) {
         super(psiManager);
-    }
-
-    public static RobotPsiManager getInstance(@NotNull final Project project) {
-        return project.getComponent(RobotPsiManager.class);
     }
 
     @Override

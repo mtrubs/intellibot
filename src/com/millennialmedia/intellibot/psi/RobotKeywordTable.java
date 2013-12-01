@@ -1,9 +1,6 @@
 package com.millennialmedia.intellibot.psi;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -46,23 +43,6 @@ public class RobotKeywordTable {
         return myType2KeywordsTable.get(type);
     }
 
-    public Set<String> getKeywordsOfTypes(RobotElementType... types) {
-        HashSet<String> keywords = new HashSet<String>();
-        for (RobotElementType type : types) {
-            for (String word : myType2KeywordsTable.get(type)) {
-                keywords.add(word);
-            }
-        }
-        return keywords;
-    }
-
-    @NotNull
-    public static RobotKeywordTable getKeywordsTable(PsiFile originalFile, Project project) {
-        final RobotKeywordProvider provider = new RobotKeywordProvider();// todo SMA need a service here?
-
-        return provider.getKeywordsTable(RobotLanguage.INSTANCE.getID());
-    }
-
     public Set<IElementType> getTypes() {
         return myType2KeywordsTable.keySet();
     }
@@ -70,10 +50,5 @@ public class RobotKeywordTable {
     @Nullable
     public Set<String> getKeywords(final IElementType type) {
         return myType2KeywordsTable.get(type);
-    }
-
-    public boolean tableContainsKeyword(RobotElementType type, String keyword) {
-        Set<String> alreadyKnownKeywords = getKeywords(type);
-        return null != alreadyKnownKeywords && alreadyKnownKeywords.contains(keyword);
     }
 }

@@ -1,7 +1,11 @@
 package com.millennialmedia.intellibot.psi;
 
 /**
- * @author: Stephen Abrams
+ * @author Stephen Abrams
  */
 public interface Heading {
+
+    boolean isSettings();
+
+    boolean containsKeywordDefinitions();
 }

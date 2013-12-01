@@ -1,29 +1,24 @@
 package com.millennialmedia.intellibot.psi;
 
-import java.util.*;
-
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yole
  */
 public class RobotKeywordProvider {
-    public static RobotKeywordTable DEFAULT_KEYWORD_TABLE = new RobotKeywordTable();
-    public static Map<String, IElementType> DEFAULT_KEYWORDS = new HashMap<String, IElementType>();
-    public static Set<String> globalSettings = new HashSet<String>();
-    public static Set<String> testCaseSettings = new HashSet<String>();
-    public static Set<String> keywordSettings = new HashSet<String>();
-    public static Set<String> settingsFollowedByKeywords = new HashSet<String>();
-    public static Set<String> settingsFollowedByStrings = new HashSet<String>();
-    public static Set<String> keywordsWithNoSpacesAfterThem = new HashSet<String>();
-    public static Set<String> keywordsWithNewlinesAfterThem = new HashSet<String>();
-    public static Set<String> keywordsWithSpaceAfterThem = new HashSet<String>();
-    public static Set<String> keywordsWithSuperSpaceAfterThem = new HashSet<String>();
+
+    private static final RobotKeywordTable DEFAULT_KEYWORD_TABLE = new RobotKeywordTable();
+    private static final Map<String, IElementType> DEFAULT_KEYWORDS = new HashMap<String, IElementType>();
+    private static final Set<String> globalSettings = new HashSet<String>();
+    private static final Set<String> settingsFollowedByKeywords = new HashSet<String>();
+    private static final Set<String> settingsFollowedByStrings = new HashSet<String>();
 
     static {
-
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Settings ***");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Setting ***");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Test Cases ***");
@@ -33,6 +28,8 @@ public class RobotKeywordProvider {
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Metadata ***");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** User Keywords ***");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** User Keyword ***");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Variable ***");
+        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Variables ***");
 
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Suite Setup");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Suite Precondition");
@@ -71,11 +68,12 @@ public class RobotKeywordProvider {
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Library");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Resource");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Variables");
-        //DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SEPARATOR, "");
+
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "[");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "]");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "{");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "}");
+
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Given");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "When");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Then");
@@ -97,21 +95,6 @@ public class RobotKeywordProvider {
         globalSettings.add("Force Tags");
         globalSettings.add("Default Tags");
         globalSettings.add("Test Timeout");
-
-        testCaseSettings.add("[Setup]");
-        testCaseSettings.add("[Precondition]");
-        testCaseSettings.add("[Teardown]");
-        testCaseSettings.add("[Postcondition]");
-        testCaseSettings.add("[Template]");
-        testCaseSettings.add("[Documentation]");
-        testCaseSettings.add("[Tags]");
-        testCaseSettings.add("[Timeout]");
-
-        keywordSettings.add("[Teardown]");
-        keywordSettings.add("[Documentation]");
-        keywordSettings.add("[Arguments]");
-        keywordSettings.add("[Return]");
-        keywordSettings.add("[Timeout]");
 
         settingsFollowedByKeywords.add("Suite Setup");
         settingsFollowedByKeywords.add("Suite Precondition");
@@ -147,43 +130,10 @@ public class RobotKeywordProvider {
         settingsFollowedByStrings.add("[Return]");
         settingsFollowedByStrings.add("Timeout");
         settingsFollowedByStrings.add("[Timeout]");
-
-        keywordsWithNoSpacesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.SYNTAX);
-        keywordsWithNewlinesAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.HEADING);
-        keywordsWithSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfType(RobotTokenTypes.GHERKIN);
-        keywordsWithSuperSpaceAfterThem = DEFAULT_KEYWORD_TABLE.getKeywordsOfTypes(RobotTokenTypes.SETTING,
-                                                                                   RobotTokenTypes.BRACKET_SETTING,
-                                                                                   RobotTokenTypes.IMPORT);
-
-    }
-
-    public boolean isSettingsHeader(String header) {
-        // TODO: Better way
-        return "Setting".equals(header) || "Settings".equals(header);
-    }
-
-    public boolean isTestCasesHeader(String header) {
-        // TODO: Better way
-        return "Test Case".equals(header) || "Test Cases".equals(header);
-    }
-
-    public boolean isKeywordHeader(String header) {
-        // TODO: Better way
-        return "Keyword".equals(header) || "Keywords".equals(header);
     }
 
     public Set<String> getGlobalSettings() {
         return globalSettings;
-    }
-
-    //these require brackets around them
-    public Set<String> getTestCaseSettings() {
-        return testCaseSettings;
-    }
-
-
-    public Set<String> getKeywordSettings() {
-        return keywordSettings;
     }
 
     public Set<String> getSettingsFollowedByKeywords() {
@@ -194,38 +144,11 @@ public class RobotKeywordProvider {
         return settingsFollowedByStrings;
     }
 
-    public Set<String> keywordsWithNoSpacesAfterThem(String language, String keyword) {
-        return keywordsWithNoSpacesAfterThem;
-    }
-
-    public Set<String> keywordsWithNewlinesAfterThem(String language, String keyword) {
-        return keywordsWithNewlinesAfterThem;
-    }
-
-    public Set<String> keywordsWithSpacesAfterThem(String language, String keyword) {
-        return keywordsWithSpaceAfterThem;
-    }
-
-    public Set<String> keywordsWithSuperSpacesAfterThem(String language, String keyword) {
-        return keywordsWithSuperSpaceAfterThem;
-    }
-
-    public Set<String> getKeywordsOfType(RobotElementType type){
+    public Set<String> getKeywordsOfType(RobotElementType type) {
         return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
     }
 
-    //we"re good here
-
-    public Set<String> getAllKeywords(String language) {
+    public Set<String> getAllKeywords() {
         return DEFAULT_KEYWORDS.keySet();
-    }
-
-    public IElementType getTokenType(String language, String keyword) {
-        return DEFAULT_KEYWORDS.get(keyword);
-    }
-
-    @NotNull
-    public RobotKeywordTable getKeywordsTable(@Nullable final String language) {
-        return DEFAULT_KEYWORD_TABLE;
     }
 }

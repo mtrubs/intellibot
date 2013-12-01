@@ -1,17 +1,16 @@
 package com.millennialmedia.intellibot.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.millennialmedia.intellibot.psi.KeywordInvokeable;
+import com.millennialmedia.intellibot.psi.KeywordInvokable;
 import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
 import org.jetbrains.annotations.NotNull;
-
 
 /**
  * @author Stephen Abrams
  */
-public class KeywordInvokeableImpl extends RobotPsiElementBase implements KeywordInvokeable {
+public class KeywordInvokableImpl extends RobotPsiElementBase implements KeywordInvokable {
 
-    public KeywordInvokeableImpl(@NotNull final ASTNode node) {
+    public KeywordInvokableImpl(@NotNull final ASTNode node) {
         super(node);
     }
 }

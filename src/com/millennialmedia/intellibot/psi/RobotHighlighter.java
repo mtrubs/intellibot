@@ -1,11 +1,9 @@
 package com.millennialmedia.intellibot.psi;
 
-import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;

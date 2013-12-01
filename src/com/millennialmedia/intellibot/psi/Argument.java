@@ -5,5 +5,5 @@ import com.intellij.psi.PsiElement;
 /**
  * @author Stephen Abrams
  */
-public interface Arguement extends PsiElement {
+public interface Argument extends PsiElement {
 }

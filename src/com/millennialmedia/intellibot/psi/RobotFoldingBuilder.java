@@ -8,7 +8,6 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.tree.TokenSet;
-import com.millennialmedia.intellibot.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,8 +43,8 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
 
     @Nullable
     public String getPlaceholderText(@NotNull ASTNode node) {
-        if (node.getPsi() instanceof HeadingImpl ||
-                node.getPsi() instanceof KeywordDefinitionImpl) {
+        if (node.getPsi() instanceof Heading ||
+                node.getPsi() instanceof KeywordDefinition) {
             ItemPresentation presentation = ((NavigationItem) node.getPsi()).getPresentation();
             if (presentation != null) {
                 return presentation.getPresentableText();
@@ -55,12 +54,8 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
     }
 
     public boolean isCollapsedByDefault(@NotNull ASTNode node) {
-        if (node.getPsi() instanceof HeadingImpl) {
-            ItemPresentation presentation = ((NavigationItem) node.getPsi()).getPresentation();
-            if (presentation != null) {
-                String text = presentation.getPresentableText();
-                return text != null && text.startsWith("*** Setting");
-            }
+        if (node.getPsi() instanceof Heading) {
+            return ((Heading) node.getPsi()).isSettings();
         }
         return false;
     }
