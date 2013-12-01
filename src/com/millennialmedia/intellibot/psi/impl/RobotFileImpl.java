@@ -30,9 +30,11 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile {
         List<String> result = new ArrayList<String>();
         for (PsiElement child : getChildren()) {
             if (child instanceof Heading) {
-                for (PsiElement headingChild : child.getChildren()) {
-                    if (headingChild instanceof KeywordDefinition)
-                        result.add(((KeywordDefinition) headingChild).getPresentableText());
+                if (((Heading) child).containsKeywordDefinitions()) {
+                    for (PsiElement headingChild : child.getChildren()) {
+                        if (headingChild instanceof KeywordDefinition)
+                            result.add(((KeywordDefinition) headingChild).getPresentableText());
+                    }
                 }
             }
         }

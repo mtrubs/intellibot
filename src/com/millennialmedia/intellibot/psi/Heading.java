@@ -6,4 +6,6 @@ package com.millennialmedia.intellibot.psi;
 public interface Heading {
 
     boolean isSettings();
+
+    boolean containsKeywordDefinitions();
 }
