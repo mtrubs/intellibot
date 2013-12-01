@@ -44,6 +44,11 @@ public class RobotLexer extends LexerBase {
         advance();
     }
 
+    private boolean isSpecial(int position) {
+        // special is defined as whitespace or anything we do before checking the state
+        return isWhitespace(position) || isComment(position);
+    }
+
     @Override
     public void advance() {
         if (position >= endOffset) {
@@ -53,18 +58,18 @@ public class RobotLexer extends LexerBase {
         startOffset = position;
 
         // these are based on the characters of a row at any given time
-        if (isComment()) {
+        if (isComment(this.position)) {
             currentToken = RobotTokenTypes.COMMENT;
             goToEndOfLine();
             return;
-        } else if (isNewLine()) {
+        } else if (isNewLine(this.position)) {
             if (this.level.peek() != null) {
                 int state = this.level.peek();
                 if (ARG == state || IMPORT == state || KEYWORD == state || SYNTAX == state) {
                     level.pop();
                     advance();
                     return;
-                } else if (KEYWORD_DEFINITION == state && !isWhitespace(position + 1)) {
+                } else if (KEYWORD_DEFINITION == state && !isSpecial(position + 1)) {
                     level.pop();
                     advance();
                     return;
@@ -186,11 +191,11 @@ public class RobotLexer extends LexerBase {
         }
     }
 
-    private boolean isComment() {
+    private boolean isComment(int position) {
         return charAtEquals(position, '#');
     }
 
-    private boolean isNewLine() {
+    private boolean isNewLine(int position) {
         return charAtEquals(position, '\n');
     }
 
@@ -218,7 +223,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private void goToEndOfLine() {
-        while (position < endOffset && !isNewLine()) {
+        while (position < endOffset && !isNewLine(this.position)) {
             position++;
         }
     }
@@ -282,7 +287,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private void goToNextNewLineOrSuperSpace() {
-        while (position < endOffset && !areAtStartOfSuperSpace() && !isNewLine()) {
+        while (position < endOffset && !areAtStartOfSuperSpace() && !isNewLine(this.position)) {
             position++;
         }
     }

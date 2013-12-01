@@ -345,6 +345,10 @@ public class RobotLexerTest extends TestCase {
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
+        assertState(lexer, "#    Clean  Other Stuff", RobotTokenTypes.COMMENT, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "Close All Browsers", RobotTokenTypes.KEYWORD, KEYWORD);
