@@ -52,5 +52,8 @@
                              implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>
         <lang.parserDefinition language="Robot"
                                implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
+
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.KeywordInvokable"
+                                 implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
     </extensions>
 </idea-plugin>
