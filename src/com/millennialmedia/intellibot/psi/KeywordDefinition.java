@@ -6,5 +6,8 @@ import com.intellij.psi.PsiElement;
  * @author Stephen Abrams
  */
 public interface KeywordDefinition extends PsiElement {
-    public String getPresentableText();
+
+    String getPresentableText();
+
+    boolean matches(String text);
 }

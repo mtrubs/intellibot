@@ -24,4 +24,15 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         }
         return super.getPresentableText();
     }
+
+    @Override
+    public boolean matches(String text) {
+        String myText = getPresentableText();
+        if (myText == null) {
+            return text == null;
+        } else {
+            // TODO: add inline argument matching/detection
+            return myText.equals(text);
+        }
+    }
 }
