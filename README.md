@@ -6,7 +6,13 @@ For Robot Framework files ending with ".robot", this currently supports:
 
 1. Syntax highlighting
 2. Code folding
-3. Auto-completion of keywords defined in the same file
+3. Auto-completion of some general Robot keywords, keywords defined in the same file or imported files
+
+![Syntax highlighting, code folding, local keyword completion](/examples/local_keyword_auto_complete.png)
+
+4. Click into imported files
+
+![Click into imported files](/examples/go_to_file.png)
 
 Features still needed:
 
