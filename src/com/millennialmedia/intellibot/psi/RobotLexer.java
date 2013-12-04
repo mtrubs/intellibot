@@ -63,7 +63,7 @@ public class RobotLexer extends LexerBase {
             goToEndOfLine();
             return;
         } else if (isNewLine(this.position)) {
-            if (this.level.peek() != null) {
+            if (!this.level.empty()) {
                 int state = this.level.peek();
                 if (ARG == state || IMPORT == state || KEYWORD == state || SYNTAX == state) {
                     level.pop();
@@ -98,7 +98,7 @@ public class RobotLexer extends LexerBase {
         }
 
         // the rest is based on state
-        if (level.peek() == null) {
+        if (level.empty()) {
             // TODO: not sure
             goToEndOfLine();
             this.currentToken = RobotTokenTypes.ERROR;

@@ -6,9 +6,12 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.TailTypeDecorator;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
+import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotFile;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
+import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -35,13 +38,15 @@ public class RobotCompletionContributor extends CompletionContributor {
                 if (psiFile instanceof RobotFile) {
                     final List<String> keywords = new ArrayList<String>();
 
-                    keywords.addAll(new RobotKeywordProvider().getAllKeywords());
+                    for (IElementType t : RobotTokenTypes.KEYWORDS.getTypes()) {
+                        keywords.addAll(RobotKeywordProvider.getInstance().getKeywordsOfType((RobotElementType)t));
+                    }
+
                     for (String keyword : keywords) {
                         LookupElement element = createKeywordLookupElement(keyword);
 
                         result.addElement(PrioritizedLookupElement.withPriority(element, 0));
                     }
-
 
                 }
 

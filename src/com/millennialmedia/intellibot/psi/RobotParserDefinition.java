@@ -26,7 +26,7 @@ public class RobotParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new RobotLexer(new RobotKeywordProvider());
+        return new RobotLexer(RobotKeywordProvider.getInstance());
     }
 
     @Override

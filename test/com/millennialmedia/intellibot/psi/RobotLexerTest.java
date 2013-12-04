@@ -25,7 +25,7 @@ public class RobotLexerTest extends TestCase {
 //        String data = getData("/testData/test_feature.robot");
         String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\testData\\test_feature.robot");
 
-        RobotLexer lexer = new RobotLexer(new RobotKeywordProvider());
+        RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);
         assertState(lexer, "*** Settings ***", RobotTokenTypes.HEADING, SETTINGS_HEADING);
         lexer.advance();

@@ -12,8 +12,14 @@ import java.util.Set;
  */
 public class RobotKeywordProvider {
 
+    private static RobotKeywordProvider instance = new RobotKeywordProvider();
+    private RobotKeywordProvider(){}
+    public static RobotKeywordProvider getInstance() {
+        return instance;
+    }
+
+
     private static final RobotKeywordTable DEFAULT_KEYWORD_TABLE = new RobotKeywordTable();
-    private static final Map<String, IElementType> DEFAULT_KEYWORDS = new HashMap<String, IElementType>();
     private static final Set<String> globalSettings = new HashSet<String>();
     private static final Set<String> settingsFollowedByKeywords = new HashSet<String>();
     private static final Set<String> settingsFollowedByStrings = new HashSet<String>();
@@ -78,8 +84,6 @@ public class RobotKeywordProvider {
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "When");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Then");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "And");
-
-        DEFAULT_KEYWORD_TABLE.putAllKeywordsInto(DEFAULT_KEYWORDS);
 
         globalSettings.add("Suite Setup");
         globalSettings.add("Suite Precondition");
@@ -146,9 +150,5 @@ public class RobotKeywordProvider {
 
     public Set<String> getKeywordsOfType(RobotElementType type) {
         return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
-    }
-
-    public Set<String> getAllKeywords() {
-        return DEFAULT_KEYWORDS.keySet();
     }
 }

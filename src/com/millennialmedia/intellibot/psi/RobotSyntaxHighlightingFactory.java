@@ -15,6 +15,6 @@ public class RobotSyntaxHighlightingFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
     public SyntaxHighlighter getSyntaxHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile) {
-        return new RobotHighlighter(new RobotKeywordProvider()); // todo SMA: we keep creating these...
+        return new RobotHighlighter(RobotKeywordProvider.getInstance());
     }
 }

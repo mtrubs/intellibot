@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class RobotFindUsagesProvider implements FindUsagesProvider {
     @Override
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new RobotLexer(new RobotKeywordProvider()), TokenSet.EMPTY, TokenSet.EMPTY, TokenSet.EMPTY);
+        return new DefaultWordsScanner(new RobotLexer(RobotKeywordProvider.getInstance()), TokenSet.EMPTY, TokenSet.EMPTY, TokenSet.EMPTY);
     }
 
     @Override
