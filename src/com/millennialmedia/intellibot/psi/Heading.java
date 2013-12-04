@@ -10,4 +10,6 @@ public interface Heading extends PsiElement {
     boolean isSettings();
 
     boolean containsKeywordDefinitions();
+
+    boolean containsImports();
 }
