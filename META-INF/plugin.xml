@@ -57,5 +57,7 @@
 
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.KeywordInvokable"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.Import"
+                                 implementationClass="com.millennialmedia.intellibot.psi.manip.ImportManipulator"/>
     </extensions>
 </idea-plugin>

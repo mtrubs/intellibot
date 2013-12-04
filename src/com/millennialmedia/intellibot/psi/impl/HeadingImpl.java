@@ -28,6 +28,12 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         return text != null && (text.startsWith("*** Keyword") || text.startsWith("*** User Keyword"));
     }
 
+    @Override
+    public boolean containsImports() {
+        String text = getTextData();
+        return text != null && text.startsWith("*** Setting");
+    }
+
 
     private String getTextData() {
         ItemPresentation presentation = getPresentation();
