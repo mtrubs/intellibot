@@ -68,9 +68,11 @@ public class RobotCompletionContributor extends CompletionContributor {
         if (!(file instanceof RobotFile)) return;
         final RobotFile robotFile = (RobotFile) file;
 
-        addKeywordsToResult(robotFile.getKeywords(), result, 0);
+        int idx = 0;
+        addKeywordsToResult(robotFile.getKeywords(), result, idx++);
+
         for (RobotFile f : robotFile.getImportedRobotFiles())
-            addKeywordsToResult(f.getKeywords(), result, 1);
+            addKeywordsToResult(f.getKeywords(), result, idx++);
 
     }
 
