@@ -7,8 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Stephen Abrams
@@ -39,5 +38,24 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<RobotFile> getImportedRobotFiles() {
+        List<RobotFile> robotFiles = new ArrayList<RobotFile>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof Heading) {
+                if (((Heading) child).containsImports()) {
+                    for (PsiElement headingChild : child.getChildren()) {
+                        if (headingChild instanceof Import) {
+                            RobotFile f = (RobotFile) headingChild.getReference().resolve();
+                            if (f != null)
+                                robotFiles.add(f);
+                        }
+                    }
+                }
+            }
+        }
+        return robotFiles;
     }
 }

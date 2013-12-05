@@ -39,7 +39,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                     final List<String> keywords = new ArrayList<String>();
 
                     for (IElementType t : RobotTokenTypes.KEYWORDS.getTypes()) {
-                        keywords.addAll(RobotKeywordProvider.getInstance().getKeywordsOfType((RobotElementType)t));
+                        keywords.addAll(RobotKeywordProvider.getInstance().getKeywordsOfType((RobotElementType) t));
                     }
 
                     for (String keyword : keywords) {
@@ -69,6 +69,9 @@ public class RobotCompletionContributor extends CompletionContributor {
         final RobotFile robotFile = (RobotFile) file;
 
         addKeywordsToResult(robotFile.getKeywords(), result, 0);
+        for (RobotFile f : robotFile.getImportedRobotFiles())
+            addKeywordsToResult(f.getKeywords(), result, 1);
+
     }
 
     private static void addKeywordsToResult(final Collection<String> keywords,
