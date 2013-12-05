@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.completion;
+package com.millennialmedia.intellibot.ide;
 
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.*;
@@ -9,9 +9,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.millennialmedia.intellibot.psi.RobotElementType;
-import com.millennialmedia.intellibot.psi.RobotFile;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.element.RobotFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

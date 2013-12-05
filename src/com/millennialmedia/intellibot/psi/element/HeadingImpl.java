@@ -1,8 +1,7 @@
-package com.millennialmedia.intellibot.psi.impl;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
-import com.millennialmedia.intellibot.psi.Heading;
 import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;

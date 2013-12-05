@@ -12,9 +12,13 @@ import javax.swing.*;
  */
 public class RobotFeatureFileType extends LanguageFileType {
 
-    public static final RobotFeatureFileType INSTANCE = new RobotFeatureFileType();
+    private static final RobotFeatureFileType INSTANCE = new RobotFeatureFileType();
 
-    protected RobotFeatureFileType() {
+    public static RobotFeatureFileType getInstance() {
+        return INSTANCE;
+    }
+
+    private RobotFeatureFileType() {
         super(RobotLanguage.INSTANCE);
     }
 

@@ -1,10 +1,10 @@
-package com.millennialmedia.intellibot.psi.impl;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
-import com.millennialmedia.intellibot.psi.Import;
 import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.ref.RobotImportReference;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,13 +1,15 @@
-package com.millennialmedia.intellibot.psi.impl;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
-import com.millennialmedia.intellibot.psi.*;
+import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
+import com.millennialmedia.intellibot.psi.RobotLanguage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Stephen Abrams
@@ -21,7 +23,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile {
     @NotNull
     @Override
     public FileType getFileType() {
-        return RobotFileType.INSTANCE;
+        return RobotFeatureFileType.getInstance();
     }
 
     @Override

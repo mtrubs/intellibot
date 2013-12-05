@@ -3,7 +3,7 @@ package com.millennialmedia.intellibot.psi.manip;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.util.IncorrectOperationException;
-import com.millennialmedia.intellibot.psi.KeywordInvokable;
+import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 
 /**
  * @author mrubino
