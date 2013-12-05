@@ -1,0 +1,2 @@
+FILE(0,9)
+  PsiElement(ERROR)('some junk')(0,9)
