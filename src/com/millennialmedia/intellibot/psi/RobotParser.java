@@ -138,8 +138,11 @@ public class RobotParser implements PsiParser {
             type = builder.getTokenType();
             if (RobotTokenTypes.ARGUMENT == type) {
                 parseArgument(builder);
+                if (builder.eof()) {
+                    break;
+                }
+                type = builder.getTokenType();
             }
-            type = builder.getTokenType();
         } while (RobotTokenTypes.ARGUMENT == type);
         importMarker.done(markType);
     }

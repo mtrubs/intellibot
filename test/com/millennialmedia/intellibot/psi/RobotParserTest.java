@@ -2,7 +2,6 @@ package com.millennialmedia.intellibot.psi;
 
 
 import com.intellij.testFramework.ParsingTestCase;
-import com.millennialmedia.intellibot.psi.RobotParserDefinition;
 
 
 public class RobotParserTest extends ParsingTestCase {
@@ -11,6 +10,10 @@ public class RobotParserTest extends ParsingTestCase {
     }
 
     public void testParsingTestData() {
+        doTest(true);
+    }
+
+    public void testJunk() {
         doTest(true);
     }
 
