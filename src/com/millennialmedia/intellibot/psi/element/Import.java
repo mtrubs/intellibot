@@ -7,6 +7,6 @@ import com.intellij.psi.PsiElement;
  */
 public interface Import extends PsiElement {
 
-    public String getPresentableText();
+    String getPresentableText();
 
 }
