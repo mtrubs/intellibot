@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.psi;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.psi.PsiElement;
 

@@ -17,17 +17,6 @@ public class RobotKeywordTable {
         }
     }
 
-    public void putAllKeywordsInto(Map<String, IElementType> target) {
-        for (IElementType type : this.getTypes()) {
-            final Set<String> keywords = this.getKeywords(type);
-            if (keywords != null) {
-                for (String keyword : keywords) {
-                    target.put(keyword, type);
-                }
-            }
-        }
-    }
-
     public void put(IElementType type, String keyword) {
         if (RobotTokenTypes.KEYWORDS.contains(type)) {
             Set<String> keywords = getKeywords(type);
@@ -41,10 +30,6 @@ public class RobotKeywordTable {
 
     public Set<String> getKeywordsOfType(RobotElementType type) {
         return myType2KeywordsTable.get(type);
-    }
-
-    public Set<IElementType> getTypes() {
-        return myType2KeywordsTable.keySet();
     }
 
     @Nullable

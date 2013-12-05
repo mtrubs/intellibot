@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.psi;
+package com.millennialmedia.intellibot.ide;
 
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;

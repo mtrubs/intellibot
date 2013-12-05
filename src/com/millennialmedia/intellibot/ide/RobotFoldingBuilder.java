@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.psi;
+package com.millennialmedia.intellibot.ide;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
@@ -8,6 +8,9 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.tree.TokenSet;
+import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.element.Heading;
+import com.millennialmedia.intellibot.psi.element.KeywordDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -39,25 +39,27 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <completion.contributor language="Robot"
-                                implementationClass="com.millennialmedia.intellibot.completion.RobotCompletionContributor"/>
-
-        <!--<lang.findUsagesProvider language="Robot"-->
-        <!--implementationClass="com.millennialmedia.intellibot.psi.RobotFindUsagesProvider"/>-->
 
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
+
+        <!-- IDE Hooks -->
+        <completion.contributor language="Robot"
+                                implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
+        <!--<lang.findUsagesProvider language="Robot"-->
+        <!--implementationClass="com.millennialmedia.intellibot.ide.RobotFindUsagesProvider"/>-->
         <lang.syntaxHighlighterFactory key="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
-                        implementationClass="com.millennialmedia.intellibot.psi.RobotCommenter"/>
+                        implementationClass="com.millennialmedia.intellibot.ide.RobotCommenter"/>
         <lang.foldingBuilder language="Robot"
-                             implementationClass="com.millennialmedia.intellibot.psi.RobotFoldingBuilder"/>
+                             implementationClass="com.millennialmedia.intellibot.ide.RobotFoldingBuilder"/>
         <lang.parserDefinition language="Robot"
                                implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
 
-        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.KeywordInvokable"
+        <!-- Manipulators -->
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.KeywordInvokable"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
-        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.Import"
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Import"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ImportManipulator"/>
     </extensions>
 </idea-plugin>

@@ -73,11 +73,6 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
             DefaultLanguageHighlighterColors.LINE_COMMENT
     );
 
-//    public static final TextAttributesKey ROBOT_SEPARATOR = TextAttributesKey.createTextAttributesKey(
-//            "SEPARATOR",
-//            DefaultLanguageHighlighterColors.COMMA
-//    );
-
     public static final TextAttributesKey ROBOT_SYNTAX = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.SYNTAX.toString(),
             DefaultLanguageHighlighterColors.CLASS_NAME
@@ -103,7 +98,6 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         keys1.put(RobotTokenTypes.ERROR, ROBOT_ERROR);
         keys1.put(RobotTokenTypes.GHERKIN, ROBOT_GHERKIN);
         keys1.put(RobotTokenTypes.SYNTAX, ROBOT_SYNTAX);
-//        keys1.put(RobotTokenTypes.SEPARATOR, ROBOT_SEPARATOR);
         keys1.put(RobotTokenTypes.VARIABLE, ROBOT_VARIABLE);
         keys1.put(RobotTokenTypes.KEYWORD, ROBOT_KEYWORD);
         keys1.put(RobotTokenTypes.KEYWORD_DEFINITION, ROBOT_TC_KW_NAME);
@@ -116,15 +110,4 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         return pack(keys1.get(tokenType), keys2.get(tokenType));
     }
-
-//    public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
-//
-//    static {
-//        DISPLAY_NAMES.put(PROPERTY_KEY, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.property.key"),null));
-//        DISPLAY_NAMES.put(PROPERTY_VALUE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.property.value"), null));
-//        DISPLAY_NAMES.put(PROPERTY_KEY_VALUE_SEPARATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
-//        DISPLAY_NAMES.put(PROPERTY_COMMENT, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.comment"), null));
-//        DISPLAY_NAMES.put(PROPERTIES_VALID_STRING_ESCAPE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.valid.string.escape"), null));
-//        DISPLAY_NAMES.put(PROPERTIES_INVALID_STRING_ESCAPE, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.invalid.string.escape"), HighlightSeverity.WARNING));
-//    }
 }

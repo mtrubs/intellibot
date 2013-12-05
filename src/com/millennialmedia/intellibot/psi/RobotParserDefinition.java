@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
-import com.millennialmedia.intellibot.psi.impl.*;
+import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 
 /**

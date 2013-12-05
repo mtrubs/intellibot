@@ -1,8 +1,6 @@
-package com.millennialmedia.intellibot.psi.impl;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
-import com.millennialmedia.intellibot.psi.KeywordDefinition;
-import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,17 +10,12 @@ import org.jetbrains.annotations.NotNull;
 public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition {
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
-        super(node);
+        super(node, RobotTokenTypes.KEYWORD_DEFINITION);
     }
 
     @Override
     public String getPresentableText() {
-        ASTNode node = getNode();
-        ASTNode firstText = node.findChildByType(RobotTokenTypes.KEYWORD_DEFINITION);
-        if (firstText != null) {
-            return firstText.getText();
-        }
-        return super.getPresentableText();
+        return getTextData();
     }
 
     @Override

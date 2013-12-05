@@ -1,13 +1,16 @@
-package com.millennialmedia.intellibot.psi.impl;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
-import com.millennialmedia.intellibot.psi.*;
+import com.intellij.psi.PsiReference;
+import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
+import com.millennialmedia.intellibot.psi.RobotLanguage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Stephen Abrams
@@ -21,7 +24,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile {
     @NotNull
     @Override
     public FileType getFileType() {
-        return RobotFileType.INSTANCE;
+        return RobotFeatureFileType.getInstance();
     }
 
     @Override
@@ -48,9 +51,13 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile {
                 if (((Heading) child).containsImports()) {
                     for (PsiElement headingChild : child.getChildren()) {
                         if (headingChild instanceof Import) {
-                            RobotFile f = (RobotFile) headingChild.getReference().resolve();
-                            if (f != null)
-                                robotFiles.add(f);
+                            PsiReference reference = headingChild.getReference();
+                            if (reference != null) {
+                                PsiElement element = reference.resolve();
+                                if (element instanceof RobotFile) {
+                                    robotFiles.add((RobotFile) element);
+                                }
+                            }
                         }
                     }
                 }

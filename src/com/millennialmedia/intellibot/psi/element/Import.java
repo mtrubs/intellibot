@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.psi;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.psi.PsiElement;
 
@@ -7,6 +7,6 @@ import com.intellij.psi.PsiElement;
  */
 public interface Import extends PsiElement {
 
-    public String getPresentableText();
+    String getPresentableText();
 
 }

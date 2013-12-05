@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.psi;
+package com.millennialmedia.intellibot.ide;
 
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
@@ -6,6 +6,9 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
+import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
+import com.millennialmedia.intellibot.psi.RobotLexer;
+import com.millennialmedia.intellibot.psi.element.KeywordDefinition;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,8 +1,7 @@
-package com.millennialmedia.intellibot.psi.impl;
+package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
-import com.millennialmedia.intellibot.psi.BracketSetting;
-import com.millennialmedia.intellibot.psi.RobotPsiElementBase;
+import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,6 +10,6 @@ import org.jetbrains.annotations.NotNull;
 public class BracketSettingImpl extends RobotPsiElementBase implements BracketSetting {
 
     public BracketSettingImpl(@NotNull final ASTNode node) {
-        super(node);
+        super(node, RobotTokenTypes.BRACKET_SETTING);
     }
 }

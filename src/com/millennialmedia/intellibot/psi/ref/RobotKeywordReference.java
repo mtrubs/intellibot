@@ -1,7 +1,4 @@
-package com.millennialmedia.intellibot.psi.impl;
-
-import java.util.HashSet;
-import java.util.Set;
+package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -9,9 +6,12 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.millennialmedia.intellibot.psi.*;
+import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author mrubino
