@@ -41,6 +41,7 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
+        <colorSettingsPage implementation="com.millennialmedia.intellibot.ide.config.RobotColorsPage"/>
 
         <!-- IDE Hooks -->
         <completion.contributor language="Robot"

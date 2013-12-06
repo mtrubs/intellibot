@@ -28,62 +28,62 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         return new RobotLexer(myKeywordProvider);
     }
 
-    public static final TextAttributesKey ROBOT_HEADING = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey HEADING = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.HEADING.toString(),
             DefaultLanguageHighlighterColors.STRING
     );
 
-    public static final TextAttributesKey ROBOT_SETTING = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey SETTING = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.SETTING.toString(),
             DefaultLanguageHighlighterColors.KEYWORD
     );
 
-    public static final TextAttributesKey ROBOT_BRACKET_SETTING = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey BRACKET_SETTING = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.BRACKET_SETTING.toString(),
             DefaultLanguageHighlighterColors.LABEL
     );
 
-    public static final TextAttributesKey ROBOT_IMPORT = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey IMPORT = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.IMPORT.toString(),
             DefaultLanguageHighlighterColors.IDENTIFIER
     );
 
-    public static final TextAttributesKey ROBOT_TC_KW_NAME = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey KEYWORD_DEFINITION = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.KEYWORD_DEFINITION.toString(),
             DefaultLanguageHighlighterColors.KEYWORD
     );
 
-    public static final TextAttributesKey ROBOT_KEYWORD = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey KEYWORD = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.KEYWORD.toString(),
             DefaultLanguageHighlighterColors.FUNCTION_DECLARATION
     );
 
-    public static final TextAttributesKey ROBOT_ARGUMENT = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey ARGUMENT = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.ARGUMENT.toString(),
             DefaultLanguageHighlighterColors.INSTANCE_FIELD
     );
 
-    public static final TextAttributesKey ROBOT_VARIABLE = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey VARIABLE = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.VARIABLE.toString(),
             DefaultLanguageHighlighterColors.LOCAL_VARIABLE
     );
 
-    public static final TextAttributesKey ROBOT_COMMENT = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.COMMENT.toString(),
             DefaultLanguageHighlighterColors.LINE_COMMENT
     );
 
-    public static final TextAttributesKey ROBOT_SYNTAX = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey SYNTAX = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.SYNTAX.toString(),
             DefaultLanguageHighlighterColors.CLASS_NAME
     );
 
-    public static final TextAttributesKey ROBOT_GHERKIN = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey GHERKIN = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.GHERKIN.toString(),
             DefaultLanguageHighlighterColors.METADATA
     );
 
-    public static final TextAttributesKey ROBOT_ERROR = TextAttributesKey.createTextAttributesKey(
+    public static final TextAttributesKey ERROR = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.ERROR.toString(),
             DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
     );
@@ -92,18 +92,18 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         keys1 = new THashMap<IElementType, TextAttributesKey>();
         keys2 = new THashMap<IElementType, TextAttributesKey>();
 
-        keys1.put(RobotTokenTypes.HEADING, ROBOT_HEADING);
-        keys1.put(RobotTokenTypes.COMMENT, ROBOT_COMMENT);
-        keys1.put(RobotTokenTypes.ARGUMENT, ROBOT_ARGUMENT);
-        keys1.put(RobotTokenTypes.ERROR, ROBOT_ERROR);
-        keys1.put(RobotTokenTypes.GHERKIN, ROBOT_GHERKIN);
-        keys1.put(RobotTokenTypes.SYNTAX, ROBOT_SYNTAX);
-        keys1.put(RobotTokenTypes.VARIABLE, ROBOT_VARIABLE);
-        keys1.put(RobotTokenTypes.KEYWORD, ROBOT_KEYWORD);
-        keys1.put(RobotTokenTypes.KEYWORD_DEFINITION, ROBOT_TC_KW_NAME);
-        keys1.put(RobotTokenTypes.BRACKET_SETTING, ROBOT_BRACKET_SETTING);
-        keys1.put(RobotTokenTypes.SETTING, ROBOT_SETTING);
-        keys1.put(RobotTokenTypes.IMPORT, ROBOT_IMPORT);
+        keys1.put(RobotTokenTypes.HEADING, HEADING);
+        keys1.put(RobotTokenTypes.COMMENT, COMMENT);
+        keys1.put(RobotTokenTypes.ARGUMENT, ARGUMENT);
+        keys1.put(RobotTokenTypes.ERROR, ERROR);
+        keys1.put(RobotTokenTypes.GHERKIN, GHERKIN);
+        keys1.put(RobotTokenTypes.SYNTAX, SYNTAX);
+        keys1.put(RobotTokenTypes.VARIABLE, VARIABLE);
+        keys1.put(RobotTokenTypes.KEYWORD, KEYWORD);
+        keys1.put(RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
+        keys1.put(RobotTokenTypes.BRACKET_SETTING, BRACKET_SETTING);
+        keys1.put(RobotTokenTypes.SETTING, SETTING);
+        keys1.put(RobotTokenTypes.IMPORT, IMPORT);
     }
 
     @NotNull
