@@ -130,20 +130,18 @@ public class RobotParser implements PsiParser {
         IElementType type = builder.getTokenType();
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
-        do {
-            builder.advanceLexer();
+        builder.advanceLexer();
+        while (true) {
             if (builder.eof()) {
                 break;
             }
             type = builder.getTokenType();
             if (RobotTokenTypes.ARGUMENT == type) {
                 parseArgument(builder);
-                if (builder.eof()) {
-                    break;
-                }
-                type = builder.getTokenType();
+            } else {
+                break;
             }
-        } while (RobotTokenTypes.ARGUMENT == type);
+        }
         importMarker.done(markType);
     }
 
