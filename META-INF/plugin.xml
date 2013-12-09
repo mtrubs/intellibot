@@ -60,7 +60,7 @@
         <!-- Manipulators -->
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.KeywordInvokable"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
-        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Import"
-                                 implementationClass="com.millennialmedia.intellibot.psi.manip.ImportManipulator"/>
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
+                                 implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
     </extensions>
 </idea-plugin>

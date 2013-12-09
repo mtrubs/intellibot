@@ -18,8 +18,6 @@ import java.util.Set;
  */
 public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
 
-    private static final Object[] EMPTY = {};
-
     public RobotKeywordReference(@NotNull KeywordInvokable element) {
         this(element, false);
     }
@@ -89,6 +87,6 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
     @Override
     public Object[] getVariants() {
         // TODO: does this come into play with inline arguments? I bet you it does
-        return EMPTY;
+        return EMPTY_ARRAY;
     }
 }

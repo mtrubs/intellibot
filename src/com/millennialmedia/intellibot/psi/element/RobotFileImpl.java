@@ -51,11 +51,17 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile {
                 if (((Heading) child).containsImports()) {
                     for (PsiElement headingChild : child.getChildren()) {
                         if (headingChild instanceof Import) {
-                            PsiReference reference = headingChild.getReference();
-                            if (reference != null) {
-                                PsiElement element = reference.resolve();
-                                if (element instanceof RobotFile) {
-                                    robotFiles.add((RobotFile) element);
+                            if (((Import) headingChild).isResource()) {
+                                for (PsiElement resourceChild : headingChild.getChildren()) {
+                                    if (resourceChild instanceof Argument) {
+                                        PsiReference reference = resourceChild.getReference();
+                                        if (reference != null) {
+                                            PsiElement element = reference.resolve();
+                                            if (element instanceof RobotFile) {
+                                                robotFiles.add((RobotFile) element);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

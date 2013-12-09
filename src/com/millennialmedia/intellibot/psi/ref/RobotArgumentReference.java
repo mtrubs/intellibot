@@ -5,6 +5,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,19 +13,31 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Scott Albertine
  */
-public class RobotImportReference extends PsiReferenceBase<Import> {
+public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
-    public RobotImportReference(Import element, boolean soft) {
-        super(element, soft);
+    public RobotArgumentReference(@NotNull Argument element) {
+        this(element, false);
     }
 
-    public RobotImportReference(@NotNull Import element) {
-        super(element);
+    public RobotArgumentReference(Argument element, boolean soft) {
+        super(element, soft);
     }
 
     @Nullable
     @Override
     public PsiElement resolve() {
+        PsiElement parent = getElement().getParent();
+        if (parent instanceof Import) {
+            if (((Import) parent).isResource()) {
+                return resolveResource();
+            }
+            // TODO: libraries
+        }
+        // TODO: handle other argument types
+        return null;
+    }
+
+    private PsiElement resolveResource() {
         String filePath = getElement().getPresentableText();
         String[] pathElements = filePath.split("/"); //TODO: crude, we want to look up the actual file in the future, this is quick and dirty
         PsiFile[] files = FilenameIndex.getFilesByName(myElement.getProject(), pathElements[pathElements.length - 1], GlobalSearchScope.allScope(myElement.getProject()));
@@ -37,6 +50,6 @@ public class RobotImportReference extends PsiReferenceBase<Import> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return EMPTY_ARRAY;
     }
 }
