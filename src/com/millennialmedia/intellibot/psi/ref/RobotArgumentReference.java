@@ -1,5 +1,8 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
@@ -45,6 +48,19 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             return files[0];
         }
         return null;
+    }
+
+    private VirtualFile getImportFile(String importPath) {
+        // TODO: nothing seems to want to work here...
+        VirtualFile a = VirtualFileManager.getInstance().getFileSystem(LocalFileSystem.PROTOCOL).findFileByPath(importPath);
+//        if (importPath == null) {
+//            return null;
+//        } else
+        if (!importPath.startsWith("/")) {
+            importPath = "/" + importPath;
+        }
+        VirtualFile b = VirtualFileManager.getInstance().getFileSystem(LocalFileSystem.PROTOCOL).findFileByPath(importPath);
+        return LocalFileSystem.getInstance().findFileByPath(importPath);
     }
 
     @NotNull

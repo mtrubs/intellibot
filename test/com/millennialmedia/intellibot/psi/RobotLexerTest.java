@@ -22,8 +22,8 @@ public class RobotLexerTest extends TestCase {
 
     public void testParse() {
         // TODO: weak
-//        String data = getData("/testData/test_feature.robot");
-        String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\testData\\test_feature.robot");
+//        String data = getData("/testData/ParsingTestData.robot");
+        String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\testData\\ParsingTestData.robot");
 
         RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);
