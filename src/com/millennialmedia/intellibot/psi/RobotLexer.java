@@ -9,8 +9,6 @@ import java.util.Stack;
 
 public class RobotLexer extends LexerBase {
 
-    private static final int RATE = 10;
-
     private CharSequence buffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
     private int startOffset;
     private int endOffset;
@@ -23,12 +21,16 @@ public class RobotLexer extends LexerBase {
     protected static final int SETTINGS_HEADING = 1;
     protected static final int TEST_CASES_HEADING = 2;
     protected static final int KEYWORDS_HEADING = 3;
-    protected static final int IMPORT = 4;
-    protected static final int KEYWORD = 5;
-    protected static final int ARG = 6;
-    protected static final int KEYWORD_DEFINITION = 7;
-    protected static final int SYNTAX = 8;
-    protected static final int GHERKIN = 9;
+    protected static final int VARIABLES_HEADING = 4;
+    protected static final int IMPORT = 5;
+    protected static final int KEYWORD = 6;
+    protected static final int ARG = 7;
+    protected static final int KEYWORD_DEFINITION = 8;
+    protected static final int VARIABLE_DEFINITION = 9;
+    protected static final int SYNTAX = 10;
+    protected static final int GHERKIN = 11;
+    // TODO: we might run into max int issues at some point
+    private static final int RATE = 12; // this should always be the last state + 1
 
     public RobotLexer(RobotKeywordProvider provider) {
         keywordProvider = provider;
@@ -65,7 +67,7 @@ public class RobotLexer extends LexerBase {
         } else if (isNewLine(this.position)) {
             if (!this.level.empty()) {
                 int state = this.level.peek();
-                if (ARG == state || IMPORT == state || KEYWORD == state || SYNTAX == state) {
+                if (ARG == state || IMPORT == state || KEYWORD == state || SYNTAX == state || VARIABLE_DEFINITION == state) {
                     level.pop();
                     advance();
                     return;
@@ -88,9 +90,13 @@ public class RobotLexer extends LexerBase {
             } else if (isTestCases(line)) {
                 this.level.clear();
                 this.level.push(TEST_CASES_HEADING);
-            } else if (isKeywords(line)) {
+            } else if (isKeywords(line) || isUserKeywords(line)) {
+                // TODO: not sure if keywords and user keywords need to behave differently
                 this.level.clear();
                 this.level.push(KEYWORDS_HEADING);
+            } else if (isVariables(line)) {
+                this.level.clear();
+                this.level.push(VARIABLES_HEADING);
             } else {
                 this.currentToken = RobotTokenTypes.ERROR;
             }
@@ -124,6 +130,10 @@ public class RobotLexer extends LexerBase {
                     goToEndOfLine();
                     this.currentToken = RobotTokenTypes.ERROR;
                 }
+            } else if (VARIABLES_HEADING == state) {
+                goToNextNewLineOrSuperSpace();
+                this.level.push(VARIABLE_DEFINITION);
+                this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
                 goToNextNewLineOrSuperSpace();
                 this.level.push(KEYWORD_DEFINITION);
@@ -157,7 +167,7 @@ public class RobotLexer extends LexerBase {
                         }
                     }
                 }
-            } else if (KEYWORD == state || IMPORT == state) {
+            } else if (KEYWORD == state || IMPORT == state || VARIABLE_DEFINITION == state) {
                 if (areAtStartOfSuperSpace()) {
                     skipWhitespace();
                     this.currentToken = RobotTokenTypes.WHITESPACE;
@@ -216,6 +226,14 @@ public class RobotLexer extends LexerBase {
 
     private boolean isKeywords(String line) {
         return "*** Keywords ***".equals(line) || "*** Keyword ***".equals(line);
+    }
+
+    private boolean isUserKeywords(String line) {
+        return "*** User Keywords ***".equals(line) || "*** User Keyword ***".equals(line);
+    }
+
+    private boolean isVariables(String line) {
+        return "*** Variables ***".equals(line) || "*** Variable ***".equals(line);
     }
 
     private boolean isImport(String nextWord) {

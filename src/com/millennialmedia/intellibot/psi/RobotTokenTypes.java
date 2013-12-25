@@ -14,6 +14,7 @@ public interface RobotTokenTypes {
     RobotElementType KEYWORD_DEFINITION = new RobotElementType("KEYWORD_DEFINITION");
     RobotElementType KEYWORD = new RobotElementType("KEYWORD");
     RobotElementType ARGUMENT = new RobotElementType("ARGUMENT");
+    RobotElementType VARIABLE_DEFINITION = new RobotElementType("VARIABLE_DEFINITION");
     RobotElementType VARIABLE = new RobotElementType("VARIABLE");
     RobotElementType COMMENT = new RobotElementType("COMMENT");
     RobotElementType SYNTAX = new RobotElementType("SYNTAX");
@@ -23,5 +24,5 @@ public interface RobotTokenTypes {
     RobotElementType WHITESPACE = new RobotElementType("WHITESPACE");
 
     TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, BRACKET_SETTING, IMPORT,
-            KEYWORD_DEFINITION, KEYWORD, ARGUMENT, VARIABLE, COMMENT, SYNTAX, GHERKIN);
+            KEYWORD_DEFINITION, KEYWORD, ARGUMENT, VARIABLE_DEFINITION, VARIABLE, COMMENT, SYNTAX, GHERKIN);
 }

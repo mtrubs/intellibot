@@ -63,9 +63,14 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
             DefaultLanguageHighlighterColors.INSTANCE_FIELD
     );
 
+    public static final TextAttributesKey VARIABLE_DEFINITION = TextAttributesKey.createTextAttributesKey(
+            RobotTokenTypes.VARIABLE_DEFINITION.toString(),
+            DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+    );
+
     public static final TextAttributesKey VARIABLE = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.VARIABLE.toString(),
-            DefaultLanguageHighlighterColors.LOCAL_VARIABLE
+            DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
     );
 
     public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(
@@ -99,6 +104,7 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         keys1.put(RobotTokenTypes.GHERKIN, GHERKIN);
         keys1.put(RobotTokenTypes.SYNTAX, SYNTAX);
         keys1.put(RobotTokenTypes.VARIABLE, VARIABLE);
+        keys1.put(RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
         keys1.put(RobotTokenTypes.KEYWORD, KEYWORD);
         keys1.put(RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
         keys1.put(RobotTokenTypes.BRACKET_SETTING, BRACKET_SETTING);

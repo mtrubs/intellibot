@@ -55,6 +55,8 @@ public class RobotParser implements PsiParser {
                 type = builder.getTokenType();
                 if (RobotTokenTypes.IMPORT == type) {
                     parseImport(builder);
+                } else if (RobotTokenTypes.VARIABLE_DEFINITION == type) {
+                    parseVariableDefinition(builder);
                 } else if (RobotTokenTypes.SETTING == type) {
                     parseSetting(builder);
                 } else if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
@@ -120,6 +122,10 @@ public class RobotParser implements PsiParser {
 
     private static void parseImport(PsiBuilder builder) {
         parseWithArguments(builder, RobotTokenTypes.IMPORT);
+    }
+
+    private static void parseVariableDefinition(PsiBuilder builder) {
+        parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION);
     }
 
     private static void parseSetting(PsiBuilder builder) {

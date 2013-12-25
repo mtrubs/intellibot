@@ -1,4 +1,3 @@
-/* Jumptap's products may be patented under one or more of the patents listed at www.jumptap.com/intellectual-property */
 package com.millennialmedia.intellibot.ide.config;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -25,6 +24,10 @@ public class RobotColorsPage implements ColorSettingsPage {
             "*** Settings ***\n" +
             "Documentation     This is some demo text\n" +
             "Library           CalculatorLibrary\n" +
+            "\n" +
+            "*** Variables ***\n" +
+            "${var1}  12345\n" +
+            "${var2}  another variable\n" +
             "\n" +
             "*** Test Cases ***\n" +
             "Addition\n" +
@@ -62,6 +65,7 @@ public class RobotColorsPage implements ColorSettingsPage {
             new AttributesDescriptor(RobotBundle.message("color.settings.gherkin"), RobotHighlighter.GHERKIN),
             //new AttributesDescriptor(RobotBundle.message("color.settings.syntax"), RobotHighlighter.SYNTAX),
             //new AttributesDescriptor(RobotBundle.message("color.settings.variable"), RobotHighlighter.VARIABLE),
+            new AttributesDescriptor(RobotBundle.message("color.settings.variableDefinition"), RobotHighlighter.VARIABLE_DEFINITION),
             new AttributesDescriptor(RobotBundle.message("color.settings.keyword"), RobotHighlighter.KEYWORD),
             new AttributesDescriptor(RobotBundle.message("color.settings.keywordDefinition"), RobotHighlighter.KEYWORD_DEFINITION),
             new AttributesDescriptor(RobotBundle.message("color.settings.bracketSetting"), RobotHighlighter.BRACKET_SETTING),

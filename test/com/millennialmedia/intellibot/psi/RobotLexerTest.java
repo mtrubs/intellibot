@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Stack;
 
 import static com.millennialmedia.intellibot.psi.RobotLexer.*;
 
@@ -13,14 +14,31 @@ import static com.millennialmedia.intellibot.psi.RobotLexer.*;
  */
 public class RobotLexerTest extends TestCase {
 
+    private int maxState = -1;
+
     public void testState() {
         // translate the state back and forth a couple thousand ways
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 50000; i++) {
             assertEquals(RobotLexer.toState(RobotLexer.fromState(i)), i);
+        }
+
+        Stack<Integer> gold = new Stack<Integer>();
+        gold.push(1);
+        gold.push(1);
+        gold.push(8);
+        gold.push(10);
+        gold.push(5);
+        int state = RobotLexer.toState(gold);
+        assertEquals(122125, state);
+        Stack<Integer> parsed = RobotLexer.fromState(state);
+        assertEquals(gold.size(), parsed.size());
+        while (!gold.isEmpty()) {
+            assertEquals(gold.pop(), parsed.pop());
         }
     }
 
     public void testParse() {
+        this.maxState = -1;
         // TODO: weak
 //        String data = getData("/testData/ParsingTestData.robot");
         String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\testData\\ParsingTestData.robot");
@@ -160,6 +178,38 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
+        lexer.advance();
+        assertState(lexer, "*** Variables ***", RobotTokenTypes.HEADING, VARIABLES_HEADING);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
+        lexer.advance();
+        assertState(lexer, "${Total_Requests}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "97,000", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
+        lexer.advance();
+        assertState(lexer, "${kw_timeout}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "20 sec", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
+        lexer.advance();
+        assertState(lexer, "${kw_retry_interval}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "0.5 sec", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
         lexer.advance();
         assertState(lexer, "*** Test Cases ***", RobotTokenTypes.HEADING, TEST_CASES_HEADING);
         lexer.advance();
@@ -378,12 +428,18 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "there is a smile on my face", RobotTokenTypes.KEYWORD, KEYWORD);
+        // just a check on how close we get to Integer.MAX_VALUE; 2147483647
+        assertEquals(157058, this.maxState);
     }
 
-    private static void assertState(RobotLexer lexer, String data, RobotElementType token, int state) {
+    private void assertState(RobotLexer lexer, String data, RobotElementType token, int state) {
         assertEquals("Data", data, lexer.getBufferSequence().subSequence(lexer.getTokenStart(), lexer.getTokenEnd()));
         assertEquals("State", state, lexer.peekState());
         assertEquals("Token", token, lexer.getTokenType());
+        int currentState = lexer.getState();
+        if (currentState > this.maxState) {
+            this.maxState = currentState;
+        }
     }
 
     private String getData(String file) {
