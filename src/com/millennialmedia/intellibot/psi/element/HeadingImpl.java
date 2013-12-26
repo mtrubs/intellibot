@@ -15,12 +15,14 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @Override
     public boolean isSettings() {
+        // TODO: better OO
         String text = getTextData();
         return text != null && text.startsWith("*** Setting");
     }
 
     @Override
     public boolean containsKeywordDefinitions() {
+        // TODO: better OO
         String text = getTextData();
         return text != null && (text.startsWith("*** Keyword") || text.startsWith("*** User Keyword"));
     }

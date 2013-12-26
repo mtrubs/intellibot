@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -17,6 +17,11 @@
       ]]></description>
 
     <change-notes><![CDATA[
+      <h2>2012-12-24</h2>
+      <p>Added support for Variables and User Keywords</p>
+      <p>Local and remote jump to source work</p>
+      <p>Local and remote code completion</p>
+      <p>Have address some stack overflow bugs</p>
       <h2>2013-11-18</h2>
       <p>Initial Release after Hack-a-thon</p>
       ]]>
@@ -60,7 +65,7 @@
         <!-- Manipulators -->
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.KeywordInvokable"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
-        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Import"
-                                 implementationClass="com.millennialmedia.intellibot.psi.manip.ImportManipulator"/>
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
+                                 implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
     </extensions>
 </idea-plugin>

@@ -27,7 +27,7 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement {
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             public String getPresentableText() {
-                return RobotPsiElementBase.this.getPresentableText();
+                return RobotPsiElementBase.this.getInternalText();
             }
 
             public String getLocationString() {
@@ -48,7 +48,7 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement {
         return null;
     }
 
-    private String getPresentableText() {
+    private String getInternalText() {
         ASTNode node = getNode();
         ASTNode firstText = node.findChildByType(this.elementType);
         if (firstText != null) {

@@ -15,6 +15,12 @@ Library  Collections
 
 Force Tags  Kyle  Advertiser  Dashboard  Component  #Other Tag
 
+*** Variables ***
+
+${Total_Requests}  97,000
+${kw_timeout}  20 sec
+${kw_retry_interval}  0.5 sec
+
 *** Test Cases ***
 
 Scenario: An admin can see the conversion trend
@@ -38,6 +44,7 @@ Clean Database
   [Documentation]  Cleans the database
     Clean  Kyle
     Clean  Ike
+#    Clean  Other Stuff
     Close All Browsers
 
 

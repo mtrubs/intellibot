@@ -1,9 +1,7 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
-import com.millennialmedia.intellibot.psi.ref.RobotImportReference;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,16 +10,12 @@ import org.jetbrains.annotations.NotNull;
 public class ImportImpl extends RobotPsiElementBase implements Import {
 
     public ImportImpl(@NotNull final ASTNode node) {
-        super(node, RobotTokenTypes.ARGUMENT);
+        super(node, RobotTokenTypes.IMPORT);
     }
 
-    @Override
-    public PsiReference getReference() {
-        return new RobotImportReference(this);
-    }
-
-    @Override
-    public String getPresentableText() {
-        return getTextData();
+    public boolean isResource() {
+        // TODO: better OO
+        String text = getTextData();
+        return text != null && (text.equals("Resource") || text.equals("Variables"));
     }
 }

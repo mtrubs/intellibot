@@ -6,4 +6,6 @@ import com.intellij.psi.PsiElement;
  * @author Stephen Abrams
  */
 public interface Argument extends PsiElement {
+
+    String getPresentableText();
 }
