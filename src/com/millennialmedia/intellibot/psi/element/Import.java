@@ -8,4 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface Import extends PsiElement {
 
     boolean isResource();
+
+    boolean isLibrary();
 }

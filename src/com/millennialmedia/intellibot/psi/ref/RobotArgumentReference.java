@@ -1,13 +1,11 @@
 package com.millennialmedia.intellibot.psi.ref;
 
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.jetbrains.python.PythonFileType;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +29,23 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     public PsiElement resolve() {
         PsiElement parent = getElement().getParent();
         if (parent instanceof Import) {
-            if (((Import) parent).isResource()) {
+            Import importElement = (Import) parent;
+            if (importElement.isResource()) {
                 return resolveResource();
+            } else if (importElement.isLibrary()) {
+                return resolveLibrary();
             }
-            // TODO: libraries
         }
         // TODO: handle other argument types
+        return null;
+    }
+
+    private PsiElement resolveLibrary() {
+        String library = getElement().getPresentableText();
+
+        // TODO: figure out where the library is in the python path
+        PythonFileType fileType = PythonFileType.INSTANCE;
+
         return null;
     }
 
@@ -48,19 +57,6 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             return files[0];
         }
         return null;
-    }
-
-    private VirtualFile getImportFile(String importPath) {
-        // TODO: nothing seems to want to work here...
-        VirtualFile a = VirtualFileManager.getInstance().getFileSystem(LocalFileSystem.PROTOCOL).findFileByPath(importPath);
-//        if (importPath == null) {
-//            return null;
-//        } else
-        if (!importPath.startsWith("/")) {
-            importPath = "/" + importPath;
-        }
-        VirtualFile b = VirtualFileManager.getInstance().getFileSystem(LocalFileSystem.PROTOCOL).findFileByPath(importPath);
-        return LocalFileSystem.getInstance().findFileByPath(importPath);
     }
 
     @NotNull

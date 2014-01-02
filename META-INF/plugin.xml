@@ -5,6 +5,7 @@
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
+    <depends>Pythonid</depends>
 
     <description><![CDATA[
       <h1>IntelliBot, adding intelligence to Robot</h1>
