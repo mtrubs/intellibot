@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.jetbrains.python.PythonFileType;
+import com.jetbrains.python.psi.stubs.PyClassNameIndex;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
 import org.jetbrains.annotations.NotNull;
@@ -42,11 +42,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
     private PsiElement resolveLibrary() {
         String library = getElement().getPresentableText();
-
-        // TODO: figure out where the library is in the python path
-        PythonFileType fileType = PythonFileType.INSTANCE;
-
-        return null;
+        return PyClassNameIndex.findClass(library, myElement.getProject());
     }
 
     private PsiElement resolveResource() {
