@@ -8,7 +8,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFunction;
-import com.jetbrains.python.psi.stubs.PyClassNameIndex;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +41,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         RobotFile currentFile = PsiTreeUtil.getParentOfType(getElement(), RobotFile.class);
 
         Set<PsiFile> robotFiles = new HashSet<PsiFile>();
-        Set<PyClass> pythonClasses = new HashSet<PyClass>();
+        Set<RobotPythonClass> pythonClasses = new HashSet<RobotPythonClass>();
         addImports(currentFile, robotFiles, pythonClasses);
 
         PsiElement psiElement = resolveRobotKeyword(robotFiles, actualKeyword);
@@ -52,7 +51,17 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         return psiElement;
     }
 
-    private void addImports(RobotFile currentFile, Collection<PsiFile> robotFiles, Collection<PyClass> pythonClasses) {
+    private static final String ROBOT_BUILT_IN = "BuiltIn";
+
+    private void addRobotBuiltIn(Collection<RobotPythonClass> pythonClasses) {
+        PyClass builtIn = PythonResolver.findClass(ROBOT_BUILT_IN, myElement.getProject());
+        if (builtIn != null) {
+            // TODO: what if there is more than one class found?
+            pythonClasses.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn));
+        }
+    }
+
+    private void addImports(RobotFile currentFile, Collection<PsiFile> robotFiles, Collection<RobotPythonClass> pythonClasses) {
         // TODO: better way to search for these files
         // TODO: better way to search for matches in each file
         if (currentFile == null) {
@@ -60,7 +69,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         }
         // add our own file, since we could use keywords in it too
         robotFiles.add(currentFile);
-        // TODO: add to python: robot.libraries.* (BuiltIn, Collections, OperatingSystem, etc.)
+        addRobotBuiltIn(pythonClasses);
 
         Heading[] headings = PsiTreeUtil.getChildrenOfType(currentFile, Heading.class);
         if (headings == null) {
@@ -85,9 +94,9 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
                                 GlobalSearchScope.allScope(myElement.getProject()));
                         Collections.addAll(robotFiles, files);
                     } else if (eachImport.isLibrary()) {
-                        PyClass pythonClass = PyClassNameIndex.findClass(text, myElement.getProject());
-                        if (pythonClass != null) {
-                            pythonClasses.add(pythonClass);
+                        PyClass lib = PythonResolver.findClass(text, myElement.getProject());
+                        if (lib != null) {
+                            pythonClasses.add(new RobotPythonClass(text, lib));
                         }
                     }
                 }
@@ -121,10 +130,10 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         return null;
     }
 
-    private PsiElement resolvePythonKeyword(@NotNull Collection<PyClass> pythonClasses, @NotNull String keyword) {
-        for (PyClass pythonClass : pythonClasses) {
-            String functionName = trimClassName(pythonClass.getQualifiedName(), keyword);
-            PyFunction function = pythonClass.findMethodByName(functionName, true);
+    private PsiElement resolvePythonKeyword(@NotNull Collection<RobotPythonClass> pythonClasses, @NotNull String keyword) {
+        for (RobotPythonClass pythonClass : pythonClasses) {
+            String functionName = trimClassName(pythonClass.getLibrary(), keyword);
+            PyFunction function = pythonClass.findMethodByName(functionName);
             if (function != null) {
                 return function;
             }
