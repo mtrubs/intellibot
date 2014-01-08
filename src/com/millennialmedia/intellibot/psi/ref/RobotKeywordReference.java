@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author mrubino
@@ -35,16 +36,13 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
     @Override
     public PsiElement resolve() {
         KeywordInvokable element = getElement();
-        //strip text to just the main keyword definition, ignoring the arguments.  This is done outside the loop for efficiency's sake.
         String actualKeyword = element.getPresentableText();
 
-        //get files we can import from, including our own
+        // all files we import are based off the file we are currently in
         RobotFile currentFile = PsiTreeUtil.getParentOfType(getElement(), RobotFile.class);
 
         Set<PsiFile> robotFiles = new HashSet<PsiFile>();
-        robotFiles.add(currentFile); //add our own file, since we could use keywords in it too
         Set<PyClass> pythonClasses = new HashSet<PyClass>();
-
         addImports(currentFile, robotFiles, pythonClasses);
 
         PsiElement psiElement = resolveRobotKeyword(robotFiles, actualKeyword);
@@ -60,6 +58,10 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         if (currentFile == null) {
             return;
         }
+        // add our own file, since we could use keywords in it too
+        robotFiles.add(currentFile);
+        // TODO: add to python: robot.libraries.* (BuiltIn, Collections, OperatingSystem, etc.)
+
         Heading[] headings = PsiTreeUtil.getChildrenOfType(currentFile, Heading.class);
         if (headings == null) {
             return;
@@ -119,18 +121,26 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         return null;
     }
 
-    private PsiElement resolvePythonKeyword(Collection<PyClass> pythonClasses, String actualKeyword) {
-        // TODO: python keywords can have underscores or not; we should encourage not... i think
-        actualKeyword = actualKeyword.replace(' ', '_');
+    private PsiElement resolvePythonKeyword(@NotNull Collection<PyClass> pythonClasses, @NotNull String keyword) {
         for (PyClass pythonClass : pythonClasses) {
-            PyFunction[] functions = pythonClass.getMethods();
-            for (PyFunction function : functions) {
-                if (actualKeyword.equals(function.getName()) || actualKeyword.equals(function.getQualifiedName())) {
-                    return function;
-                }
+            String functionName = trimClassName(pythonClass.getQualifiedName(), keyword);
+            PyFunction function = pythonClass.findMethodByName(functionName, true);
+            if (function != null) {
+                return function;
             }
         }
         return null;
+    }
+
+    @NotNull
+    private String trimClassName(@Nullable String className, @NotNull String keyword) {
+        // TODO: python functions can also be qualified with their class name to avoid ambiguity
+        // TODO: is this enough?
+        if (className != null && keyword.startsWith(className)) {
+            keyword = keyword.replaceFirst(Pattern.quote(className + "."), "");
+        }
+        // TODO: python keywords can have underscores or not; we should encourage not... i think
+        return keyword.toLowerCase().replace(' ', '_');
     }
 
     @NotNull
