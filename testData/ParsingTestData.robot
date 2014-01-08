@@ -37,6 +37,7 @@ Scenario: This is also a keyword definition
   [Documentation]  adding another keyword will be classified correctly
     Given this works
     Then I will be happy
+    And I will be happy  12  123
 
 *** Keywords ***
 
