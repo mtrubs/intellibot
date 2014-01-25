@@ -41,7 +41,7 @@ public class RobotLexerTest extends TestCase {
         this.maxState = -1;
         // TODO: weak
 //        String data = getData("/testData/ParsingTestData.robot");
-        String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\testData\\ParsingTestData.robot");
+        String data = getData("/Users/mrubino/hack/intellibot/testData/ParsingTestData.robot");
 
         RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);
