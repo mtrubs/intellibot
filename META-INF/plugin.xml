@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.0.3</version>
+    <version>0.2</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -15,6 +15,7 @@
         <li>Code Completion</li>
         <li>Jump to Source</li>
       </ul>
+      <p>Find us in <a href="https://github.com/millennialmedia/intellibot">Github</a>.</p>
       ]]></description>
 
     <change-notes><![CDATA[
@@ -76,5 +77,7 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
+
+        <stubIndex implementation="com.jetbrains.python.psi.stubs.PyClassNameIndex"/>
     </extensions>
 </idea-plugin>

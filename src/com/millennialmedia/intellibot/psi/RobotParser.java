@@ -98,6 +98,9 @@ public class RobotParser implements PsiParser {
                     break;
                 } else if (RobotTokenTypes.BRACKET_SETTING == type) {
                     parseBracketSetting(builder);
+                } else if (RobotTokenTypes.ERROR == type) {
+                    // TODO: not sure
+                    builder.advanceLexer();
                 } else {
                     parseKeywordStatement(builder);
                 }
