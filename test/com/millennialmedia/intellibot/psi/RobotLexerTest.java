@@ -41,7 +41,7 @@ public class RobotLexerTest extends TestCase {
         this.maxState = -1;
         // TODO: weak
 //        String data = getData("/testData/ParsingTestData.robot");
-        String data = getData("C:\\Users\\mrubino\\hack\\intellibot\\testData\\ParsingTestData.robot");
+        String data = getData("/Users/mrubino/hack/intellibot/testData/ParsingTestData.robot");
 
         RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);
@@ -350,6 +350,24 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, " ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "I will be happy", RobotTokenTypes.KEYWORD, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "And", RobotTokenTypes.GHERKIN, GHERKIN);
+        lexer.advance();
+        assertState(lexer, " ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "I will be happy", RobotTokenTypes.KEYWORD, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "12", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "123", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();

@@ -6,12 +6,17 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.python.psi.PyClass;
+import com.jetbrains.python.psi.PyFunction;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author mrubino
@@ -29,58 +34,122 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        // TODO: better way to search for these files
-        // TODO: better way to search for matches in each file
-
         KeywordInvokable element = getElement();
-        //strip text to just the main keyword definition, ignoring the arguments.  This is done outside the loop for efficiency's sake.
         String actualKeyword = element.getPresentableText();
 
-        //get files we can import from, including our own
+        // all files we import are based off the file we are currently in
         RobotFile currentFile = PsiTreeUtil.getParentOfType(getElement(), RobotFile.class);
-        Set<PsiFile> importedFiles = new HashSet<PsiFile>();
-        importedFiles.add(currentFile); //add our own file, since we could use keywords in it too
 
-        if (currentFile != null) {
-            Heading[] headings = PsiTreeUtil.getChildrenOfType(currentFile, Heading.class);
+        Set<PsiFile> robotFiles = new HashSet<PsiFile>();
+        Set<RobotPythonClass> pythonClasses = new HashSet<RobotPythonClass>();
+        addImports(currentFile, robotFiles, pythonClasses);
+
+        PsiElement psiElement = resolveRobotKeyword(robotFiles, actualKeyword);
+        if (psiElement == null) {
+            psiElement = resolvePythonKeyword(pythonClasses, actualKeyword);
+        }
+        return psiElement;
+    }
+
+    private static final String ROBOT_BUILT_IN = "BuiltIn";
+
+    private void addRobotBuiltIn(Collection<RobotPythonClass> pythonClasses) {
+        PyClass builtIn = PythonResolver.findClass(ROBOT_BUILT_IN, myElement.getProject());
+        if (builtIn != null) {
+            // TODO: what if there is more than one class found?
+            pythonClasses.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn));
+        }
+    }
+
+    private void addImports(RobotFile currentFile, Collection<PsiFile> robotFiles, Collection<RobotPythonClass> pythonClasses) {
+        // TODO: better way to search for these files
+        // TODO: better way to search for matches in each file
+        if (currentFile == null) {
+            return;
+        }
+        // add our own file, since we could use keywords in it too
+        robotFiles.add(currentFile);
+        addRobotBuiltIn(pythonClasses);
+
+        Heading[] headings = PsiTreeUtil.getChildrenOfType(currentFile, Heading.class);
+        if (headings == null) {
+            return;
+        }
+        for (Heading heading : headings) {
+            if (heading.containsImports()) {
+                Import[] imports = PsiTreeUtil.getChildrenOfType(heading, Import.class);
+                if (imports == null) {
+                    continue;
+                }
+                for (Import eachImport : imports) {
+                    Argument importData = PsiTreeUtil.getChildOfType(eachImport, Argument.class);
+                    if (importData == null) {
+                        continue;
+                    }
+                    String text = importData.getPresentableText();
+                    if (eachImport.isResource()) {
+                        //TODO: crude, we want to look up the actual file in the future, this is quick and dirty
+                        String[] path = text.split("/");
+                        PsiFile[] files = FilenameIndex.getFilesByName(myElement.getProject(), path[path.length - 1],
+                                GlobalSearchScope.allScope(myElement.getProject()));
+                        Collections.addAll(robotFiles, files);
+                    } else if (eachImport.isLibrary()) {
+                        PyClass lib = PythonResolver.findClass(text, myElement.getProject());
+                        if (lib != null) {
+                            pythonClasses.add(new RobotPythonClass(text, lib));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private PsiElement resolveRobotKeyword(Collection<PsiFile> robotFiles, String actualKeyword) {
+        //find the actual keyword to link to
+        for (PsiFile file : robotFiles) {
+            if (file == null) {
+                continue;
+            }
+            Heading[] headings = PsiTreeUtil.getChildrenOfType(file, Heading.class);
             if (headings != null) {
                 for (Heading heading : headings) {
-                    if (heading.containsImports()) {
-                        Import[] imports = PsiTreeUtil.getChildrenOfType(heading, Import.class);
-                        for (Import eachImport : imports) {
-                            String[] path = eachImport.getLastChild().getText().split("/"); //TODO: crude, we want to look up the actual file in the future, this is quick and dirty
-                            PsiFile[] files = FilenameIndex.getFilesByName(myElement.getProject(), path[path.length - 1], GlobalSearchScope.allScope(myElement.getProject()));
-                            for (PsiFile psiFile : files) {
-                                importedFiles.add(psiFile);
+                    if (heading.containsKeywordDefinitions()) {
+                        KeywordDefinition[] definitions = PsiTreeUtil.getChildrenOfType(heading, KeywordDefinition.class);
+                        if (definitions == null) {
+                            continue;
+                        }
+                        for (KeywordDefinition definition : definitions) {
+                            if (definition.matches(actualKeyword)) {
+                                return definition;
                             }
                         }
                     }
                 }
             }
         }
-
-        //find the actual keyword to link to
-        for (PsiFile file : importedFiles) {
-            if (file != null) {
-                Heading[] headings = PsiTreeUtil.getChildrenOfType(file, Heading.class);
-                if (headings != null) {
-                    for (Heading heading : headings) {
-                        if (heading.containsKeywordDefinitions()) {
-                            KeywordDefinition[] definitions = PsiTreeUtil.getChildrenOfType(heading, KeywordDefinition.class);
-                            if (definitions != null) {
-                                for (KeywordDefinition definition : definitions) {
-                                    if (definition.matches(actualKeyword)) {
-                                        return definition;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         return null;
+    }
+
+    private PsiElement resolvePythonKeyword(@NotNull Collection<RobotPythonClass> pythonClasses, @NotNull String keyword) {
+        for (RobotPythonClass pythonClass : pythonClasses) {
+            String functionName = trimClassName(pythonClass.getLibrary(), keyword);
+            PyFunction function = pythonClass.findMethodByName(functionName);
+            if (function != null) {
+                return function;
+            }
+        }
+        return null;
+    }
+
+    @NotNull
+    private String trimClassName(@Nullable String className, @NotNull String keyword) {
+        // TODO: python functions can also be qualified with their class name to avoid ambiguity
+        // TODO: is this enough?
+        if (className != null && keyword.startsWith(className)) {
+            keyword = keyword.replaceFirst(Pattern.quote(className + "."), "");
+        }
+        // TODO: python keywords can have underscores or not; we should encourage not... i think
+        return keyword.toLowerCase().replace(' ', '_');
     }
 
     @NotNull

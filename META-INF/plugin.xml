@@ -1,10 +1,11 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.0.2</version>
+    <version>0.2</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
+    <depends>Pythonid</depends>
 
     <description><![CDATA[
       <h1>IntelliBot, adding intelligence to Robot</h1>
@@ -14,16 +15,25 @@
         <li>Code Completion</li>
         <li>Jump to Source</li>
       </ul>
+      <p>Find us in <a href="https://github.com/millennialmedia/intellibot">Github</a>.</p>
       ]]></description>
 
     <change-notes><![CDATA[
-      <h2>2012-12-24</h2>
-      <p>Added support for Variables and User Keywords</p>
-      <p>Local and remote jump to source work</p>
-      <p>Local and remote code completion</p>
-      <p>Have address some stack overflow bugs</p>
+      <h2>2014-01-08</h2>
+      <ul>
+        <li>Added support for Python Libraries; import and jump-to-source</li>
+      </ul>
+      <h2>2013-12-24</h2>
+      <ul>
+        <li>Added support for Variables and User Keywords</li>
+        <li>Local and remote jump-to-source work</li>
+        <li>Local and remote code completion</li>
+        <li>Have address some stack overflow bugs</li>
+      </ul>
       <h2>2013-11-18</h2>
-      <p>Initial Release after Hack-a-thon</p>
+      <ul>
+        <li>Initial Release after Hack-a-thon</li>
+      </ul>
       ]]>
     </change-notes>
 
@@ -67,5 +77,7 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
+
+        <stubIndex implementation="com.jetbrains.python.psi.stubs.PyClassNameIndex"/>
     </extensions>
 </idea-plugin>

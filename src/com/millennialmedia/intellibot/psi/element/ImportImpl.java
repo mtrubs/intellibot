@@ -18,4 +18,9 @@ public class ImportImpl extends RobotPsiElementBase implements Import {
         String text = getTextData();
         return text != null && (text.equals("Resource") || text.equals("Variables"));
     }
+
+    public boolean isLibrary() {
+        String text = getTextData();
+        return text != null && text.equals("Library");
+    }
 }
