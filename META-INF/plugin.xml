@@ -1,11 +1,12 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.2</version>
+    <version>0.2.1</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
-    <depends>Pythonid</depends>
+    <depends optional="true">com.intellij.modules.python</depends>
+    <depends optional="true">Pythonid</depends>
 
     <description><![CDATA[
       <h1>IntelliBot, adding intelligence to Robot</h1>
@@ -77,7 +78,5 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
-
-        <stubIndex implementation="com.jetbrains.python.psi.stubs.PyClassNameIndex"/>
     </extensions>
 </idea-plugin>
