@@ -15,7 +15,8 @@ For Robot Framework files ending with ".robot", this currently supports:
 ![Click into imported files](/examples/go_to_file.png)
 
 Note that for python library support we recently added a dependency on the Python plugin.
-We have not tested this with PyCharm.  There is a branch (no_python_libs) which was created before this dependency.
+The plugin will work without it but you will not get python support.
+In Pycharm, python files are not yet recognized.  Though the plugin should work fine otherwise.
 
 Features still needed:
 
