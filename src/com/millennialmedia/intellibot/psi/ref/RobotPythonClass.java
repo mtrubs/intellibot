@@ -1,4 +1,3 @@
-/* Jumptap's products may be patented under one or more of the patents listed at www.jumptap.com/intellectual-property */
 package com.millennialmedia.intellibot.psi.ref;
 
 import com.jetbrains.python.psi.PyClass;
