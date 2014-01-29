@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * @author mrubino
@@ -132,24 +131,12 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
 
     private PsiElement resolvePythonKeyword(@NotNull Collection<RobotPythonClass> pythonClasses, @NotNull String keyword) {
         for (RobotPythonClass pythonClass : pythonClasses) {
-            String functionName = trimClassName(pythonClass.getLibrary(), keyword);
-            PyFunction function = pythonClass.findMethodByName(functionName);
+            PyFunction function = pythonClass.findMethodByKeyword(keyword);
             if (function != null) {
                 return function;
             }
         }
         return null;
-    }
-
-    @NotNull
-    private String trimClassName(@Nullable String className, @NotNull String keyword) {
-        // TODO: python functions can also be qualified with their class name to avoid ambiguity
-        // TODO: is this enough?
-        if (className != null && keyword.startsWith(className)) {
-            keyword = keyword.replaceFirst(Pattern.quote(className + "."), "");
-        }
-        // TODO: python keywords can have underscores or not; we should encourage not... i think
-        return keyword.toLowerCase().replace(' ', '_');
     }
 
     @NotNull

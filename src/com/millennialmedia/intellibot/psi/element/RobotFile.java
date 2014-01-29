@@ -2,19 +2,23 @@ package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.psi.PsiFile;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Stephen Abrams
  */
 public interface RobotFile extends PsiFile {
+
     /**
      * @return locally defined keywords
      */
-    List<String> getKeywords();
+    Collection<String> getKeywords();
 
     /**
-     * @return list of imports, in the order they are declared
+     * Gets all the imported keyword files that are considered in scope for this file.  This
+     * includes python libraries and robot resource files.
+     *
+     * @return a collection of keyword files that this files knows about.
      */
-    List<RobotFile> getImportedRobotFiles();
+    Collection<KeywordFile> getImportedFiles();
 }
