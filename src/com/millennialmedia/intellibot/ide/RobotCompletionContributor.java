@@ -11,6 +11,7 @@ import com.intellij.util.ProcessingContext;
 import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,15 +66,17 @@ public class RobotCompletionContributor extends CompletionContributor {
     }
 
     private static void addRobotKeywords(CompletionResultSet result, PsiFile file) {
-        if (!(file instanceof RobotFile)) return;
-        final RobotFile robotFile = (RobotFile) file;
+        if (!(file instanceof RobotFile)) {
+            return;
+        }
+        RobotFile robotFile = (RobotFile) file;
 
         int idx = 0;
         addKeywordsToResult(robotFile.getKeywords(), result, idx++);
 
-        for (RobotFile f : robotFile.getImportedRobotFiles())
+        for (KeywordFile f : robotFile.getImportedFiles()) {
             addKeywordsToResult(f.getKeywords(), result, idx++);
-
+        }
     }
 
     private static void addKeywordsToResult(final Collection<String> keywords,
