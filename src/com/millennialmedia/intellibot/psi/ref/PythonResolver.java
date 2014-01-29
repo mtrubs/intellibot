@@ -3,6 +3,7 @@ package com.millennialmedia.intellibot.psi.ref;
 import com.intellij.openapi.components.ComponentConfig;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.impl.ProjectImpl;
+import com.intellij.util.PlatformUtils;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.stubs.PyClassNameIndex;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,6 @@ public class PythonResolver {
     }
 
     private static final String PYTHON_ID = "Pythonid";
-    private static final String PYTHON_MODULE = "com.intellij.modules.python";
 
     private static synchronized boolean hasPython(Project project) {
         if (hasPython == null) {
@@ -45,10 +45,12 @@ public class PythonResolver {
 
     private static boolean detectPython(Project project) {
         // TODO: there should be a better way to figure this out
-        if (project instanceof ProjectImpl) {
-            for (ComponentConfig a : ((ProjectImpl) project).getComponentConfigurations()) {
-                String pluginId = a.getPluginId().getIdString();
-                if (PYTHON_ID.equals(pluginId) || PYTHON_MODULE.equals(pluginId)) {
+        if (PlatformUtils.isPyCharm()) {
+            return true;
+        } else if (project instanceof ProjectImpl) {
+            for (ComponentConfig component : ((ProjectImpl) project).getComponentConfigurations()) {
+                String pluginId = component.getPluginId().getIdString();
+                if (PYTHON_ID.equals(pluginId)) {
                     return true;
                 }
             }
