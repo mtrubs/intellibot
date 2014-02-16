@@ -1,10 +1,6 @@
 package com.millennialmedia.intellibot.psi;
 
-import com.intellij.psi.tree.IElementType;
-
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -13,7 +9,10 @@ import java.util.Set;
 public class RobotKeywordProvider {
 
     private static RobotKeywordProvider instance = new RobotKeywordProvider();
-    private RobotKeywordProvider(){}
+
+    private RobotKeywordProvider() {
+    }
+
     public static RobotKeywordProvider getInstance() {
         return instance;
     }
@@ -75,11 +74,6 @@ public class RobotKeywordProvider {
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Resource");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Variables");
 
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "[");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "{");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SYNTAX, "}");
-
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Given");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "When");
         DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Then");
@@ -136,19 +130,24 @@ public class RobotKeywordProvider {
         settingsFollowedByStrings.add("[Timeout]");
     }
 
-    public Set<String> getGlobalSettings() {
-        return globalSettings;
+    public boolean isGlobalSetting(String word) {
+        return globalSettings.contains(word);
     }
 
-    public Set<String> getSettingsFollowedByKeywords() {
-        return settingsFollowedByKeywords;
+    public boolean isSyntaxFollowedByKeyword(String word) {
+        return settingsFollowedByKeywords.contains(word);
     }
 
-    public Set<String> getSettingsFollowedByStrings() {
-        return settingsFollowedByStrings;
+    public boolean isSyntaxFollowedByString(String word) {
+        return settingsFollowedByStrings.contains(word);
     }
 
-    public Set<String> getKeywordsOfType(RobotElementType type) {
+    public boolean isSyntaxOfType(RobotElementType type, String word) {
+        return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type).contains(word);
+    }
+
+    public Set<String> getRecommendationsOfType(RobotElementType type) {
+        // TODO: MTR: change this to be a more limited set
         return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
     }
 }

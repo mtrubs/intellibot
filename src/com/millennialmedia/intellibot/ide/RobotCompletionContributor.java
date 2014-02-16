@@ -40,7 +40,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                     final List<String> keywords = new ArrayList<String>();
 
                     for (IElementType t : RobotTokenTypes.KEYWORDS.getTypes()) {
-                        keywords.addAll(RobotKeywordProvider.getInstance().getKeywordsOfType((RobotElementType) t));
+                        keywords.addAll(RobotKeywordProvider.getInstance().getRecommendationsOfType((RobotElementType) t));
                     }
 
                     for (String keyword : keywords) {

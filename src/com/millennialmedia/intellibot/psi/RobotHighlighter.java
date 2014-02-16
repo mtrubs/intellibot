@@ -78,11 +78,6 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
             DefaultLanguageHighlighterColors.LINE_COMMENT
     );
 
-    public static final TextAttributesKey SYNTAX = TextAttributesKey.createTextAttributesKey(
-            RobotTokenTypes.SYNTAX.toString(),
-            DefaultLanguageHighlighterColors.CLASS_NAME
-    );
-
     public static final TextAttributesKey GHERKIN = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.GHERKIN.toString(),
             DefaultLanguageHighlighterColors.METADATA
@@ -102,7 +97,6 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
         keys1.put(RobotTokenTypes.ARGUMENT, ARGUMENT);
         keys1.put(RobotTokenTypes.ERROR, ERROR);
         keys1.put(RobotTokenTypes.GHERKIN, GHERKIN);
-        keys1.put(RobotTokenTypes.SYNTAX, SYNTAX);
         keys1.put(RobotTokenTypes.VARIABLE, VARIABLE);
         keys1.put(RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
         keys1.put(RobotTokenTypes.KEYWORD, KEYWORD);
