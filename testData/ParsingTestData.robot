@@ -14,6 +14,7 @@ Library  OperatingSystem
 Library  Collections
 
 Force Tags  Kyle  Advertiser  Dashboard  Component  #Other Tag
+Suite Teardown  This works
 
 *** Variables ***
 
@@ -36,7 +37,7 @@ Scenario: An admin can see the conversion trend
 Scenario: This is also a keyword definition
   [Documentation]  adding another keyword will be classified correctly
     Given this works
-    Then I will be happy
+    Then I will be happy  
     And I will be happy  12  123
 
 *** Keywords ***
@@ -47,7 +48,7 @@ Clean Database
     Clean  Ike
 #    Clean  Other Stuff
     Close All Browsers
-
+    
 
 This works
     its a new keyword

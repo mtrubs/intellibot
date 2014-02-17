@@ -21,6 +21,13 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     }
 
     @Override
+    public boolean containsTestCases() {
+        // TODO: better OO
+        String text = getTextData();
+        return text != null && text.startsWith("*** Test Case");
+    }
+
+    @Override
     public boolean containsKeywordDefinitions() {
         // TODO: better OO
         String text = getTextData();

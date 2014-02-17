@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Stephen Abrams
  */
 public class RobotFindUsagesProvider implements FindUsagesProvider {
+
     @Override
     public WordsScanner getWordsScanner() {
         return new DefaultWordsScanner(new RobotLexer(RobotKeywordProvider.getInstance()), TokenSet.EMPTY, TokenSet.EMPTY, TokenSet.EMPTY);
@@ -22,11 +23,7 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-        if (psiElement instanceof KeywordDefinition) {
-            return true;
-        }
-
-        return false;
+        return psiElement instanceof KeywordDefinition;
     }
 
     @Override
@@ -37,10 +34,7 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        if (element instanceof KeywordDefinition) {
-            return "keyworddefinition";
-        }
-        return element.toString();
+        return element instanceof KeywordDefinition ? "keyworddefinition" : element.toString();
     }
 
     @NotNull

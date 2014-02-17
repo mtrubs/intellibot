@@ -57,9 +57,6 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
     }
 
     public boolean isCollapsedByDefault(@NotNull ASTNode node) {
-        if (node.getPsi() instanceof Heading) {
-            return ((Heading) node.getPsi()).isSettings();
-        }
-        return false;
+        return node.getPsi() instanceof Heading && ((Heading) node.getPsi()).isSettings();
     }
 }

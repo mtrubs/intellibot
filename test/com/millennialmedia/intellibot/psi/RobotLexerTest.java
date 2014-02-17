@@ -177,6 +177,14 @@ public class RobotLexerTest extends TestCase {
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
+        assertState(lexer, "Suite Teardown", RobotTokenTypes.SETTING, SYNTAX);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, SYNTAX);
+        lexer.advance();
+        assertState(lexer, "This works", RobotTokenTypes.KEYWORD, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
+        lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
         assertState(lexer, "*** Variables ***", RobotTokenTypes.HEADING, VARIABLES_HEADING);
@@ -351,6 +359,8 @@ public class RobotLexerTest extends TestCase {
         lexer.advance();
         assertState(lexer, "I will be happy", RobotTokenTypes.KEYWORD, KEYWORD);
         lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
+        lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
@@ -422,6 +432,8 @@ public class RobotLexerTest extends TestCase {
         assertState(lexer, "Close All Browsers", RobotTokenTypes.KEYWORD, KEYWORD);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();

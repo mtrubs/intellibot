@@ -3,6 +3,7 @@ package com.millennialmedia.intellibot.psi;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Stack;
@@ -37,7 +38,7 @@ public class RobotLexer extends LexerBase {
     }
 
     @Override
-    public void start(CharSequence buffer, int startOffset, int endOffset, int initialState) {
+    public void start(@NotNull CharSequence buffer, int startOffset, int endOffset, int initialState) {
         this.buffer = buffer;
         this.startOffset = startOffset;
         this.endOffset = endOffset;
@@ -48,7 +49,7 @@ public class RobotLexer extends LexerBase {
 
     private boolean isSpecial(int position) {
         // special is defined as whitespace or anything we do before checking the state
-        return isWhitespace(position) || isComment(position);
+        return isWhitespace(position) || isNewLine(position) || isComment(position);
     }
 
     @Override
@@ -116,11 +117,11 @@ public class RobotLexer extends LexerBase {
                 if (isImport(word)) {
                     this.level.push(IMPORT);
                     this.currentToken = RobotTokenTypes.IMPORT;
-                } else if (keywordProvider.getGlobalSettings().contains(word)) {
+                } else if (keywordProvider.isGlobalSetting(word)) {
                     this.currentToken = RobotTokenTypes.SETTING;
-                    if (keywordProvider.getSettingsFollowedByKeywords().contains(word)) {
+                    if (keywordProvider.isSyntaxFollowedByKeyword(word)) {
                         this.level.push(SYNTAX);
-                    } else if (keywordProvider.getSettingsFollowedByStrings().contains(word)) {
+                    } else if (keywordProvider.isSyntaxFollowedByString(word)) {
                         this.level.push(KEYWORD);
                     } else {
                         goToEndOfLine();
@@ -145,17 +146,17 @@ public class RobotLexer extends LexerBase {
                 } else {
                     skipNonWhitespace();
                     String word = this.buffer.subSequence(this.startOffset, this.position).toString();
-                    if (keywordProvider.getKeywordsOfType(RobotTokenTypes.GHERKIN).contains(word)) {
+                    if (keywordProvider.isSyntaxOfType(RobotTokenTypes.GHERKIN, word)) {
                         currentToken = RobotTokenTypes.GHERKIN;
                         level.push(GHERKIN);
                     } else {
                         goToNextNewLineOrSuperSpace();
                         word = this.buffer.subSequence(this.startOffset, this.position).toString();
-                        if (keywordProvider.getKeywordsOfType(RobotTokenTypes.BRACKET_SETTING).contains(word)) {
+                        if (keywordProvider.isSyntaxOfType(RobotTokenTypes.BRACKET_SETTING, word)) {
                             this.currentToken = RobotTokenTypes.BRACKET_SETTING;
-                            if (keywordProvider.getSettingsFollowedByKeywords().contains(word)) {
+                            if (keywordProvider.isSyntaxFollowedByKeyword(word)) {
                                 this.level.push(SYNTAX);
-                            } else if (keywordProvider.getSettingsFollowedByStrings().contains(word)) {
+                            } else if (keywordProvider.isSyntaxFollowedByString(word)) {
                                 this.level.push(KEYWORD);
                             } else {
                                 goToEndOfLine();
@@ -237,7 +238,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private boolean isImport(String nextWord) {
-        return keywordProvider.getKeywordsOfType(RobotTokenTypes.IMPORT).contains(nextWord);
+        return keywordProvider.isSyntaxOfType(RobotTokenTypes.IMPORT, nextWord);
     }
 
     private void goToEndOfLine() {
@@ -294,6 +295,7 @@ public class RobotLexer extends LexerBase {
         return position;
     }
 
+    @NotNull
     @Override
     public CharSequence getBufferSequence() {
         return buffer;
@@ -316,7 +318,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private void skipNonWhitespace() {
-        while (position < endOffset && !isWhitespace(position)) {
+        while (position < endOffset && !isWhitespace(position) && !isNewLine(position)) {
             position++;
         }
     }
@@ -332,6 +334,6 @@ public class RobotLexer extends LexerBase {
     }
 
     private boolean isWhitespace(int position) {
-        return position < endOffset && Character.isWhitespace(buffer.charAt(position));
+        return position < endOffset && !isNewLine(position) && Character.isWhitespace(buffer.charAt(position));
     }
 }
