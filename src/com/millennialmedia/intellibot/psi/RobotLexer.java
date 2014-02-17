@@ -49,7 +49,7 @@ public class RobotLexer extends LexerBase {
 
     private boolean isSpecial(int position) {
         // special is defined as whitespace or anything we do before checking the state
-        return isWhitespace(position) || isComment(position);
+        return isWhitespace(position) || isNewLine(position) || isComment(position);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private void skipNonWhitespace() {
-        while (position < endOffset && !isWhitespace(position)) {
+        while (position < endOffset && !isWhitespace(position) && !isNewLine(position)) {
             position++;
         }
     }
@@ -334,6 +334,6 @@ public class RobotLexer extends LexerBase {
     }
 
     private boolean isWhitespace(int position) {
-        return position < endOffset && Character.isWhitespace(buffer.charAt(position));
+        return position < endOffset && !isNewLine(position) && Character.isWhitespace(buffer.charAt(position));
     }
 }
