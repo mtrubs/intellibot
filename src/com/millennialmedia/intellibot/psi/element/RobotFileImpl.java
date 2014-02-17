@@ -6,10 +6,10 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PlatformUtils;
 import com.jetbrains.python.psi.PyClass;
 import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
 import com.millennialmedia.intellibot.psi.RobotLanguage;
+import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,12 +63,12 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
                         files.add((KeywordFile) resolution);
                     }
                 }
-            } else if (imp.isLibrary() && PlatformUtils.isIntelliJ()) {
+            } else if (imp.isLibrary()) {
                 Argument argument = PsiTreeUtil.findChildOfType(imp, Argument.class);
                 if (argument != null) {
-                    PsiElement resolution = resolveImport(argument);
-                    if (resolution != null && resolution instanceof PyClass) {
-                        files.add(new RobotPythonClass(argument.getPresentableText(), (PyClass) resolution));
+                    PyClass resolution = PythonResolver.cast(resolveImport(argument));
+                    if (resolution != null) {
+                        files.add(new RobotPythonClass(argument.getPresentableText(), resolution));
                     }
                 }
             }

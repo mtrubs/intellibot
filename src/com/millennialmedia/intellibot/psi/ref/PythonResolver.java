@@ -1,11 +1,16 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ComponentConfig;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.impl.ProjectImpl;
+import com.intellij.psi.PsiElement;
 import com.intellij.util.PlatformUtils;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.stubs.PyClassNameIndex;
+import com.millennialmedia.intellibot.RobotBundle;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -19,6 +24,15 @@ public class PythonResolver {
     private static Boolean hasPython;
 
     private PythonResolver() {
+    }
+
+    public static PyClass cast(PsiElement element) {
+        if (hasPython) {
+            if (element instanceof PyClass) {
+                return (PyClass) element;
+            }
+        }
+        return null;
     }
 
     @Nullable
@@ -53,6 +67,12 @@ public class PythonResolver {
                 if (PYTHON_ID.equals(pluginId)) {
                     return true;
                 }
+            }
+            if (PlatformUtils.isIntelliJ()) {
+                Notifications.Bus.notify(new Notification("intellibot.python",
+                        RobotBundle.message("plugin.python.missing.title"),
+                        RobotBundle.message("plugin.python.missing"),
+                        NotificationType.WARNING));
             }
         }
         return false;
