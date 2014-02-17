@@ -1,5 +1,7 @@
 package com.millennialmedia.intellibot.psi;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,136 +20,180 @@ public class RobotKeywordProvider {
     }
 
 
-    private static final RobotKeywordTable DEFAULT_KEYWORD_TABLE = new RobotKeywordTable();
-    private static final Set<String> globalSettings = new HashSet<String>();
-    private static final Set<String> settingsFollowedByKeywords = new HashSet<String>();
-    private static final Set<String> settingsFollowedByStrings = new HashSet<String>();
+    private static final RobotKeywordTable KEYWORD_TABLE = new RobotKeywordTable();
+    private static final Set<String> GLOBAL_SETTINGS = new HashSet<String>();
+    private static final Set<String> SETTINGS_FOLLOWED_BY_KEYWORDS = new HashSet<String>();
+    private static final Set<String> SETTINGS_FOLLOWED_BY_STRINGS = new HashSet<String>();
 
     static {
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Settings ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Setting ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Test Cases ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Test Case ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Keywords ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Keyword ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Metadata ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** User Keywords ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** User Keyword ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Variable ***");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.HEADING, "*** Variables ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Settings ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Setting ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Test Cases ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Test Case ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Keywords ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Keyword ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Metadata ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** User Keywords ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** User Keyword ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Variables ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Variable ***");
 
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Suite Setup");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Suite Precondition");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Suite Teardown");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Suite Post Condition");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Timeout");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Setup");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Precondition");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Teardown");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Postcondition");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Template");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Documentation");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Metadata");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Force Tags");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Default Tags");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Test Timeout");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Setup");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Precondition");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Teardown");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Postcondition");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Template");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Tags");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.SETTING, "Timeout");
+        addRecommendation(RobotTokenTypes.HEADING, "*** Settings ***", "Settings");
+        addRecommendation(RobotTokenTypes.HEADING, "*** Test Cases ***", "Test Cases");
+        addRecommendation(RobotTokenTypes.HEADING, "*** Keywords ***", "Keywords");
+        addRecommendation(RobotTokenTypes.HEADING, "*** Variables ***", "Variables");
 
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Setup]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Precondition]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Teardown]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Arguments]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Postcondition]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Template]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Documentation]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Tags]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Timeout]");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.BRACKET_SETTING, "[Return]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Suite Setup");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Suite Precondition");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Suite Teardown");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Suite Post Condition");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Timeout");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Setup");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Precondition");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Teardown");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Postcondition");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Template");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Documentation");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Metadata");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Force Tags");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Default Tags");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Timeout");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Setup");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Precondition");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Teardown");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Postcondition");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Template");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Tags");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Timeout");
 
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Library");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Resource");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.IMPORT, "Variables");
+        addRecommendation(RobotTokenTypes.SETTING, "Documentation", "Documentation");
+        addRecommendation(RobotTokenTypes.SETTING, "Metadata", "Metadata");
+        addRecommendation(RobotTokenTypes.SETTING, "Suite Setup", "Suite Setup");
+        addRecommendation(RobotTokenTypes.SETTING, "Suite Teardown", "Suite Teardown");
+        addRecommendation(RobotTokenTypes.SETTING, "Force Tags", "Force Tags");
+        addRecommendation(RobotTokenTypes.SETTING, "Default Tags", "Default Tags");
+        addRecommendation(RobotTokenTypes.SETTING, "Test Setup", "Test Setup");
+        addRecommendation(RobotTokenTypes.SETTING, "Test Teardown", "Test Teardown");
+        addRecommendation(RobotTokenTypes.SETTING, "Test Template", "Test Template");
+        addRecommendation(RobotTokenTypes.SETTING, "Test Timeout", "Test Timeout");
 
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Given");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "When");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "Then");
-        DEFAULT_KEYWORD_TABLE.put(RobotTokenTypes.GHERKIN, "And");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Setup]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Precondition]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Teardown]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Arguments]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Postcondition]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Template]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Documentation]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Tags]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Timeout]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Return]");
 
-        globalSettings.add("Suite Setup");
-        globalSettings.add("Suite Precondition");
-        globalSettings.add("Suite Teardown");
-        globalSettings.add("Suite Postcondition");
-        globalSettings.add("Test Setup");
-        globalSettings.add("Test Precondition");
-        globalSettings.add("Test Teardown");
-        globalSettings.add("Test PostCondition");
-        globalSettings.add("Test Template");
-        globalSettings.add("Documentation");
-        globalSettings.add("Metadata");
-        globalSettings.add("Force Tags");
-        globalSettings.add("Default Tags");
-        globalSettings.add("Test Timeout");
+        // TODO: test case definition set
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Documentation]", "Documentation");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Tags]", "Tags");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Setup]", "Setup");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Teardown]", "Teardown");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Template]", "Template");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Timeout]", "Timeout");
 
-        settingsFollowedByKeywords.add("Suite Setup");
-        settingsFollowedByKeywords.add("Suite Precondition");
-        settingsFollowedByKeywords.add("Suite Teardown");
-        settingsFollowedByKeywords.add("Suite Postcondition");
-        settingsFollowedByKeywords.add("Test Setup");
-        settingsFollowedByKeywords.add("Test Precondition");
-        settingsFollowedByKeywords.add("Test Teardown");
-        settingsFollowedByKeywords.add("Test PostCondition");
-        settingsFollowedByKeywords.add("Test Template");
-        settingsFollowedByKeywords.add("Setup");
-        settingsFollowedByKeywords.add("[Setup]");
-        settingsFollowedByKeywords.add("Precondition");
-        settingsFollowedByKeywords.add("[Precondition]");
-        settingsFollowedByKeywords.add("Teardown");
-        settingsFollowedByKeywords.add("[Teardown]");
-        settingsFollowedByKeywords.add("Postcondition");
-        settingsFollowedByKeywords.add("[Postcondition]");
-        settingsFollowedByKeywords.add("Template");
-        settingsFollowedByKeywords.add("[Template]");
+        // TODO: keyword definition set
+        //addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Documentation]", "Documentation");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Arguments]", "Arguments");
+        addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Return]", "Return");
+        //addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Teardown]", "Teardown");
+        //addRecommendation(RobotTokenTypes.BRACKET_SETTING, "[Timeout]", "Timeout");
 
-        settingsFollowedByStrings.add("Documentation");
-        settingsFollowedByStrings.add("[Documentation]");
-        settingsFollowedByStrings.add("Metadata");
-        settingsFollowedByStrings.add("Force Tags");
-        settingsFollowedByStrings.add("Default Tags");
-        settingsFollowedByStrings.add("Test Timeout");
-        settingsFollowedByStrings.add("Tags");
-        settingsFollowedByStrings.add("[Tags]");
-        settingsFollowedByStrings.add("Arguments");
-        settingsFollowedByStrings.add("[Arguments]");
-        settingsFollowedByStrings.add("Return");
-        settingsFollowedByStrings.add("[Return]");
-        settingsFollowedByStrings.add("Timeout");
-        settingsFollowedByStrings.add("[Timeout]");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.IMPORT, "Library");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.IMPORT, "Resource");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.IMPORT, "Variables");
+
+        addRecommendation(RobotTokenTypes.IMPORT, "Library", "Library");
+        addRecommendation(RobotTokenTypes.IMPORT, "Resource", "Resource");
+        addRecommendation(RobotTokenTypes.IMPORT, "Variables", "Variables");
+
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.GHERKIN, "Given");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.GHERKIN, "When");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.GHERKIN, "Then");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.GHERKIN, "And");
+
+        addRecommendation(RobotTokenTypes.GHERKIN, "Given", "Given");
+        addRecommendation(RobotTokenTypes.GHERKIN, "When", "When");
+        addRecommendation(RobotTokenTypes.GHERKIN, "Then", "Then");
+        addRecommendation(RobotTokenTypes.GHERKIN, "And", "And");
+
+        GLOBAL_SETTINGS.add("Suite Setup");
+        GLOBAL_SETTINGS.add("Suite Precondition");
+        GLOBAL_SETTINGS.add("Suite Teardown");
+        GLOBAL_SETTINGS.add("Suite Postcondition");
+        GLOBAL_SETTINGS.add("Test Setup");
+        GLOBAL_SETTINGS.add("Test Precondition");
+        GLOBAL_SETTINGS.add("Test Teardown");
+        GLOBAL_SETTINGS.add("Test PostCondition");
+        GLOBAL_SETTINGS.add("Test Template");
+        GLOBAL_SETTINGS.add("Documentation");
+        GLOBAL_SETTINGS.add("Metadata");
+        GLOBAL_SETTINGS.add("Force Tags");
+        GLOBAL_SETTINGS.add("Default Tags");
+        GLOBAL_SETTINGS.add("Test Timeout");
+
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Setup");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Precondition");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Teardown");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Postcondition");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Setup");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Precondition");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Teardown");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test PostCondition");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Template");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Setup");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("[Setup]");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Precondition");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("[Precondition]");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Teardown");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("[Teardown]");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Postcondition");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("[Postcondition]");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Template");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("[Template]");
+
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Documentation");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("[Documentation]");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Metadata");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Force Tags");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Default Tags");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Test Timeout");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Tags");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("[Tags]");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Arguments");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("[Arguments]");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Return");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("[Return]");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Timeout");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("[Timeout]");
+    }
+
+    private static void addRecommendation(@NotNull RobotElementType type, @NotNull String word, @NotNull String lookup) {
+        KEYWORD_TABLE.addRecommendation(type, word, lookup);
     }
 
     public boolean isGlobalSetting(String word) {
-        return globalSettings.contains(word);
+        return GLOBAL_SETTINGS.contains(word);
     }
 
     public boolean isSyntaxFollowedByKeyword(String word) {
-        return settingsFollowedByKeywords.contains(word);
+        return SETTINGS_FOLLOWED_BY_KEYWORDS.contains(word);
     }
 
     public boolean isSyntaxFollowedByString(String word) {
-        return settingsFollowedByStrings.contains(word);
+        return SETTINGS_FOLLOWED_BY_STRINGS.contains(word);
     }
 
     public boolean isSyntaxOfType(RobotElementType type, String word) {
-        return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type).contains(word);
+        return KEYWORD_TABLE.getSyntaxOfType(type).contains(word);
     }
 
-    public Set<String> getRecommendationsOfType(RobotElementType type) {
-        // TODO: MTR: change this to be a more limited set
-        return DEFAULT_KEYWORD_TABLE.getKeywordsOfType(type);
+    @NotNull
+    public Set<RecommendationWord> getRecommendationsForType(RobotElementType type) {
+        return KEYWORD_TABLE.getRecommendationsForType(type);
     }
 }

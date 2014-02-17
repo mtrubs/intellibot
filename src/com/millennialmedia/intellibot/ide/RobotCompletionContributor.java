@@ -5,9 +5,11 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.TailTypeDecorator;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
+import com.millennialmedia.intellibot.psi.RecommendationWord;
 import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
@@ -15,9 +17,7 @@ import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -26,35 +26,71 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  */
 public class RobotCompletionContributor extends CompletionContributor {
 
+    private static final TailType NEW_LINE = TailType.createSimpleTailType('\n');
+    private static final TailType SUPER_SPACE = new TailType() {
+        @Override
+        public int processTail(Editor editor, int tailOffset) {
+            Document document = editor.getDocument();
+            int textLength = document.getTextLength();
+            CharSequence chars = document.getCharsSequence();
+            if (tailOffset < textLength - 1 && chars.charAt(tailOffset) == ' ' && chars.charAt(tailOffset + 1) == ' ') {
+                // if we already have the two spaces then move the caret to after them
+                return moveCaret(editor, tailOffset, 2);
+            } else if (tailOffset < textLength && chars.charAt(tailOffset) == ' ') {
+                // if we only have one space then add the second and move the caret after both
+                document.insertString(tailOffset, " ");
+                return moveCaret(editor, tailOffset, 2);
+            } else {
+                // if there are not spaces then add two and move the caret after them
+                document.insertString(tailOffset, "  ");
+                return moveCaret(editor, tailOffset, 2);
+            }
+        }
+    };
+
     public RobotCompletionContributor() {
 
-        // SMA todo: better honed "places"
-
-        extend(CompletionType.BASIC, psiElement().inFile(psiElement(RobotFile.class)), new CompletionProvider<CompletionParameters>() {
-            @Override
-            protected void addCompletions(@NotNull CompletionParameters parameters,
-                                          ProcessingContext context,
-                                          @NotNull CompletionResultSet result) {
-                final PsiFile psiFile = parameters.getOriginalFile();
-                if (psiFile instanceof RobotFile) {
-                    final List<String> keywords = new ArrayList<String>();
-
-                    for (IElementType t : RobotTokenTypes.KEYWORDS.getTypes()) {
-                        keywords.addAll(RobotKeywordProvider.getInstance().getRecommendationsOfType((RobotElementType) t));
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet results) {
+                        addSyntaxLookup(RobotTokenTypes.HEADING, results, NEW_LINE);
                     }
+                });
 
-                    for (String keyword : keywords) {
-                        LookupElement element = createKeywordLookupElement(keyword);
-
-                        result.addElement(PrioritizedLookupElement.withPriority(element, 0));
+        // TODO: MTR: some brackets are only for Test Cases, some only Keywords, some both
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet results) {
+                        addSyntaxLookup(RobotTokenTypes.BRACKET_SETTING, results, SUPER_SPACE);
                     }
+                });
 
-                }
+        // TODO: MTR: Settings and Imports should only be in *** Settings ***
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet results) {
+                        addSyntaxLookup(RobotTokenTypes.SETTING, results, SUPER_SPACE);
+                        addSyntaxLookup(RobotTokenTypes.IMPORT, results, SUPER_SPACE);
+                    }
+                });
 
-            }
+        // TODO: MTR: only in Test Cases
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet results) {
+                        addSyntaxLookup(RobotTokenTypes.GHERKIN, results, TailType.SPACE);
+                    }
+                });
 
-        });
-
+        // TODO: MTR: only in test cases and keyword definitions
         extend(CompletionType.BASIC, psiElement().inFile(psiElement(RobotFile.class)), new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters,
@@ -63,6 +99,12 @@ public class RobotCompletionContributor extends CompletionContributor {
                 addRobotKeywords(result, parameters.getOriginalFile());
             }
         });
+    }
+
+    @Override
+    public void fillCompletionVariants(final CompletionParameters parameters, CompletionResultSet result) {
+        // debugging point
+        super.fillCompletionVariants(parameters, result);
     }
 
     private static void addRobotKeywords(CompletionResultSet result, PsiFile file) {
@@ -83,18 +125,23 @@ public class RobotCompletionContributor extends CompletionContributor {
                                             final CompletionResultSet result,
                                             int priority) {
         for (String keyword : keywords) {
-            LookupElement element = createKeywordLookupElement(keyword);
-
+            // TODO: tail type of SUPER_SPACE for those with arguments; NONE for those without; NONE is safer for now.
+            LookupElement element = TailTypeDecorator.withTail(LookupElementBuilder.create(keyword), TailType.NONE);
             result.addElement(PrioritizedLookupElement.withPriority(element, priority));
         }
     }
 
-    private static LookupElement createKeywordLookupElement(final String keyword) {
-        return TailTypeDecorator.withTail(LookupElementBuilder.create(keyword), TailType.SPACE);
-    }
-
-    @Override
-    public void fillCompletionVariants(final CompletionParameters parameters, CompletionResultSet result) {
-        super.fillCompletionVariants(parameters, result);
+    private static void addSyntaxLookup(@NotNull RobotElementType type, @NotNull CompletionResultSet results, @NotNull TailType tail) {
+        Collection<RecommendationWord> words = RobotKeywordProvider.getInstance().getRecommendationsForType(type);
+        for (RecommendationWord word : words) {
+            LookupElement lookup = TailTypeDecorator.withTail(
+                    LookupElementBuilder.create(word.getPresentation())
+                            .withLookupString(word.getLookup())
+                            .withLookupString(word.getLookup().toLowerCase())
+                            .withPresentableText(word.getPresentation())
+                            .withCaseSensitivity(true),
+                    tail);
+            results.addElement(lookup);
+        }
     }
 }
