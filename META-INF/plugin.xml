@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.2.4</version>
+    <version>0.3</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -20,6 +20,13 @@
       ]]></description>
 
     <change-notes><![CDATA[
+      <h2>0.3</h2>
+      <ul>
+        <li>Cleaned up some of the recommended syntax</li>
+        <li>Cleaned up where the recommended syntax appears (not perfect but better)</li>
+        <li>Enabled code completion for pycharm python libraries</li>
+        <li>Minor parser fixes</li>
+      </ul>
       <h2>0.2.4</h2>
       <ul>
         <li>added python support for pycharm</li>
