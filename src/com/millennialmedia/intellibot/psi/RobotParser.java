@@ -61,6 +61,8 @@ public class RobotParser implements PsiParser {
                     parseSetting(builder);
                 } else if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
                     parseKeywordDefinition(builder);
+                } else if (RobotTokenTypes.KEYWORD == type) {
+                    parseKeywordStatement(builder);
                 } else {
                     // TODO: other types; error
                     //System.out.println(type);

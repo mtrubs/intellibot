@@ -14,6 +14,7 @@ Library  OperatingSystem
 Library  Collections
 
 Force Tags  Kyle  Advertiser  Dashboard  Component  #Other Tag
+Suite Teardown  This works
 
 *** Variables ***
 
