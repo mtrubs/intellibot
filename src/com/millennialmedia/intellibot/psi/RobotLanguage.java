@@ -7,10 +7,9 @@ import com.intellij.lang.Language;
  */
 public class RobotLanguage extends Language {
 
-    public static RobotLanguage INSTANCE = new RobotLanguage();
+    public static final RobotLanguage INSTANCE = new RobotLanguage();
 
-
-    protected RobotLanguage() {
+    private RobotLanguage() {
         super("Robot", "");
     }
 

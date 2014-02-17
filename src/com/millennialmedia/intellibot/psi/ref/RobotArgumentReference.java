@@ -19,7 +19,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         this(element, false);
     }
 
-    public RobotArgumentReference(Argument element, boolean soft) {
+    private RobotArgumentReference(Argument element, boolean soft) {
         super(element, soft);
     }
 

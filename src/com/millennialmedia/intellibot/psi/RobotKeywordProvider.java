@@ -10,13 +10,13 @@ import java.util.Set;
  */
 public class RobotKeywordProvider {
 
-    private static RobotKeywordProvider instance = new RobotKeywordProvider();
+    private static final RobotKeywordProvider INSTANCE = new RobotKeywordProvider();
 
     private RobotKeywordProvider() {
     }
 
     public static RobotKeywordProvider getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
 

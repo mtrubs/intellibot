@@ -26,7 +26,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         this(element, false);
     }
 
-    public RobotKeywordReference(KeywordInvokable element, boolean soft) {
+    private RobotKeywordReference(KeywordInvokable element, boolean soft) {
         super(element, soft);
     }
 

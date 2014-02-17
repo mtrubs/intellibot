@@ -295,6 +295,7 @@ public class RobotLexer extends LexerBase {
         return position;
     }
 
+    @NotNull
     @Override
     public CharSequence getBufferSequence() {
         return buffer;

@@ -2,7 +2,6 @@ package com.millennialmedia.intellibot.psi;
 
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.IStubFileElementType;
-import com.intellij.psi.tree.TokenSet;
 
 public interface RobotTokenTypes {
 
@@ -22,7 +21,4 @@ public interface RobotTokenTypes {
 
     RobotElementType ERROR = new RobotElementType("ERROR");
     RobotElementType WHITESPACE = new RobotElementType("WHITESPACE");
-
-    TokenSet KEYWORDS = TokenSet.create(HEADING, SETTING, BRACKET_SETTING, IMPORT,
-            KEYWORD_DEFINITION, KEYWORD, ARGUMENT, VARIABLE_DEFINITION, VARIABLE, COMMENT, GHERKIN);
 }
