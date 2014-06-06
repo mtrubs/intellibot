@@ -1,6 +1,10 @@
 *** Settings ***
 # fun things going on here
 Documentation  Test the account dashboard
+...
+...  and this goes to the next line
+Documentation
+  ...  all new line
 
 Resource  kyle/web/db_advertiser_actions.txt
 Resource  kyle/web/db_campaign_actions.txt
@@ -54,4 +58,4 @@ This works
     its a new keyword
 
 I will be happy
-    there is a smile on my face
+    there is a smile on my face  ...

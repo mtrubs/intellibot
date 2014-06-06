@@ -68,10 +68,17 @@ public class RobotLexer extends LexerBase {
         } else if (isNewLine(this.position)) {
             if (!this.level.empty()) {
                 int state = this.level.peek();
-                if (ARG == state || IMPORT == state || KEYWORD == state || SYNTAX == state || VARIABLE_DEFINITION == state) {
+                if (ARG == state || IMPORT == state) {
                     level.pop();
                     advance();
                     return;
+                } else if (KEYWORD == state || SYNTAX == state || VARIABLE_DEFINITION == state) {
+                    if (!isEllipsis(this.position)) {
+                        level.pop();
+                        advance();
+                        return;
+                    }
+                    // else do nothing; keep newline on this level
                 } else if (KEYWORD_DEFINITION == state && !isSpecial(position + 1)) {
                     level.pop();
                     advance();
@@ -172,6 +179,17 @@ public class RobotLexer extends LexerBase {
                 if (areAtStartOfSuperSpace()) {
                     skipWhitespace();
                     this.currentToken = RobotTokenTypes.WHITESPACE;
+                } else if (isEllipsis(this.position)) {
+                    if (isOnlyWhitespaceToPreviousLine()) {
+                        // if the only thing before the ... is white space then it is the reserved word
+                        goToNextNewLineOrSuperSpace();
+                        currentToken = RobotTokenTypes.WHITESPACE;
+                    } else {
+                        // otherwise it is an argument that happens to be ...
+                        goToNextNewLineOrSuperSpace();
+                        level.push(ARG);
+                        this.currentToken = RobotTokenTypes.ARGUMENT;
+                    }
                 } else {
                     goToNextNewLineOrSuperSpace();
                     level.push(ARG);
@@ -215,6 +233,27 @@ public class RobotLexer extends LexerBase {
                 charAtEquals(position + 1, '*') &&
                 charAtEquals(position + 2, '*') &&
                 charAtEquals(position + 3, ' ');
+    }
+
+    private boolean isEllipsis(int position) {
+        while (position < endOffset && (isWhitespace(position) || isNewLine(position))) {
+            position ++;
+        }
+        return charAtEquals(position, '.') &&
+                charAtEquals(position + 1, '.') &&
+                charAtEquals(position + 2, '.') &&
+                (isWhitespace(position + 3) || isNewLine(position + 3));
+    }
+    
+    private boolean isOnlyWhitespaceToPreviousLine() {
+        int position = this.position - 1;
+        while (position >= 0 && !isNewLine(position)) {
+            if (!isWhitespace(position)) {
+                return false;
+            }
+            position--;
+        }
+        return true;
     }
 
     private boolean isSettings(String line) {

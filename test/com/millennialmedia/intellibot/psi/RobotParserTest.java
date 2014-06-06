@@ -1,26 +1,29 @@
 package com.millennialmedia.intellibot.psi;
 
-
 import com.intellij.testFramework.ParsingTestCase;
-
+import org.junit.Test;
 
 public class RobotParserTest extends ParsingTestCase {
+
     public RobotParserTest() {
         super("", "robot", new RobotParserDefinition());
     }
 
+    @Test
     public void testParsingTestData() {
         doTest(true);
     }
 
+    @Test
     public void testJunk() {
         doTest(true);
     }
 
     @Override
     protected String getTestDataPath() {
-//        return "/testData";
-        return "/Users/mrubino/hack/intellibot/testData";
+        // TODO: weak
+//        return "/samples";
+        return "/Users/mrubino/hack/intellibot/testData/samples";
     }
 
     @Override
