@@ -12,7 +12,7 @@ public interface RobotFile extends PsiFile {
     /**
      * @return locally defined keywords
      */
-    Collection<String> getKeywords();
+    Collection<DefinedKeyword> getKeywords();
 
     /**
      * Gets all the imported keyword files that are considered in scope for this file.  This

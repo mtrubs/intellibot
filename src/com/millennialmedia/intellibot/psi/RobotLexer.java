@@ -143,6 +143,7 @@ public class RobotLexer extends LexerBase {
                 this.level.push(VARIABLE_DEFINITION);
                 this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
+                // TODO: MTR: there is an issue here if you have a super space after the settings headers
                 goToNextNewLineOrSuperSpace();
                 this.level.push(KEYWORD_DEFINITION);
                 this.currentToken = RobotTokenTypes.KEYWORD_DEFINITION;

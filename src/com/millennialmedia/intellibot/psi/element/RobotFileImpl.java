@@ -34,14 +34,14 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     }
 
     @Override
-    public Collection<String> getKeywords() {
-        List<String> result = new ArrayList<String>();
+    public Collection<DefinedKeyword> getKeywords() {
+        List<DefinedKeyword> result = new ArrayList<DefinedKeyword>();
         for (PsiElement child : getChildren()) {
             if (child instanceof Heading) {
                 if (((Heading) child).containsKeywordDefinitions()) {
                     for (PsiElement headingChild : child.getChildren()) {
-                        if (headingChild instanceof KeywordDefinition)
-                            result.add(((KeywordDefinition) headingChild).getPresentableText());
+                        if (headingChild instanceof DefinedKeyword)
+                            result.add(((DefinedKeyword) headingChild));
                     }
                 }
             }

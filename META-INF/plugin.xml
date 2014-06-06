@@ -24,6 +24,7 @@
       <ul>
         <li>Added support for ellipsis</li>
         <li>Updated file icon</li>
+        <li>Added better handling of super space on auto-complete keywords</li>
       </ul>
       <h2>0.3</h2>
       <ul>
