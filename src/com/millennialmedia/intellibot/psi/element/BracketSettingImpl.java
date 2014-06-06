@@ -21,6 +21,7 @@ public class BracketSettingImpl extends RobotPsiElementBase implements BracketSe
 
     @Override
     public boolean isArguments() {
+        // TODO: better OO
         return ARGUMENTS.equalsIgnoreCase(getTextData());
     }
 
