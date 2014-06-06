@@ -119,6 +119,10 @@ public class RobotLexer extends LexerBase {
         } else {
             int state = level.peek();
             if (SETTINGS_HEADING == state) {
+                if (areAtStartOfSuperSpace()) {
+                    // TODO: error?
+                    skipWhitespace();
+                }
                 goToNextNewLineOrSuperSpace();
                 String word = buffer.subSequence(startOffset, position).toString();
                 if (isImport(word)) {
@@ -139,11 +143,18 @@ public class RobotLexer extends LexerBase {
                     this.currentToken = RobotTokenTypes.ERROR;
                 }
             } else if (VARIABLES_HEADING == state) {
+                if (areAtStartOfSuperSpace()) {
+                    // TODO: error?
+                    skipWhitespace();
+                }
                 goToNextNewLineOrSuperSpace();
                 this.level.push(VARIABLE_DEFINITION);
                 this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
-                // TODO: MTR: there is an issue here if you have a super space after the settings headers
+                if (areAtStartOfSuperSpace()) {
+                    // TODO: error?
+                    skipWhitespace();
+                }
                 goToNextNewLineOrSuperSpace();
                 this.level.push(KEYWORD_DEFINITION);
                 this.currentToken = RobotTokenTypes.KEYWORD_DEFINITION;
