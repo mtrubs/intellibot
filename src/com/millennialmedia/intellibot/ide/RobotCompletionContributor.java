@@ -186,7 +186,13 @@ public class RobotCompletionContributor extends CompletionContributor {
                                             int priority) {
         for (String keyword : keywords) {
             // TODO: tail type of SUPER_SPACE for those with arguments; NONE for those without; NONE is safer for now.
-            LookupElement element = TailTypeDecorator.withTail(LookupElementBuilder.create(keyword), TailType.NONE);
+            LookupElement element = TailTypeDecorator.withTail(
+                    LookupElementBuilder.create(keyword)
+                            .withLookupString(keyword)
+                            .withLookupString(keyword.toLowerCase())
+                            .withPresentableText(keyword)
+                            .withCaseSensitivity(true),
+                    TailType.NONE);
             result.addElement(PrioritizedLookupElement.withPriority(element, priority));
         }
     }
