@@ -1,12 +1,8 @@
 package com.millennialmedia.intellibot.ide.inspections;
 
-import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.millennialmedia.intellibot.RobotBundle;
-import com.millennialmedia.intellibot.psi.RecommendationWord;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.Nls;
@@ -20,7 +16,19 @@ import java.util.HashSet;
  * @author mrubino
  * @since 2014-06-07
  */
-public class RobotGherkinInspection extends RobotInspection {
+public class RobotGherkinInspection extends SimpleRobotInspection implements SimpleInspection {
+
+    private static final Collection<String> NORMAL;
+    private static final Collection<String> UPPER;
+
+    static {
+        NORMAL = new HashSet<String>();
+        UPPER = new HashSet<String>();
+        for (String gherkin : RobotKeywordProvider.getInstance().getSyntaxOfType(RobotTokenTypes.GHERKIN)) {
+            NORMAL.add(gherkin);
+            UPPER.add(gherkin.toUpperCase());
+        }
+    }
 
     public boolean allowUppercase = false;
 
@@ -38,54 +46,18 @@ public class RobotGherkinInspection extends RobotInspection {
         return panel;
     }
 
-    @NotNull
     @Override
-    public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
-                                          boolean isOnTheFly,
-                                          @NotNull LocalInspectionToolSession session) {
-        return new Visitor(holder, session, this.allowUppercase);
+    public boolean skip(PsiElement element) {
+        return element.getNode().getElementType() != RobotTokenTypes.GHERKIN ||
+                valid(element.getText());
     }
 
-    private static class Visitor extends PsiElementVisitor {
+    @Override
+    public String getMessage() {
+        return RobotBundle.message("INSP.gherkin.format");
+    }
 
-        private static final Collection<String> NORMAL;
-        private static final Collection<String> UPPER;
-
-        static {
-            Collection<RecommendationWord> gherkin = RobotKeywordProvider.getInstance().getRecommendationsForType(RobotTokenTypes.GHERKIN);
-
-            NORMAL = new HashSet<String>();
-            UPPER = new HashSet<String>();
-
-            for (RecommendationWord word : gherkin) {
-                NORMAL.add(word.getPresentation());
-                UPPER.add(word.getPresentation().toUpperCase());
-            }
-        }
-
-        private final ProblemsHolder holder;
-        private final LocalInspectionToolSession session;
-        private final boolean allowUppercase;
-
-        private Visitor(ProblemsHolder holder, LocalInspectionToolSession session, boolean allowUppercase) {
-            this.holder = holder;
-            this.session = session;
-            this.allowUppercase = allowUppercase;
-        }
-
-        public void visitElement(PsiElement element) {
-            if (element.getNode().getElementType() != RobotTokenTypes.GHERKIN) {
-                return;
-            } else if (valid(element.getText())) {
-                return;
-            }
-            
-            // TODO: the refactor
-            this.holder.registerProblem(element, RobotBundle.message("INSP.gherkin.format"));
-        }
-
-        private boolean valid(String text) {
-            return NORMAL.contains(text) || (this.allowUppercase && UPPER.contains(text));
-        }
+    private boolean valid(String text) {
+        return NORMAL.contains(text) || (this.allowUppercase && UPPER.contains(text));
     }
 }
