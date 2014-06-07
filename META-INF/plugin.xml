@@ -97,5 +97,18 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
+        
+        <!-- Inspections -->
+        <localInspection language="Robot" shortName="RobotGherkinInspection" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.gherkin.format" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotGherkinInspection"/>
+        <!-- TODO: inspection: keyword definitions starting with gherkin; redundant -->
+        <!-- TODO: inspection: keyword definitions that contain gherkin; trying to do too much -->
+        <!-- TODO: inspection: scenarios longer than X lines; trying to do too much -->
+        <!-- TODO: inspection: deprecated settings; '*** user keywords ***', timeout, etc -->
+        <!-- TODO: inspection: use of I in keyword; unclear user -->
+        <!-- TODO: inspection: keyword starting with upper case; decreased readability -->
+        <!-- TODO: inspection: scenario step does not start with gherkin; decreased readability -->
+        
     </extensions>
 </idea-plugin>
