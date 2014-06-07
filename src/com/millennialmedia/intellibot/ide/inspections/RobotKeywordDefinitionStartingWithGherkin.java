@@ -31,9 +31,17 @@ public class RobotKeywordDefinitionStartingWithGherkin extends SimpleRobotInspec
     }
 
     private boolean valid(String text) {
+        text = text.trim();
         Collection<String> gherkin = RobotKeywordProvider.getInstance().getSyntaxOfType(RobotTokenTypes.GHERKIN);
-        String start = text.substring(0, Math.max(text.indexOf(" "), 0));
-        return !gherkin.contains(start);
+        int firstSpace = text.trim().indexOf(" ");
+        
+        String word;
+        if (firstSpace < 0) {
+            word = text;
+        } else {
+            word = text.substring(0, firstSpace);
+        }
+        return !gherkin.contains(word);
     }
 
     @Override
