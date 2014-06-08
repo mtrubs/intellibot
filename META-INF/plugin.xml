@@ -106,7 +106,7 @@
                          key="INSP.NAME.define.keyword.gherkin.start" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotKeywordDefinitionStartingWithGherkin"/>
         <localInspection language="Robot" shortName="RobotKeywordNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.keyword.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="false"
+                         key="INSP.NAME.keyword.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotKeywordNotFound"/>
         <!-- TODO: inspection: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: scenarios longer than X lines; trying to do too much -->
@@ -114,7 +114,6 @@
         <!-- TODO: inspection: use of I in keyword; unclear user -->
         <!-- TODO: inspection: keyword starting with upper case; decreased readability -->
         <!-- TODO: inspection: scenario step does not start with gherkin; decreased readability -->
-        <!-- TODO: inspection: keyword not defined; error -->
         <!-- TODO: inspection: import not used; warning -->
         
     </extensions>
