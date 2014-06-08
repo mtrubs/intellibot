@@ -111,13 +111,15 @@
         <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotFound"/>
+        <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.import.unused" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotUsed"/>
         <!-- TODO: inspection: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: scenarios longer than X lines; trying to do too much -->
         <!-- TODO: inspection: deprecated settings; '*** user keywords ***', timeout, etc -->
         <!-- TODO: inspection: use of I in keyword; unclear user -->
         <!-- TODO: inspection: keyword starting with upper case; decreased readability -->
         <!-- TODO: inspection: scenario step does not start with gherkin; decreased readability -->
-        <!-- TODO: inspection: import not used; warning -->
         
     </extensions>
 </idea-plugin>
