@@ -191,6 +191,11 @@ public class RobotKeywordProvider {
     public boolean isSyntaxOfType(RobotElementType type, String word) {
         return KEYWORD_TABLE.getSyntaxOfType(type).contains(word);
     }
+    
+    @NotNull
+    public Set<String> getSyntaxOfType(RobotElementType type) {
+        return KEYWORD_TABLE.getSyntaxOfType(type);
+    }
 
     @NotNull
     public Set<RecommendationWord> getRecommendationsForType(RobotElementType type) {

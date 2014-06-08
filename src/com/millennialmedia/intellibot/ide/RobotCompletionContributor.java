@@ -14,6 +14,7 @@ import com.millennialmedia.intellibot.psi.RecommendationWord;
 import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.Heading;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
@@ -181,12 +182,17 @@ public class RobotCompletionContributor extends CompletionContributor {
         }
     }
 
-    private static void addKeywordsToResult(final Collection<String> keywords,
+    private static void addKeywordsToResult(final Collection<DefinedKeyword> keywords,
                                             final CompletionResultSet result,
                                             int priority) {
-        for (String keyword : keywords) {
-            // TODO: tail type of SUPER_SPACE for those with arguments; NONE for those without; NONE is safer for now.
-            LookupElement element = TailTypeDecorator.withTail(LookupElementBuilder.create(keyword), TailType.NONE);
+        for (DefinedKeyword keyword : keywords) {
+            LookupElement element = TailTypeDecorator.withTail(
+                    LookupElementBuilder.create(keyword.getKeywordName())
+                            .withLookupString(keyword.getKeywordName())
+                            .withLookupString(keyword.getKeywordName().toLowerCase())
+                            .withPresentableText(keyword.getKeywordName())
+                            .withCaseSensitivity(true),
+                    keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
             result.addElement(PrioritizedLookupElement.withPriority(element, priority));
         }
     }

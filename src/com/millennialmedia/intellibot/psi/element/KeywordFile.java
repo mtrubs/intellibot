@@ -1,5 +1,7 @@
 package com.millennialmedia.intellibot.psi.element;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 
 /**
@@ -10,5 +12,6 @@ import java.util.Collection;
  */
 public interface KeywordFile {
 
-    Collection<String> getKeywords();
+    @NotNull
+    Collection<DefinedKeyword> getKeywords();
 }

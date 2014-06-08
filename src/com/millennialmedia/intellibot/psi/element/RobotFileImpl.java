@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -33,15 +34,48 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         return RobotFeatureFileType.getInstance();
     }
 
+    @NotNull
     @Override
-    public Collection<String> getKeywords() {
-        List<String> result = new ArrayList<String>();
+    public Collection<PsiElement> getInvokedKeywords() {
+        Collection<PsiElement> results = new HashSet<PsiElement>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof Heading) {
+                if (((Heading) child).containsTestCases() || ((Heading) child).containsKeywordDefinitions()) {
+                    for (PsiElement headingChild : child.getChildren()) {
+                        if (headingChild instanceof KeywordDefinition) {
+                            for (PsiElement definitionChild : headingChild.getChildren()) {
+                                if (definitionChild instanceof KeywordStatement) {
+                                    for (PsiElement statementChild : definitionChild.getChildren()) {
+                                        if (statementChild instanceof KeywordInvokable) {
+                                            PsiReference reference = statementChild.getReference();
+                                            if (reference != null) {
+                                                PsiElement resolved = reference.resolve();
+                                                if (resolved != null) {
+                                                    results.add(resolved);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    @NotNull
+    @Override
+    public Collection<DefinedKeyword> getKeywords() {
+        List<DefinedKeyword> result = new ArrayList<DefinedKeyword>();
         for (PsiElement child : getChildren()) {
             if (child instanceof Heading) {
                 if (((Heading) child).containsKeywordDefinitions()) {
                     for (PsiElement headingChild : child.getChildren()) {
-                        if (headingChild instanceof KeywordDefinition)
-                            result.add(((KeywordDefinition) headingChild).getPresentableText());
+                        if (headingChild instanceof DefinedKeyword)
+                            result.add(((DefinedKeyword) headingChild));
                     }
                 }
             }
