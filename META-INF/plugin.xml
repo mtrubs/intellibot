@@ -108,6 +108,9 @@
         <localInspection language="Robot" shortName="RobotKeywordNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.keyword.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotKeywordNotFound"/>
+        <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotFound"/>
         <!-- TODO: inspection: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: scenarios longer than X lines; trying to do too much -->
         <!-- TODO: inspection: deprecated settings; '*** user keywords ***', timeout, etc -->

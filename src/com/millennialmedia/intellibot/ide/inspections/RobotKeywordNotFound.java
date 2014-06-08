@@ -25,32 +25,29 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
     public boolean skip(PsiElement element) {
         if (element.getNode().getElementType() != RobotTokenTypes.KEYWORD) {
             return true;
-        } else if (element instanceof KeywordInvokable) {
-            // this is to skip the whole keyword as opposed to just the text
-            return true;
         }
-
-        String text = element.getText();
-        if (text.startsWith("$")) {
-            // TODO: variable declarations
-            return true;
-        } else if (text.startsWith("@")) {
-            // TODO: variable declarations
-            return true;
-        } else if (text.startsWith(":")) {
-            // TODO: for loops
-            return true;
-        } else if (text.startsWith("\\")) {
-            // TODO: for loops
-            return true;
-        }
-
         PsiElement parent = element.getParent();
-        if (!(parent instanceof KeywordInvokable)) {
-            return false;
+        if (parent instanceof KeywordInvokable) {
+            String text = element.getText();
+            if (text.startsWith("$")) {
+                // TODO: variable declarations
+                return true;
+            } else if (text.startsWith("@")) {
+                // TODO: variable declarations
+                return true;
+            } else if (text.startsWith(":")) {
+                // TODO: for loops
+                return true;
+            } else if (text.startsWith("\\")) {
+                // TODO: for loops
+                return true;
+            }
+
+            PsiReference reference = parent.getReference();
+            return reference != null && reference.resolve() != null;
+        } else {
+            return true;
         }
-        PsiReference reference = parent.getReference();
-        return reference != null && reference.resolve() != null;
     }
 
     @Override
