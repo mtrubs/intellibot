@@ -5,10 +5,15 @@ import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Stephen Abrams
  */
 public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition, DefinedKeyword {
+
+    private static final Pattern PATTERN = Pattern.compile("(.*?)(\\$\\{.*?\\})(.*)");
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.KEYWORD_DEFINITION);
@@ -25,8 +30,28 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         if (myText == null) {
             return text == null;
         } else {
-            // TODO: add inline argument matching/detection
-            return myText.equals(text);
+            return Pattern.compile(buildPattern(myText), Pattern.CASE_INSENSITIVE).matcher(text).matches();
+        }
+    }
+
+    private String buildPattern(String text) {
+        Matcher matcher = PATTERN.matcher(text);
+
+        if (matcher.matches()) {
+            String start = matcher.group(1);
+            String end = buildPattern(matcher.group(3));
+
+            String result = "";
+            if (start.length() > 0) {
+                result = Pattern.quote(start);
+            }
+            result += ".*?";
+            if (end.length() > 0) {
+                result += end;
+            }
+            return result;
+        } else {
+            return text.length() > 0 ? Pattern.quote(text) : text;
         }
     }
 
