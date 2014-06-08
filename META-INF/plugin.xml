@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -25,6 +25,8 @@
         <li>Added support for ellipsis</li>
         <li>Updated file icon</li>
         <li>Added better handling of super space on auto-complete keywords</li>
+        <li>Add better detection around inline variables</li>
+        <li>Added some inspections (Gherkin, Import Not Found, Keyword Not Found)</li>
         <li>Minor parser fixes</li>
       </ul>
       <h2>0.3</h2>
@@ -112,7 +114,7 @@
                          key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.import.unused" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.import.unused" groupKey="INSP.GROUP.robot" enabledByDefault="false"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotUsed"/>
         <!-- TODO: inspection: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: scenarios longer than X lines; trying to do too much -->
