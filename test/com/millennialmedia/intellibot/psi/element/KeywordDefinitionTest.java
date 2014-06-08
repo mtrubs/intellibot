@@ -38,7 +38,9 @@ public class KeywordDefinitionTest {
             assertEquals(this.pattern, actual);
 
             assertTrue(Pattern.compile(actual).matcher(this.keyword).matches());
-            String temp = this.keyword.replace("${variable1}", "junk").replace("${variable2}", "junk2");
+            String temp = this.keyword.replace("${variable1}", "junk")
+                    .replace("${variable2}", "junk2")
+                    .replace("${date_range}", "Yesterday");
             assertTrue(Pattern.compile(actual).matcher(temp).matches());
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -56,6 +58,7 @@ public class KeywordDefinitionTest {
                 {"This is a test keyword", "\\QThis is a test keyword\\E"},
                 {"This is a test keyword with some ${crap in it", "\\QThis is a test keyword with some ${crap in it\\E"},
                 {"This is a ${variable1} keyword", "\\QThis is a \\E.*?\\Q keyword\\E"},
+                {"Set the date range to \"${date_range}\"", "\\QSet the date range to \"\\E.*?\\Q\"\\E"},
                 {"This is a keyword with a ${variable1}", "\\QThis is a keyword with a \\E.*?"},
                 {"${variable1} keyword am I", ".*?\\Q keyword am I\\E"},
                 {"This is a ${variable1} keyword times ${variable2}", "\\QThis is a \\E.*?\\Q keyword times \\E.*?"}
