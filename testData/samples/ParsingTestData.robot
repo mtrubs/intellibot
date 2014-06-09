@@ -39,7 +39,9 @@ Scenario: An admin can see the conversion trend
   [Teardown]  Run Keywords  Close All Browsers  Clean Database
 
 Scenario: This is also a keyword definition
-  [Documentation]  adding another keyword will be classified correctly
+  [Documentation]  adding another
+  # just for fun
+  ...  keyword will be classified correctly
     Given this works
     Then I will be happy  
     And I will be happy  12  123
