@@ -51,7 +51,7 @@ Scenario: This is also a keyword definition
 Clean Database
   [Documentation]  Cleans the database
     Clean  Kyle
-    ${var1}=  This works
+    ${var1} =  This works
     Clean  Ike
 #    Clean  Other Stuff
     Close All Browsers

@@ -177,6 +177,7 @@ public class RobotLexer extends LexerBase {
                         currentToken = RobotTokenTypes.GHERKIN;
                         level.push(GHERKIN);
                     } else if (isVariableDeclaration(word)) {
+                        goToNextNewLineOrSuperSpace();
                         currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
                         level.push(VARIABLE_DEFINITION);
                     } else {

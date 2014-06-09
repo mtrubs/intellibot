@@ -96,7 +96,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "kyle/web/db_advertiser_actions.txt", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "kyle/web/db_advertiser_actions.robot", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -104,7 +104,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "kyle/web/db_campaign_actions.txt", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "kyle/web/db_campaign_actions.robot", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -112,7 +112,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "kyle/web/db_staff_actions.txt", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "kyle/web/db_staff_actions.robot", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -120,7 +120,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "kyle/web/ui_login_page.txt", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "kyle/web/ui_login_page.robot", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -128,7 +128,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "kyle/web/ui_manage_accounts_page.txt", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "kyle/web/ui_manage_accounts_page.robot", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -136,7 +136,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "kyle_db_cleanup/kyle_cleanup.txt", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "kyle_db_cleanup/kyle_cleanup.robot", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -460,7 +460,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "${var1}=", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        assertState(lexer, "${var1} =", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();
