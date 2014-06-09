@@ -62,7 +62,7 @@ public class RobotParser implements PsiParser {
                 } else if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
                     parseKeywordDefinition(builder);
                 } else if (RobotTokenTypes.KEYWORD == type) {
-                    parseKeywordStatement(builder);
+                    parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, false);
                 } else {
                     // TODO: other types; error
                     //System.out.println(type);
@@ -103,16 +103,18 @@ public class RobotParser implements PsiParser {
                 } else if (RobotTokenTypes.ERROR == type) {
                     // TODO: not sure
                     builder.advanceLexer();
+                } else if (RobotTokenTypes.VARIABLE_DEFINITION == type) {
+                    parseKeywordStatement(builder, RobotTokenTypes.VARIABLE_DEFINITION, true);
                 } else {
-                    parseKeywordStatement(builder);
+                    parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, false);
                 }
             }
         }
     }
 
-    private static void parseKeywordStatement(PsiBuilder builder) {
+    private static void parseKeywordStatement(PsiBuilder builder, IElementType rootType, boolean skipGherkin) {
         PsiBuilder.Marker keywordStatementMarker = builder.mark();
-        boolean seenGherkin = false;
+        boolean seenGherkin = skipGherkin;
         boolean seenKeyword = false;
         while (true) {
             if (builder.eof()) {
@@ -138,6 +140,14 @@ public class RobotParser implements PsiParser {
                 }
             } else if (type == RobotTokenTypes.ARGUMENT) {
                 parseSimple(builder, type);
+            } else if (type == RobotTokenTypes.VARIABLE_DEFINITION) {
+                if (seenKeyword) {
+                    break;
+            } else {
+                    seenGherkin = true;
+                    seenKeyword = true;
+                    parseVariableDefinition(builder);
+                }
             } else {
                 // TODO: other types; error?
                 //System.out.println(type);
@@ -145,7 +155,7 @@ public class RobotParser implements PsiParser {
             }
         }
 
-        keywordStatementMarker.done(RobotTokenTypes.KEYWORD_STATEMENT);
+        keywordStatementMarker.done(rootType);
     }
 
     private static void parseBracketSetting(PsiBuilder builder) {

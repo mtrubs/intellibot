@@ -62,8 +62,16 @@ public class RobotLexer extends LexerBase {
 
         // these are based on the characters of a row at any given time
         if (isComment(this.position)) {
-            currentToken = RobotTokenTypes.COMMENT;
-            goToEndOfLine();
+            if (isNewLine(this.position)) {
+                currentToken = RobotTokenTypes.WHITESPACE;
+                position++;
+            } else if (areAtStartOfSuperSpace()) {
+                skipWhitespace();
+                currentToken = RobotTokenTypes.WHITESPACE;
+            } else {
+                currentToken = RobotTokenTypes.COMMENT;
+                goToEndOfLine();
+            }
             return;
         } else if (isNewLine(this.position)) {
             if (!this.level.empty()) {
@@ -168,6 +176,10 @@ public class RobotLexer extends LexerBase {
                     if (keywordProvider.isSyntaxOfType(RobotTokenTypes.GHERKIN, word)) {
                         currentToken = RobotTokenTypes.GHERKIN;
                         level.push(GHERKIN);
+                    } else if (isVariableDeclaration(word)) {
+                        goToNextNewLineOrSuperSpace();
+                        currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
+                        level.push(VARIABLE_DEFINITION);
                     } else {
                         goToNextNewLineOrSuperSpace();
                         word = this.buffer.subSequence(this.startOffset, this.position).toString();
@@ -232,7 +244,16 @@ public class RobotLexer extends LexerBase {
         }
     }
 
+    private boolean isVariableDeclaration(String word) {
+        return (word.startsWith("${") || word.startsWith("@{")) &&
+                (word.endsWith("}") || word.endsWith("}=") || word.endsWith("} ="));
+    }
+
     private boolean isComment(int position) {
+        while (position < endOffset && (isWhitespace(position) || isNewLine(position))) {
+            position++;
+        }
+
         return charAtEquals(position, '#');
     }
 
@@ -249,14 +270,14 @@ public class RobotLexer extends LexerBase {
 
     private boolean isEllipsis(int position) {
         while (position < endOffset && (isWhitespace(position) || isNewLine(position))) {
-            position ++;
+            position++;
         }
         return charAtEquals(position, '.') &&
                 charAtEquals(position + 1, '.') &&
                 charAtEquals(position + 2, '.') &&
                 (isWhitespace(position + 3) || isNewLine(position + 3));
     }
-    
+
     private boolean isOnlyWhitespaceToPreviousLine() {
         int position = this.position - 1;
         while (position >= 0 && !isNewLine(position)) {
