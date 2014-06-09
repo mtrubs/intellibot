@@ -24,15 +24,6 @@ To do so you can either download and compile the project yourself, or download t
 You can then install this plugin to your IDE by using the 'Install plugin from disk...' option.
 This version may be slightly ahead of the JetBrains repository though potentially slightly less stable.
 
-The plugin will operate against any *.robot file in the project.
+The plugin will, by default, operate against any *.robot file in the project.
 If you are using PyCharm then any Python libraries should be detected.
-If you are using IntelliJ then you can install the [Python plugin](http://plugins.jetbrains.com/plugin/631?pr=)
-('Install JetBrains Plugin...') to get python support.
-
-### Features still needed:
-
-1. "Find Usages" for keywords in local file and external files.
-   From there we could do re-factors.
-2. Finer control of keywords auto-completion (where in a file the completions should appear).
-3. Better detection/use of arguments (particularly inline keyword arguments).
-4. Better detection/use of variables.
+If you are using IntelliJ then you can install the Python plugin; see the [wiki page](https://github.com/millennialmedia/intellibot/wiki/Python-Ineterpretor).
