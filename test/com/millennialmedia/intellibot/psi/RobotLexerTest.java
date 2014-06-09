@@ -460,6 +460,16 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
+        assertState(lexer, "${var1}=", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "This works", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
         assertState(lexer, "Clean", RobotTokenTypes.KEYWORD, KEYWORD);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);

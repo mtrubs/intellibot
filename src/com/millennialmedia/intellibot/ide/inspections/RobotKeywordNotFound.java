@@ -29,13 +29,7 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
         PsiElement parent = element.getParent();
         if (parent instanceof KeywordInvokable) {
             String text = element.getText();
-            if (text.startsWith("$")) {
-                // TODO: variable declarations
-                return true;
-            } else if (text.startsWith("@")) {
-                // TODO: variable declarations
-                return true;
-            } else if (text.startsWith(":")) {
+            if (text.startsWith(":")) {
                 // TODO: for loops
                 return true;
             } else if (text.startsWith("\\")) {

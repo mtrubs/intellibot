@@ -6,12 +6,12 @@ Documentation  Test the account dashboard
 Documentation
   ...  all new line
 
-Resource  kyle/web/db_advertiser_actions.txt
-Resource  kyle/web/db_campaign_actions.txt
-Resource  kyle/web/db_staff_actions.txt
-Resource  kyle/web/ui_login_page.txt
-Resource  kyle/web/ui_manage_accounts_page.txt
-Resource  kyle_db_cleanup/kyle_cleanup.txt
+Resource  kyle/web/db_advertiser_actions.robot
+Resource  kyle/web/db_campaign_actions.robot
+Resource  kyle/web/db_staff_actions.robot
+Resource  kyle/web/ui_login_page.robot
+Resource  kyle/web/ui_manage_accounts_page.robot
+Resource  kyle_db_cleanup/kyle_cleanup.robot
 Library  Selenium2Library  timeout=${ENV['selenium']['timeout']}  implicit_wait=${ENV['selenium']['implicit_wait']}
 Library  db.orm.Orm
 Library  OperatingSystem
@@ -51,6 +51,7 @@ Scenario: This is also a keyword definition
 Clean Database
   [Documentation]  Cleans the database
     Clean  Kyle
+    ${var1}=  This works
     Clean  Ike
 #    Clean  Other Stuff
     Close All Browsers

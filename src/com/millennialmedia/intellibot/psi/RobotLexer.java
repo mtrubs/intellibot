@@ -176,6 +176,9 @@ public class RobotLexer extends LexerBase {
                     if (keywordProvider.isSyntaxOfType(RobotTokenTypes.GHERKIN, word)) {
                         currentToken = RobotTokenTypes.GHERKIN;
                         level.push(GHERKIN);
+                    } else if (isVariableDeclaration(word)) {
+                        currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
+                        level.push(VARIABLE_DEFINITION);
                     } else {
                         goToNextNewLineOrSuperSpace();
                         word = this.buffer.subSequence(this.startOffset, this.position).toString();
@@ -238,6 +241,11 @@ public class RobotLexer extends LexerBase {
                 throw new RuntimeException("Unknown State: " + state);
             }
         }
+    }
+
+    private boolean isVariableDeclaration(String word) {
+        return (word.startsWith("${") || word.startsWith("@{")) &&
+                (word.endsWith("}") || word.endsWith("}=") || word.endsWith("} ="));
     }
 
     private boolean isComment(int position) {
