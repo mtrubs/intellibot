@@ -53,7 +53,9 @@ public class RobotParser implements PsiParser {
                 break;
             } else {
                 type = builder.getTokenType();
-                if (RobotTokenTypes.IMPORT == type) {
+                if (RobotTokenTypes.HEADING == type) {
+                    continue;
+                } else if (RobotTokenTypes.IMPORT == type) {
                     parseImport(builder);
                 } else if (RobotTokenTypes.VARIABLE_DEFINITION == type) {
                     parseVariableDefinition(builder);

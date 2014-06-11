@@ -1,9 +1,11 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.psi.PyParameter;
+import com.jetbrains.python.psi.PyTargetExpression;
 import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
@@ -34,9 +36,19 @@ public class RobotPythonClass implements KeywordFile {
     }
 
     @Nullable
-    public PyFunction findMethodByKeyword(@NotNull String name) {
+    public PsiElement findMethodByKeyword(@NotNull String name) {
         String functionName = trimClassName(this.library, name);
-        return pythonClass.findMethodByName(functionName, true);
+        // we do visit methods instead of find by name because we not want case to come into play
+        InsensitiveNameFinder<PyFunction> byFuction = new InsensitiveNameFinder<PyFunction>(functionName);
+        this.pythonClass.visitMethods(byFuction, true);
+        PyFunction function = byFuction.getResult();
+        if (function != null) {
+            return function;
+        }
+
+        InsensitiveNameFinder<PyTargetExpression> byExpression = new InsensitiveNameFinder<PyTargetExpression>(functionName);
+        this.pythonClass.visitClassAttributes(byExpression, true);
+        return byExpression.getResult();
     }
 
     @NotNull
