@@ -464,7 +464,11 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();
-        assertState(lexer, "This works", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "This works", RobotTokenTypes.KEYWORD, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "1", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();

@@ -122,7 +122,8 @@ public class RobotParser implements PsiParser {
             }
             IElementType type = builder.getTokenType();
             if (type == RobotTokenTypes.GHERKIN) {
-                if (seenGherkin) {
+                // if we see a keyword or variable there should be no Gherkin unless we are on a new statement
+                if (seenGherkin || seenKeyword) {
                     break;
                 } else {
                     seenGherkin = true;
@@ -133,20 +134,20 @@ public class RobotParser implements PsiParser {
                 if (seenKeyword) {
                     break;
                 } else {
-                    // if we see a keyword there should be no Gherkin unless we are on a new statement
-                    seenGherkin = true;
                     seenKeyword = true;
-                    parseSimple(builder, type);
+                    parseSimple(builder, RobotTokenTypes.KEYWORD);
                 }
             } else if (type == RobotTokenTypes.ARGUMENT) {
                 parseSimple(builder, type);
             } else if (type == RobotTokenTypes.VARIABLE_DEFINITION) {
                 if (seenKeyword) {
                     break;
-            } else {
-                    seenGherkin = true;
+                } else {
                     seenKeyword = true;
-                    parseVariableDefinition(builder);
+                    builder.advanceLexer();
+                    if (builder.getTokenType() == RobotTokenTypes.KEYWORD) {
+                        parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, true);
+                    }
                 }
             } else {
                 // TODO: other types; error?
