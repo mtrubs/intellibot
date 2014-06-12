@@ -39,9 +39,9 @@ public class RobotPythonClass implements KeywordFile {
     public PsiElement findMethodByKeyword(@NotNull String name) {
         String functionName = trimClassName(this.library, name);
         // we do visit methods instead of find by name because we not want case to come into play
-        InsensitiveNameFinder<PyFunction> byFuction = new InsensitiveNameFinder<PyFunction>(functionName);
-        this.pythonClass.visitMethods(byFuction, true);
-        PyFunction function = byFuction.getResult();
+        InsensitiveNameFinder<PyFunction> byFunction = new InsensitiveNameFinder<PyFunction>(functionName);
+        this.pythonClass.visitMethods(byFunction, true);
+        PyFunction function = byFunction.getResult();
         if (function != null) {
             return function;
         }
@@ -92,12 +92,14 @@ public class RobotPythonClass implements KeywordFile {
 
     @NotNull
     private static String trimClassName(@Nullable String className, @NotNull String keyword) {
-        // TODO: python functions can also be qualified with their class name to avoid ambiguity
-        // TODO: is this enough?
-        if (className != null && keyword.startsWith(className)) {
-            keyword = keyword.replaceFirst(Pattern.quote(className + DOT), EMPTY);
+        keyword = keyword.toLowerCase();
+        if (className != null) {
+            className = className.toLowerCase();
+            if (keyword.startsWith(className)) {
+                keyword = keyword.replaceFirst(Pattern.quote(className + DOT), EMPTY);
+            }
         }
         // TODO: python keywords can have underscores or not; we should encourage not... i think
-        return keyword.toLowerCase().replace(SPACE, UNDERSCORE);
+        return keyword.replace(SPACE, UNDERSCORE);
     }
 }

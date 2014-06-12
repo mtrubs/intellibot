@@ -141,7 +141,6 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        // TODO: does this come into play with inline arguments? I bet you it does
         return EMPTY_ARRAY;
     }
 }

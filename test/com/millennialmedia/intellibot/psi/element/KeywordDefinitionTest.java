@@ -21,10 +21,12 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class KeywordDefinitionTest {
 
+    private String namespace;
     private String keyword;
     private String pattern;
 
-    public KeywordDefinitionTest(String keyword, String pattern) {
+    public KeywordDefinitionTest(String namespace, String keyword, String pattern) {
+        this.namespace = namespace;
         this.keyword = keyword;
         this.pattern = pattern;
     }
@@ -32,9 +34,9 @@ public class KeywordDefinitionTest {
     @Test
     public void testBuildPattern() {
         try {
-            Method method = KeywordDefinitionImpl.class.getDeclaredMethod("buildPattern", String.class);
+            Method method = KeywordDefinitionImpl.class.getDeclaredMethod("buildPattern", String.class, String.class);
             method.setAccessible(true);
-            String actual = (String) method.invoke(new KeywordDefinitionImpl(new DummyHolderElement("dummy")), this.keyword);
+            String actual = (String) method.invoke(new KeywordDefinitionImpl(new DummyHolderElement("dummy")), this.namespace, this.keyword);
             assertEquals(this.pattern, actual);
 
             assertTrue(Pattern.compile(actual).matcher(this.keyword).matches());
@@ -42,6 +44,7 @@ public class KeywordDefinitionTest {
                     .replace("${variable2}", "junk2")
                     .replace("${date_range}", "Yesterday");
             assertTrue(Pattern.compile(actual).matcher(temp).matches());
+            assertTrue(Pattern.compile(actual).matcher(this.namespace + "." + temp).matches());
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
@@ -54,14 +57,13 @@ public class KeywordDefinitionTest {
     @Parameterized.Parameters
     public static Collection patterns() {
         return Arrays.asList(new Object[][]{
-                {"", ""},
-                {"This is a test keyword", "\\QThis is a test keyword\\E"},
-                {"This is a test keyword with some ${crap in it", "\\QThis is a test keyword with some ${crap in it\\E"},
-                {"This is a ${variable1} keyword", "\\QThis is a \\E.*?\\Q keyword\\E"},
-                {"Set the date range to \"${date_range}\"", "\\QSet the date range to \"\\E.*?\\Q\"\\E"},
-                {"This is a keyword with a ${variable1}", "\\QThis is a keyword with a \\E.*?"},
-                {"${variable1} keyword am I", ".*?\\Q keyword am I\\E"},
-                {"This is a ${variable1} keyword times ${variable2}", "\\QThis is a \\E.*?\\Q keyword times \\E.*?"}
+                {"my_file", "This is a test keyword", "(\\Qmy_file.\\E)?\\QThis is a test keyword\\E"},
+                {"my_file", "This is a test keyword with some ${crap in it", "(\\Qmy_file.\\E)?\\QThis is a test keyword with some ${crap in it\\E"},
+                {"my_file", "This is a ${variable1} keyword", "(\\Qmy_file.\\E)?\\QThis is a \\E.*?\\Q keyword\\E"},
+                {"my_file", "Set the date range to \"${date_range}\"", "(\\Qmy_file.\\E)?\\QSet the date range to \"\\E.*?\\Q\"\\E"},
+                {"my_file", "This is a keyword with a ${variable1}", "(\\Qmy_file.\\E)?\\QThis is a keyword with a \\E.*?"},
+                {"my_file", "${variable1} keyword am I", "(\\Qmy_file.\\E)?.*?\\Q keyword am I\\E"},
+                {"my_file", "This is a ${variable1} keyword times ${variable2}", "(\\Qmy_file.\\E)?\\QThis is a \\E.*?\\Q keyword times \\E.*?"}
         });
     }
 }
