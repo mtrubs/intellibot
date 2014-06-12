@@ -1,9 +1,11 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.psi.PyParameter;
+import com.jetbrains.python.psi.PyTargetExpression;
 import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
@@ -34,9 +36,19 @@ public class RobotPythonClass implements KeywordFile {
     }
 
     @Nullable
-    public PyFunction findMethodByKeyword(@NotNull String name) {
+    public PsiElement findMethodByKeyword(@NotNull String name) {
         String functionName = trimClassName(this.library, name);
-        return pythonClass.findMethodByName(functionName, true);
+        // we do visit methods instead of find by name because we not want case to come into play
+        InsensitiveNameFinder<PyFunction> byFunction = new InsensitiveNameFinder<PyFunction>(functionName);
+        this.pythonClass.visitMethods(byFunction, true);
+        PyFunction function = byFunction.getResult();
+        if (function != null) {
+            return function;
+        }
+
+        InsensitiveNameFinder<PyTargetExpression> byExpression = new InsensitiveNameFinder<PyTargetExpression>(functionName);
+        this.pythonClass.visitClassAttributes(byExpression, true);
+        return byExpression.getResult();
     }
 
     @NotNull
@@ -80,12 +92,14 @@ public class RobotPythonClass implements KeywordFile {
 
     @NotNull
     private static String trimClassName(@Nullable String className, @NotNull String keyword) {
-        // TODO: python functions can also be qualified with their class name to avoid ambiguity
-        // TODO: is this enough?
-        if (className != null && keyword.startsWith(className)) {
-            keyword = keyword.replaceFirst(Pattern.quote(className + DOT), EMPTY);
+        keyword = keyword.toLowerCase();
+        if (className != null) {
+            className = className.toLowerCase();
+            if (keyword.startsWith(className)) {
+                keyword = keyword.replaceFirst(Pattern.quote(className + DOT), EMPTY);
+            }
         }
         // TODO: python keywords can have underscores or not; we should encourage not... i think
-        return keyword.toLowerCase().replace(SPACE, UNDERSCORE);
+        return keyword.replace(SPACE, UNDERSCORE);
     }
 }

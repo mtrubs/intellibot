@@ -2,6 +2,7 @@ package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,8 @@ import java.util.regex.Pattern;
 public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition, DefinedKeyword {
 
     private static final Pattern PATTERN = Pattern.compile("(.*?)(\\$\\{.*?\\})(.*)");
+    private static final String ANY = ".*?";
+    private static final String DOT = ".";
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.KEYWORD_DEFINITION);
@@ -30,29 +33,43 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         if (myText == null) {
             return text == null;
         } else {
-            return Pattern.compile(buildPattern(myText), Pattern.CASE_INSENSITIVE).matcher(text).matches();
+            String myNamespace = getNamespace(getContainingFile());
+            return Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE).matcher(text).matches();
         }
     }
 
-    private String buildPattern(String text) {
+    private String getNamespace(@NotNull PsiFile file) {
+        String name = file.getVirtualFile().getName();
+        // remove the extension
+        int index = name.lastIndexOf(DOT);
+        if (index > 0) {
+            name = name.substring(0, index);
+        }
+        return name;
+    }
+
+    private String buildPattern(String namespace, String text) {
         Matcher matcher = PATTERN.matcher(text);
 
+        String result = "";
         if (matcher.matches()) {
             String start = matcher.group(1);
-            String end = buildPattern(matcher.group(3));
+            String end = buildPattern(null, matcher.group(3));
 
-            String result = "";
             if (start.length() > 0) {
                 result = Pattern.quote(start);
             }
-            result += ".*?";
+            result += ANY;
             if (end.length() > 0) {
                 result += end;
             }
-            return result;
         } else {
-            return text.length() > 0 ? Pattern.quote(text) : text;
+            result = text.length() > 0 ? Pattern.quote(text) : text;
         }
+        if (namespace != null && namespace.length() > 0) {
+            result = "(" + Pattern.quote(namespace + DOT) + ")?" + result;
+        }
+        return result;
     }
 
     @Override

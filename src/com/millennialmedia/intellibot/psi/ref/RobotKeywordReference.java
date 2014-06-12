@@ -7,7 +7,6 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
-import com.jetbrains.python.psi.PyFunction;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -131,7 +130,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
 
     private PsiElement resolvePythonKeyword(@NotNull Collection<RobotPythonClass> pythonClasses, @NotNull String keyword) {
         for (RobotPythonClass pythonClass : pythonClasses) {
-            PyFunction function = pythonClass.findMethodByKeyword(keyword);
+            PsiElement function = pythonClass.findMethodByKeyword(keyword);
             if (function != null) {
                 return function;
             }
@@ -142,7 +141,6 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        // TODO: does this come into play with inline arguments? I bet you it does
         return EMPTY_ARRAY;
     }
 }

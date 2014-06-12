@@ -216,8 +216,13 @@ public class RobotLexer extends LexerBase {
                     }
                 } else {
                     goToNextNewLineOrSuperSpace();
-                    level.push(ARG);
-                    this.currentToken = RobotTokenTypes.ARGUMENT;
+                    if (VARIABLE_DEFINITION == state && level.get(level.size() - 2) == KEYWORD_DEFINITION) {
+                        level.push(KEYWORD);
+                        this.currentToken = RobotTokenTypes.KEYWORD;
+                    } else {
+                        level.push(ARG);
+                        this.currentToken = RobotTokenTypes.ARGUMENT;
+                    }
                 }
             } else if (SYNTAX == state) {
                 if (areAtStartOfSuperSpace()) {

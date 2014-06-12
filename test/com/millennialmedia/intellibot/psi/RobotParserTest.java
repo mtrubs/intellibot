@@ -19,6 +19,11 @@ public class RobotParserTest extends ParsingTestCase {
         doTest(true);
     }
 
+    @Test
+    public void testEmptyHeaders() {
+        doTest(true);
+    }
+
     @Override
     protected String getTestDataPath() {
         // TODO: weak
