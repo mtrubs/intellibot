@@ -34,7 +34,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
             return text == null;
         } else {
             String myNamespace = getNamespace(getContainingFile());
-            return Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE).matcher(text).matches();
+            return Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE).matcher(text.trim()).matches();
         }
     }
 
