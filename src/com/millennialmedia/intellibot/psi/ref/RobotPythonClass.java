@@ -100,6 +100,6 @@ public class RobotPythonClass implements KeywordFile {
             }
         }
         // TODO: python keywords can have underscores or not; we should encourage not... i think
-        return keyword.replace(SPACE, UNDERSCORE);
+        return keyword.trim().replace(SPACE, UNDERSCORE);
     }
 }

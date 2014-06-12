@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.4.1</version>
+    <version>0.5</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -10,17 +10,21 @@
 
     <description><![CDATA[
       <h1>IntelliBot, adding intelligence to Robot</h1>
-      <p>The IntelliBot plugin for IntelliJ adds features to the <a href="http://robotframework.org/">Robot Framework</a>. This includes:</p>
+      <p>The IntelliBot plugin for IntelliJ/Pycharm adds features to the <a href="http://robotframework.org/">Robot Framework</a>. This includes:</p>
       <ul>
         <li>Syntax Highlighting</li>
         <li>Code Completion</li>
         <li>Jump to Source</li>
+        <li>Undefined Keywords</li>
+        <li>Undefined Resources</li>
+        <li>Python support</li>
+        <li>Code Inspections</li>
       </ul>
       <p>Find us in <a href="https://github.com/millennialmedia/intellibot">Github</a>.</p>
       ]]></description>
 
     <change-notes><![CDATA[
-      <h2>0.4.1</h2>
+      <h2>0.5</h2>
       <ul>
         <li>better keyword resolution</li>
         <li>Minor parser fixes</li>
