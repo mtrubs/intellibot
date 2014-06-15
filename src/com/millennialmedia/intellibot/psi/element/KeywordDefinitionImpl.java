@@ -18,6 +18,9 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private static final String ANY = ".*?";
     private static final String DOT = ".";
 
+    private Boolean arguments;
+    private Pattern pattern;
+
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.KEYWORD_DEFINITION);
     }
@@ -28,13 +31,26 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     }
 
     @Override
+    public void subtreeChanged() {
+        super.subtreeChanged();
+        this.arguments = null;
+        this.pattern = null;
+    }
+
+    @Override
     public boolean matches(String text) {
         String myText = getPresentableText();
         if (myText == null) {
             return text == null;
         } else {
-            String myNamespace = getNamespace(getContainingFile());
-            return Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE).matcher(text.trim()).matches();
+            Pattern namePattern = this.pattern;
+            if (namePattern == null) {
+                String myNamespace = getNamespace(getContainingFile());
+                namePattern = Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE);
+                this.pattern = namePattern;
+            }
+
+            return namePattern.matcher(text.trim()).matches();
         }
     }
 
@@ -79,6 +95,15 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @Override
     public boolean hasArguments() {
+        Boolean results = this.arguments;
+        if (results == null) {
+            results = determineArguments();
+            this.arguments = results;
+        }
+        return results;
+    }
+
+    private boolean determineArguments() {
         for (PsiElement child : getChildren()) {
             if (child instanceof BracketSetting) {
                 BracketSetting bracket = (BracketSetting) child;

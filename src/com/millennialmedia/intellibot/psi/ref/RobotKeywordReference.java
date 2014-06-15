@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +37,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         // all files we import are based off the file we are currently in
         RobotFile currentFile = PsiTreeUtil.getParentOfType(getElement(), RobotFile.class);
 
-        Set<PsiFile> robotFiles = new HashSet<PsiFile>();
+        Set<RobotFile> robotFiles = new HashSet<RobotFile>();
         Set<RobotPythonClass> pythonClasses = new HashSet<RobotPythonClass>();
         addImports(currentFile, robotFiles, pythonClasses);
 
@@ -59,7 +58,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         }
     }
 
-    private void addImports(RobotFile currentFile, Collection<PsiFile> robotFiles, Collection<RobotPythonClass> pythonClasses) {
+    private void addImports(RobotFile currentFile, Collection<RobotFile> robotFiles, Collection<RobotPythonClass> pythonClasses) {
         // TODO: better way to search for these files
         // TODO: better way to search for matches in each file
         if (currentFile == null) {
@@ -90,7 +89,11 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
                         String[] path = text.split("/");
                         PsiFile[] files = FilenameIndex.getFilesByName(myElement.getProject(), path[path.length - 1],
                                 GlobalSearchScope.allScope(myElement.getProject()));
-                        Collections.addAll(robotFiles, files);
+                        for (PsiFile file : files) {
+                            if (file instanceof RobotFile) {
+                                robotFiles.add((RobotFile) file);
+                            }
+                        }
                     } else if (eachImport.isLibrary()) {
                         PyClass lib = PythonResolver.findClass(text, myElement.getProject());
                         if (lib != null) {
@@ -102,7 +105,7 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
         }
     }
 
-    private PsiElement resolveRobotKeyword(Collection<PsiFile> robotFiles, String actualKeyword) {
+    private PsiElement resolveRobotKeyword(Collection<RobotFile> robotFiles, String actualKeyword) {
         //find the actual keyword to link to
         for (PsiFile file : robotFiles) {
             if (file == null) {
