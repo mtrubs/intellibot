@@ -1,19 +1,14 @@
 package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.python.psi.PyClass;
-import com.millennialmedia.intellibot.psi.element.*;
+import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.element.KeywordFile;
+import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
+import com.millennialmedia.intellibot.psi.element.RobotFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author mrubino
@@ -36,106 +31,19 @@ public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
 
         // all files we import are based off the file we are currently in
         RobotFile currentFile = PsiTreeUtil.getParentOfType(getElement(), RobotFile.class);
-
-        Set<RobotFile> robotFiles = new HashSet<RobotFile>();
-        Set<RobotPythonClass> pythonClasses = new HashSet<RobotPythonClass>();
-        addImports(currentFile, robotFiles, pythonClasses);
-
-        PsiElement psiElement = resolveRobotKeyword(robotFiles, actualKeyword);
-        if (psiElement == null) {
-            psiElement = resolvePythonKeyword(pythonClasses, actualKeyword);
-        }
-        return psiElement;
-    }
-
-    private static final String ROBOT_BUILT_IN = "BuiltIn";
-
-    private void addRobotBuiltIn(Collection<RobotPythonClass> pythonClasses) {
-        PyClass builtIn = PythonResolver.findClass(ROBOT_BUILT_IN, myElement.getProject());
-        if (builtIn != null) {
-            // TODO: what if there is more than one class found?
-            pythonClasses.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn));
-        }
-    }
-
-    private void addImports(RobotFile currentFile, Collection<RobotFile> robotFiles, Collection<RobotPythonClass> pythonClasses) {
-        // TODO: better way to search for these files
-        // TODO: better way to search for matches in each file
         if (currentFile == null) {
-            return;
+            return null;
         }
-        // add our own file, since we could use keywords in it too
-        robotFiles.add(currentFile);
-        addRobotBuiltIn(pythonClasses);
-
-        Heading[] headings = PsiTreeUtil.getChildrenOfType(currentFile, Heading.class);
-        if (headings == null) {
-            return;
-        }
-        for (Heading heading : headings) {
-            if (heading.containsImports()) {
-                Import[] imports = PsiTreeUtil.getChildrenOfType(heading, Import.class);
-                if (imports == null) {
-                    continue;
-                }
-                for (Import eachImport : imports) {
-                    Argument importData = PsiTreeUtil.getChildOfType(eachImport, Argument.class);
-                    if (importData == null) {
-                        continue;
-                    }
-                    String text = importData.getPresentableText();
-                    if (eachImport.isResource()) {
-                        //TODO: crude, we want to look up the actual file in the future, this is quick and dirty
-                        String[] path = text.split("/");
-                        PsiFile[] files = FilenameIndex.getFilesByName(myElement.getProject(), path[path.length - 1],
-                                GlobalSearchScope.allScope(myElement.getProject()));
-                        for (PsiFile file : files) {
-                            if (file instanceof RobotFile) {
-                                robotFiles.add((RobotFile) file);
-                            }
-                        }
-                    } else if (eachImport.isLibrary()) {
-                        PyClass lib = PythonResolver.findClass(text, myElement.getProject());
-                        if (lib != null) {
-                            pythonClasses.add(new RobotPythonClass(text, lib));
-                        }
-                    }
-                }
+        for (DefinedKeyword keyword : currentFile.getKeywords()) {
+            if (keyword.matches(actualKeyword)) {
+                return keyword.reference();
             }
         }
-    }
-
-    private PsiElement resolveRobotKeyword(Collection<RobotFile> robotFiles, String actualKeyword) {
-        //find the actual keyword to link to
-        for (PsiFile file : robotFiles) {
-            if (file == null) {
-                continue;
-            }
-            Heading[] headings = PsiTreeUtil.getChildrenOfType(file, Heading.class);
-            if (headings != null) {
-                for (Heading heading : headings) {
-                    if (heading.containsKeywordDefinitions()) {
-                        KeywordDefinition[] definitions = PsiTreeUtil.getChildrenOfType(heading, KeywordDefinition.class);
-                        if (definitions == null) {
-                            continue;
-                        }
-                        for (KeywordDefinition definition : definitions) {
-                            if (definition.matches(actualKeyword)) {
-                                return definition;
-                            }
-                        }
-                    }
+        for (KeywordFile file : currentFile.getImportedFiles()) {
+            for (DefinedKeyword keyword : file.getKeywords()) {
+                if (keyword.matches(actualKeyword)) {
+                    return keyword.reference();
                 }
-            }
-        }
-        return null;
-    }
-
-    private PsiElement resolvePythonKeyword(@NotNull Collection<RobotPythonClass> pythonClasses, @NotNull String keyword) {
-        for (RobotPythonClass pythonClass : pythonClasses) {
-            PsiElement function = pythonClass.findMethodByKeyword(keyword);
-            if (function != null) {
-                return function;
             }
         }
         return null;

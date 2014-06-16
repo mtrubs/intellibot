@@ -42,7 +42,7 @@ public class RobotGherkinInspection extends SimpleRobotInspection implements Sim
     @Override
     public JComponent createOptionsPanel() {
         MultipleCheckboxOptionsPanel panel = new MultipleCheckboxOptionsPanel(this);
-        panel.addCheckbox(RobotBundle.message("INSP.OPT.gherkin.fotmat.upper"), "allowUppercase");
+        panel.addCheckbox(RobotBundle.message("INSP.OPT.gherkin.format.upper"), "allowUppercase");
         return panel;
     }
 

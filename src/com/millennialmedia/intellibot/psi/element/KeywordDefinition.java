@@ -8,6 +8,4 @@ import com.intellij.psi.PsiElement;
 public interface KeywordDefinition extends PsiElement {
 
     String getPresentableText();
-
-    boolean matches(String text);
 }

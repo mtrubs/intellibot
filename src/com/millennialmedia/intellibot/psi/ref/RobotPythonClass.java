@@ -1,6 +1,5 @@
 package com.millennialmedia.intellibot.psi.ref;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFunction;
@@ -14,17 +13,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.regex.Pattern;
 
 /**
  * @author mrubino
  */
 public class RobotPythonClass implements KeywordFile {
 
-    private static final String SPACE = " ";
     private static final String UNDERSCORE = "_";
-    private static final String DOT = ".";
-    private static final String EMPTY = "";
     private static final String SELF = "self";
 
     private final String library;
@@ -35,31 +30,29 @@ public class RobotPythonClass implements KeywordFile {
         this.pythonClass = pythonClass;
     }
 
-    @Nullable
-    public PsiElement findMethodByKeyword(@NotNull String name) {
-        String functionName = trimClassName(this.library, name);
-        // we do visit methods instead of find by name because we not want case to come into play
-        InsensitiveNameFinder<PyFunction> byFunction = new InsensitiveNameFinder<PyFunction>(functionName);
-        this.pythonClass.visitMethods(byFunction, true);
-        PyFunction function = byFunction.getResult();
-        if (function != null) {
-            return function;
-        }
-
-        InsensitiveNameFinder<PyTargetExpression> byExpression = new InsensitiveNameFinder<PyTargetExpression>(functionName);
-        this.pythonClass.visitClassAttributes(byExpression, true);
-        return byExpression.getResult();
-    }
-
     @NotNull
     @Override
     public Collection<DefinedKeyword> getKeywords() {
         final Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
+        final String namespace = this.library;
         this.pythonClass.visitMethods(new Processor<PyFunction>() {
+            
+            @Override
             public boolean process(PyFunction function) {
                 String keyword = functionToKeyword(function.getName());
                 if (keyword != null) {
-                    results.add(new KeywordDto(keyword, hasArguments(function.getParameterList().getParameters())));
+                    results.add(new KeywordDto(function, namespace, keyword, hasArguments(function.getParameterList().getParameters())));
+                }
+                return true;
+            }
+        }, true);
+        this.pythonClass.visitClassAttributes(new Processor<PyTargetExpression>() {
+
+            @Override
+            public boolean process(PyTargetExpression expression) {
+                String keyword = functionToKeyword(expression.getName());
+                if (keyword != null) {
+                    results.add(new KeywordDto(expression, namespace, keyword, false));
                 }
                 return true;
             }
@@ -86,20 +79,7 @@ public class RobotPythonClass implements KeywordFile {
         if (function == null || function.startsWith(UNDERSCORE)) {
             return null;
         } else {
-            return function.replaceAll(UNDERSCORE, SPACE);
+            return function;
         }
-    }
-
-    @NotNull
-    private static String trimClassName(@Nullable String className, @NotNull String keyword) {
-        keyword = keyword.toLowerCase();
-        if (className != null) {
-            className = className.toLowerCase();
-            if (keyword.startsWith(className)) {
-                keyword = keyword.replaceFirst(Pattern.quote(className + DOT), EMPTY);
-            }
-        }
-        // TODO: python keywords can have underscores or not; we should encourage not... i think
-        return keyword.trim().replace(SPACE, UNDERSCORE);
     }
 }

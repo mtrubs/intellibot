@@ -39,9 +39,12 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @Override
     public boolean matches(String text) {
+        if (text == null) {
+            return false;
+        }
         String myText = getPresentableText();
         if (myText == null) {
-            return text == null;
+            return false;
         } else {
             Pattern namePattern = this.pattern;
             if (namePattern == null) {
@@ -52,6 +55,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
             return namePattern.matcher(text.trim()).matches();
         }
+    }
+
+    @Override
+    public PsiElement reference() {
+        return this;
     }
 
     private String getNamespace(@NotNull PsiFile file) {

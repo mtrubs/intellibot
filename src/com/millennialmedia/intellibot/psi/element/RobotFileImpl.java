@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile {
 
+    private static final String ROBOT_BUILT_IN = "BuiltIn";
+
     private Collection<DefinedKeyword> defiedKeywords;
     private Collection<KeywordFile> keywordFiles;
 
@@ -140,7 +142,15 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
                 }
             }
         }
+        addBuiltIn(files);
         return files;
+    }
+
+    private void addBuiltIn(List<KeywordFile> files) {
+        PyClass builtIn = PythonResolver.findClass(ROBOT_BUILT_IN, getProject());
+        if (builtIn != null) {
+            files.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn));
+        }
     }
 
     @Nullable
