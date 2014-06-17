@@ -6,6 +6,8 @@ import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     private Boolean arguments;
     private Pattern pattern;
+    private Collection<KeywordInvokable> invokedKeywords;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.KEYWORD_DEFINITION);
@@ -30,11 +33,37 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return getTextData();
     }
 
+    @NotNull
+    @Override
+    public Collection<KeywordInvokable> getInvokedKeywords() {
+        Collection<KeywordInvokable> results = this.invokedKeywords;
+        if (results == null) {
+            results = collectInvokedKeywords();
+            this.invokedKeywords = results;
+        }
+        return results;
+    }
+
+    private Collection<KeywordInvokable> collectInvokedKeywords() {
+        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+        for (PsiElement statement : getChildren()) {
+            if (statement instanceof KeywordStatement) {
+                for (PsiElement subStatement : statement.getChildren()) {
+                    if (subStatement instanceof KeywordInvokable) {
+                        results.add((KeywordInvokable) subStatement);
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
         this.arguments = null;
         this.pattern = null;
+        this.invokedKeywords = null;
     }
 
     @Override

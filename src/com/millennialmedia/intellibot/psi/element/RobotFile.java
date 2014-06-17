@@ -1,6 +1,5 @@
 package com.millennialmedia.intellibot.psi.element;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +20,7 @@ public interface RobotFile extends PsiFile {
      * @return locally invoked keyword references
      */
     @NotNull
-    Collection<PsiElement> getInvokedKeywords();
+    Collection<KeywordInvokable> getInvokedKeywords();
 
     /**
      * Gets all the imported keyword files that are considered in scope for this file.  This

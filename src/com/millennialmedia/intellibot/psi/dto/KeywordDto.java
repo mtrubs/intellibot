@@ -2,8 +2,11 @@ package com.millennialmedia.intellibot.psi.dto;
 
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 /**
@@ -60,6 +63,12 @@ public class KeywordDto implements DefinedKeyword {
     @Override
     public PsiElement reference() {
         return this.reference;
+    }
+
+    @NotNull
+    @Override
+    public Collection<KeywordInvokable> getInvokedKeywords() {
+        return Collections.emptyList();
     }
 
     @Override

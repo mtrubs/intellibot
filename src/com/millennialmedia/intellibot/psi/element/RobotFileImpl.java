@@ -26,7 +26,8 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
 
     private static final String ROBOT_BUILT_IN = "BuiltIn";
 
-    private Collection<DefinedKeyword> defiedKeywords;
+    private Collection<KeywordDefinition> testDefinitions;
+    private Collection<DefinedKeyword> definedKeywords;
     private Collection<KeywordFile> keywordFiles;
 
     public RobotFileImpl(FileViewProvider viewProvider) {
@@ -42,49 +43,53 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
-        this.defiedKeywords = null;
+        this.definedKeywords = null;
+        this.testDefinitions = null;
         this.keywordFiles = null;
     }
 
     @NotNull
     @Override
-    public Collection<PsiElement> getInvokedKeywords() {
-        Collection<PsiElement> results = new HashSet<PsiElement>();
+    public Collection<KeywordInvokable> getInvokedKeywords() {
+        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+        for (DefinedKeyword keyword : getKeywords()) {
+            results.addAll(keyword.getInvokedKeywords());
+        }
+        for (KeywordDefinition testCase : getTestDefinitions()) {
+            results.addAll(testCase.getInvokedKeywords());
+        }
+        return results;
+    }
+    
+    private Collection<KeywordDefinition> getTestDefinitions() {
+        Collection<KeywordDefinition> results = this.testDefinitions;
+        if (results == null) {
+            results = collectTestDefinitions();
+            this.testDefinitions = results;
+        }
+        return results;
+    }
+    
+    private Collection<KeywordDefinition> collectTestDefinitions() {
+        List<KeywordDefinition> result = new ArrayList<KeywordDefinition>();
         for (PsiElement child : getChildren()) {
-            if (child instanceof Heading) {
-                if (((Heading) child).containsTestCases() || ((Heading) child).containsKeywordDefinitions()) {
-                    for (PsiElement headingChild : child.getChildren()) {
-                        if (headingChild instanceof KeywordDefinition) {
-                            for (PsiElement definitionChild : headingChild.getChildren()) {
-                                if (definitionChild instanceof KeywordStatement) {
-                                    for (PsiElement statementChild : definitionChild.getChildren()) {
-                                        if (statementChild instanceof KeywordInvokable) {
-                                            PsiReference reference = statementChild.getReference();
-                                            if (reference != null) {
-                                                PsiElement resolved = reference.resolve();
-                                                if (resolved != null) {
-                                                    results.add(resolved);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+            if (child instanceof Heading && ((Heading) child).containsTestCases()) {
+                for (PsiElement headingChild : child.getChildren()) {
+                    if (headingChild instanceof KeywordDefinition)
+                        result.add(((KeywordDefinition) headingChild));
                 }
             }
         }
-        return results;
+        return result;
     }
 
     @NotNull
     @Override
     public Collection<DefinedKeyword> getKeywords() {
-        Collection<DefinedKeyword> results = this.defiedKeywords;
+        Collection<DefinedKeyword> results = this.definedKeywords;
         if (results == null) {
             results = collectKeywords();
-            this.defiedKeywords = results;
+            this.definedKeywords = results;
         }
         return results;
     }
