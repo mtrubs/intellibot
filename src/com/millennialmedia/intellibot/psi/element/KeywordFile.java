@@ -13,5 +13,5 @@ import java.util.Collection;
 public interface KeywordFile {
 
     @NotNull
-    Collection<DefinedKeyword> getKeywords();
+    Collection<DefinedKeyword> getDefinedKeywords();
 }

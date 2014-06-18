@@ -6,6 +6,8 @@ import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +20,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private static final String ANY = ".*?";
     private static final String DOT = ".";
 
+    private Boolean arguments;
+    private Pattern pattern;
+    private Collection<KeywordInvokable> invokedKeywords;
+
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.KEYWORD_DEFINITION);
     }
@@ -27,15 +33,68 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return getTextData();
     }
 
+    @NotNull
+    @Override
+    public Collection<KeywordInvokable> getInvokedKeywords() {
+        Collection<KeywordInvokable> results = this.invokedKeywords;
+        if (results == null) {
+            results = collectInvokedKeywords();
+            this.invokedKeywords = results;
+        }
+        return results;
+    }
+
+    private Collection<KeywordInvokable> collectInvokedKeywords() {
+        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+        for (PsiElement statement : getChildren()) {
+            if (statement instanceof KeywordStatement) {
+                for (PsiElement subStatement : statement.getChildren()) {
+                    if (subStatement instanceof KeywordInvokable) {
+                        results.add((KeywordInvokable) subStatement);
+                    }
+                }
+            } else if (statement instanceof BracketSetting) {
+                for (PsiElement subStatement : statement.getChildren()) {
+                    if (subStatement instanceof KeywordInvokable) {
+                        results.add((KeywordInvokable) subStatement);
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public void subtreeChanged() {
+        super.subtreeChanged();
+        this.arguments = null;
+        this.pattern = null;
+        this.invokedKeywords = null;
+    }
+
     @Override
     public boolean matches(String text) {
+        if (text == null) {
+            return false;
+        }
         String myText = getPresentableText();
         if (myText == null) {
-            return text == null;
+            return false;
         } else {
-            String myNamespace = getNamespace(getContainingFile());
-            return Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE).matcher(text.trim()).matches();
+            Pattern namePattern = this.pattern;
+            if (namePattern == null) {
+                String myNamespace = getNamespace(getContainingFile());
+                namePattern = Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE);
+                this.pattern = namePattern;
+            }
+
+            return namePattern.matcher(text.trim()).matches();
         }
+    }
+
+    @Override
+    public PsiElement reference() {
+        return this;
     }
 
     private String getNamespace(@NotNull PsiFile file) {
@@ -79,6 +138,15 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @Override
     public boolean hasArguments() {
+        Boolean results = this.arguments;
+        if (results == null) {
+            results = determineArguments();
+            this.arguments = results;
+        }
+        return results;
+    }
+
+    private boolean determineArguments() {
         for (PsiElement child : getChildren()) {
             if (child instanceof BracketSetting) {
                 BracketSetting bracket = (BracketSetting) child;

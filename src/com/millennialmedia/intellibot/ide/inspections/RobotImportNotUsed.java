@@ -43,6 +43,7 @@ public class RobotImportNotUsed extends SimpleRobotInspection {
         if (parent instanceof Import) {
             if (!((Import) parent).isResource()) {
                 // TODO: python libraries
+                // TODO: variables
                 return true;
             }
             PsiElement[] children = parent.getChildren();
@@ -54,17 +55,11 @@ public class RobotImportNotUsed extends SimpleRobotInspection {
                 }
                 PsiElement importFile = reference.resolve();
                 if (importFile == null) {
-                    return true;
+                    return true; // we cannot find the file thus we do not know if we use it
                 }
-
-                // TODO: some issue with keywords that take keywords as arguments
-                Collection<PsiElement> keywords = ((RobotFile) file).getInvokedKeywords();
-                for (PsiElement keyword : keywords) {
-                    if (keyword.getContainingFile() == importFile.getContainingFile()) {
-                        return true;
-                    }
-                }
-                return false;
+                
+                Collection<PsiFile> referenced = ((RobotFile) file).getFilesFromInvokedKeywords();
+                return referenced.contains(importFile.getContainingFile());
             } else {
                 return true;
             }
