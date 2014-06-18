@@ -27,6 +27,7 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
         if (myText == null) {
             return false;
         } else {
+            // TODO: text could be ${variable.property} or ${variable['property']}
             myText = myText.trim();
             if (myText.endsWith("=")) {
                 myText = myText.substring(0, myText.length() - 1);

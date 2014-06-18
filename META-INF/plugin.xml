@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -29,6 +29,7 @@
         <li>performance improvements</li>
         <li>enable import not used (resource) by default</li>
         <li>better handle import file finding</li>
+        <li>some variable handling and inspection</li>
       </ul>
       <h2>0.5</h2>
       <ul>
@@ -126,6 +127,9 @@
         <localInspection language="Robot" shortName="RobotKeywordNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.keyword.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotKeywordNotFound"/>
+        <localInspection language="Robot" shortName="RobotVariableNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.variable.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotVariableNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotFound"/>
