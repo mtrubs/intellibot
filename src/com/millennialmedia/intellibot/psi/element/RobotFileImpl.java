@@ -35,6 +35,16 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         super.subtreeChanged();
         this.headings = null;
     }
+    
+    @NotNull
+    @Override
+    public Collection<VariableDefinition> getDeclaredVariables() {
+        Collection<VariableDefinition> results = new ArrayList<VariableDefinition>();
+        for (Heading heading : getHeadings()) {
+            results.addAll(heading.getDeclaredVariables());
+        }
+        return results;
+    }
 
     @NotNull
     @Override

@@ -6,11 +6,11 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.ProjectScope;
-import com.millennialmedia.intellibot.psi.element.Argument;
-import com.millennialmedia.intellibot.psi.element.Import;
-import com.millennialmedia.intellibot.psi.element.KeywordStatement;
+import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 /**
  * @author Scott Albertine
@@ -52,7 +52,19 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     }
 
     private PsiElement resolveVariable() {
-        // TODO: implement
+        PsiFile file = getElement().getContainingFile();
+        String text = getElement().getPresentableText();
+        if (file instanceof RobotFile) {
+            // TODO prior keywords defining
+            // TODO keyword definition/arguments
+            Collection<VariableDefinition> fileVariables = ((RobotFile) file).getDeclaredVariables();
+            for (VariableDefinition variable : fileVariables) {
+                if (variable.matches(text)) {
+                    return variable.reference();
+                }
+            }
+            // TODO: variables import
+        }
         return null;
     }
 

@@ -28,6 +28,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordDefinition> testCases;
     private Collection<KeywordFile> keywordFiles;
     private Collection<PsiFile> referencedFiles;
+    private Collection<VariableDefinition> declaredVariables;
 
     public HeadingImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.HEADING);
@@ -38,6 +39,11 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         // TODO: better OO
         String text = getTextData();
         return text != null && text.startsWith("*** Setting");
+    }
+
+    public boolean containsVariables() {
+        String text = getText();
+        return text != null && text.startsWith("*** Variable");
     }
 
     @Override
@@ -53,7 +59,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         String text = getTextData();
         return text != null && (text.startsWith("*** Keyword") || text.startsWith("*** User Keyword"));
     }
-    
+
     private boolean containsImports() {
         return isSettings();
     }
@@ -72,6 +78,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.invokedKeywords = null;
         this.referencedFiles = null;
         this.testCases = null;
+        this.declaredVariables = null;
     }
 
     @Override
@@ -81,6 +88,32 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.invokedKeywords = null;
         this.referencedFiles = null;
         this.testCases = null;
+        this.declaredVariables = null;
+    }
+
+    @NotNull
+    @Override
+    public Collection<VariableDefinition> getDeclaredVariables() {
+        Collection<VariableDefinition> results = this.declaredVariables;
+        if (results == null) {
+            results = collectVariables();
+            this.declaredVariables = results;
+        }
+        return results;
+    }
+
+    @NotNull
+    Collection<VariableDefinition> collectVariables() {
+        if (!containsVariables()) {
+            return Collections.emptySet();
+        }
+        List<VariableDefinition> results = new ArrayList<VariableDefinition>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof VariableDefinition) {
+                results.add((VariableDefinition) child);
+            }
+        }
+        return results;
     }
 
     @NotNull
@@ -98,13 +131,13 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         if (!containsTestCases()) {
             return Collections.emptySet();
         }
-        List<KeywordDefinition> result = new ArrayList<KeywordDefinition>();
+        List<KeywordDefinition> results = new ArrayList<KeywordDefinition>();
         for (PsiElement child : getChildren()) {
             if (child instanceof KeywordDefinition) {
-                result.add(((KeywordDefinition) child));
+                results.add(((KeywordDefinition) child));
             }
         }
-        return result;
+        return results;
     }
 
     @NotNull
@@ -123,13 +156,13 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         if (!containsKeywordDefinitions()) {
             return Collections.emptySet();
         }
-        List<DefinedKeyword> result = new ArrayList<DefinedKeyword>();
+        List<DefinedKeyword> results = new ArrayList<DefinedKeyword>();
         for (PsiElement child : getChildren()) {
             if (child instanceof DefinedKeyword) {
-                result.add(((DefinedKeyword) child));
+                results.add(((DefinedKeyword) child));
             }
         }
-        return result;
+        return results;
     }
 
     @NotNull
