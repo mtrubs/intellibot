@@ -7,7 +7,6 @@ import com.millennialmedia.intellibot.RobotBundle;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
-import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -57,19 +56,9 @@ public class RobotImportNotUsed extends SimpleRobotInspection {
                 if (importFile == null) {
                     return true; // we cannot find the file thus we do not know if we use it
                 }
-
-                // TODO: some issue with keywords that take keywords as arguments
-                Collection<KeywordInvokable> keywords = ((RobotFile) file).getInvokedKeywords();
-                for (KeywordInvokable keyword : keywords) {
-                    PsiReference keywordReference = keyword.getReference();
-                    if (keywordReference != null) {
-                        PsiElement keywordDeclaration = keywordReference.resolve();
-                        if (keywordDeclaration != null && keywordDeclaration.getContainingFile() == importFile) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                
+                Collection<PsiFile> referenced = ((RobotFile) file).getFilesFromInvokedKeywords();
+                return referenced.contains(importFile.getContainingFile());
             } else {
                 return true;
             }

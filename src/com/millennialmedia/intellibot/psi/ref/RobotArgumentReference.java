@@ -7,6 +7,7 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
+import com.millennialmedia.intellibot.psi.element.KeywordStatement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +35,23 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             } else if (importElement.isLibrary()) {
                 return resolveLibrary();
             }
+        } else if (parent instanceof KeywordStatement) {
+            PsiElement reference = resolveKeyword();
+            return reference == null ? resolveVariable() : reference;
         }
         // TODO: handle other argument types
+        return null;
+    }
+
+    private PsiElement resolveKeyword() {
+        Argument element = getElement();
+        String keyword = element.getPresentableText();
+        // all files we import are based off the file we are currently in
+        return ResolverUtils.resolveKeywordFromFile(keyword, element.getContainingFile());
+    }
+    
+    private PsiElement resolveVariable() {
+        // TODO: implement
         return null;
     }
 

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.5</version>
+    <version>0.5.1</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -24,6 +24,11 @@
       ]]></description>
 
     <change-notes><![CDATA[
+      <h2>0.6</h2>
+      <ul>
+        <li>performance improvements</li>
+        <li>enable import not used (resource) by default</li>
+      </ul>
       <h2>0.5</h2>
       <ul>
         <li>better keyword resolution</li>
@@ -124,7 +129,7 @@
                          key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.import.unused" groupKey="INSP.GROUP.robot" enabledByDefault="false"
+                         key="INSP.NAME.import.unused" groupKey="INSP.GROUP.robot" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.RobotImportNotUsed"/>
         <!-- TODO: inspection: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: scenarios longer than X lines; trying to do too much -->

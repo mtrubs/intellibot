@@ -14,13 +14,13 @@ public interface RobotFile extends PsiFile {
      * @return locally defined keywords
      */
     @NotNull
-    Collection<DefinedKeyword> getKeywords();
+    Collection<DefinedKeyword> getDefinedKeywords();
 
     /**
-     * @return locally invoked keyword references
+     * @return all files that contain references to invoked keywords
      */
     @NotNull
-    Collection<KeywordInvokable> getInvokedKeywords();
+    Collection<PsiFile> getFilesFromInvokedKeywords();
 
     /**
      * Gets all the imported keyword files that are considered in scope for this file.  This

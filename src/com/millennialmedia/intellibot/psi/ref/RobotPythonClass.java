@@ -32,7 +32,7 @@ public class RobotPythonClass implements KeywordFile {
 
     @NotNull
     @Override
-    public Collection<DefinedKeyword> getKeywords() {
+    public Collection<DefinedKeyword> getDefinedKeywords() {
         final Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
         final String namespace = this.library;
         this.pythonClass.visitMethods(new Processor<PyFunction>() {
