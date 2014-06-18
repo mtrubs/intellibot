@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.5.1</version>
+    <version>0.5.2</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -28,6 +28,7 @@
       <ul>
         <li>performance improvements</li>
         <li>enable import not used (resource) by default</li>
+        <li>better handle import file finding</li>
       </ul>
       <h2>0.5</h2>
       <ul>

@@ -9,6 +9,7 @@ import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PlatformUtils;
 import com.jetbrains.python.psi.PyClass;
+import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.stubs.PyClassNameIndex;
 import com.millennialmedia.intellibot.RobotBundle;
 import org.jetbrains.annotations.Nullable;
@@ -26,10 +27,19 @@ public class PythonResolver {
     private PythonResolver() {
     }
 
-    public static PyClass cast(PsiElement element) {
+    public static PyClass castClass(PsiElement element) {
         if (hasPython) {
             if (element instanceof PyClass) {
                 return (PyClass) element;
+            }
+        }
+        return null;
+    }
+    
+    public static PyFile castFile(PsiElement element) {
+        if (hasPython) {
+            if (element instanceof PyFile) {
+                return (PyFile) element;
             }
         }
         return null;

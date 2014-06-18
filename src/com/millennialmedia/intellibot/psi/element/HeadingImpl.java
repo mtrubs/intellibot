@@ -6,16 +6,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
+import com.jetbrains.python.psi.PyFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
+import com.millennialmedia.intellibot.psi.ref.RobotPythonFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Stephen Abrams
@@ -53,6 +52,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         String text = getTextData();
         return text != null && (text.startsWith("*** Keyword") || text.startsWith("*** User Keyword"));
     }
+    
+    private boolean containsImports() {
+        return isSettings();
+    }
 
     @Override
     public void subtreeChanged() {
@@ -76,6 +79,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     private Collection<DefinedKeyword> collectDefinedKeywords() {
+        if (!containsKeywordDefinitions()) {
+            return Collections.emptySet();
+        }
         List<DefinedKeyword> result = new ArrayList<DefinedKeyword>();
         for (PsiElement child : getChildren()) {
             if (child instanceof DefinedKeyword) {
@@ -164,6 +170,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     }
 
     private Collection<KeywordFile> collectImportFiles() {
+        if (!containsImports()) {
+            return Collections.emptySet();
+        }
         List<KeywordFile> files = new ArrayList<KeywordFile>();
         for (PsiElement child : getChildren()) {
             if (child instanceof Import) {
@@ -179,9 +188,14 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 } else if (imp.isLibrary()) {
                     Argument argument = PsiTreeUtil.findChildOfType(imp, Argument.class);
                     if (argument != null) {
-                        PyClass resolution = PythonResolver.cast(resolveImport(argument));
+                        PsiElement resolved = resolveImport(argument);
+                        PyClass resolution = PythonResolver.castClass(resolved);
                         if (resolution != null) {
                             files.add(new RobotPythonClass(argument.getPresentableText(), resolution));
+                        }
+                        PyFile file = PythonResolver.castFile(resolved);
+                        if (file != null) {
+                            files.add(new RobotPythonFile(argument.getPresentableText(), file));
                         }
                     }
                 }

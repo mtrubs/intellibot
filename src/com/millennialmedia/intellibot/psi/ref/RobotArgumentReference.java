@@ -5,6 +5,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.ProjectScope;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
 import com.millennialmedia.intellibot.psi.element.KeywordStatement;
@@ -49,7 +50,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         // all files we import are based off the file we are currently in
         return ResolverUtils.resolveKeywordFromFile(keyword, element.getContainingFile());
     }
-    
+
     private PsiElement resolveVariable() {
         // TODO: implement
         return null;
@@ -57,17 +58,77 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
     private PsiElement resolveLibrary() {
         String library = getElement().getPresentableText();
-        return PythonResolver.findClass(library, myElement.getProject());
+        if (library == null) {
+            return null;
+        }
+        PsiElement result = PythonResolver.findClass(library, myElement.getProject());
+        if (result != null) {
+            return result;
+        }
+
+        library = library.replace(".py", "").replaceAll("\\.", "\\/");
+        String[] file = getFilename(library, ".py");
+        // search project scope
+        result = findFile(file[0], file[1], ProjectScope.getContentScope(this.myElement.getProject()));
+        if (result != null) {
+            return result;
+        }
+        // search global scope... this can get messy
+        result = findFile(file[0], file[1], GlobalSearchScope.allScope(this.myElement.getProject()));
+        if (result != null) {
+            return result;
+        }
+        return null;
     }
 
     private PsiElement resolveResource() {
-        String filePath = getElement().getPresentableText();
-        String[] pathElements = filePath.split("/"); //TODO: crude, we want to look up the actual file in the future, this is quick and dirty
-        PsiFile[] files = FilenameIndex.getFilesByName(myElement.getProject(), pathElements[pathElements.length - 1], GlobalSearchScope.allScope(myElement.getProject()));
-        if (files.length > 0) {
-            return files[0];
+        String resource = getElement().getPresentableText();
+        if (resource == null) {
+            return null;
+        }
+        String[] file = getFilename(resource, "");
+        return findFile(file[0], file[1], GlobalSearchScope.allScope(this.myElement.getProject()));
+    }
+
+    @Nullable
+    private PsiFile findFile(@NotNull String path, @NotNull String filename, @NotNull GlobalSearchScope search) {
+        PsiFile[] files = FilenameIndex.getFilesByName(this.myElement.getProject(), filename, search);
+        StringBuilder builder = new StringBuilder();
+        builder.append(path);
+        builder.append(filename);
+        path = builder.reverse().toString();
+        for (PsiFile file : files) {
+            if (acceptablePath(path, file)) {
+                return file;
+            }
         }
         return null;
+    }
+
+    private boolean acceptablePath(@NotNull String path, @Nullable PsiFile file) {
+        if (file == null) {
+            return false;
+        }
+        String filePath = new StringBuilder(file.getVirtualFile().getCanonicalPath()).reverse().toString();
+        return filePath.startsWith(path);
+    }
+
+    @NotNull
+    private static String[] getFilename(@NotNull String path, @NotNull String suffix) {
+        String[] pathElements = path.split("/");
+        String result;
+        if (pathElements.length == 0) {
+            result = path;
+        } else {
+            result = pathElements[pathElements.length - 1];
+        }
+        String[] results = new String[2];
+        results[0] = path.replace(result, "");
+        if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
+            result += suffix;
+        }
+        results[1] = result;
+        return results;
     }
 
     @NotNull

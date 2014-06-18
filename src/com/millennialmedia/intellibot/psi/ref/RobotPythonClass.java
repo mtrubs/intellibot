@@ -3,13 +3,11 @@ package com.millennialmedia.intellibot.psi.ref;
 import com.intellij.util.Processor;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFunction;
-import com.jetbrains.python.psi.PyParameter;
 import com.jetbrains.python.psi.PyTargetExpression;
 import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,10 +15,7 @@ import java.util.HashSet;
 /**
  * @author mrubino
  */
-public class RobotPythonClass implements KeywordFile {
-
-    private static final String UNDERSCORE = "_";
-    private static final String SELF = "self";
+public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile {
 
     private final String library;
     private final PyClass pythonClass;
@@ -58,28 +53,5 @@ public class RobotPythonClass implements KeywordFile {
             }
         }, true);
         return results;
-    }
-
-    private static boolean hasArguments(@Nullable PyParameter[] parameters) {
-        if (parameters == null || parameters.length == 0) {
-            return false;
-        }
-
-        for (PyParameter parameter : parameters) {
-            String name = parameter.getName();
-            if (name != null && !SELF.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String functionToKeyword(@Nullable String function) {
-        // these keeps out intended private functions
-        if (function == null || function.startsWith(UNDERSCORE)) {
-            return null;
-        } else {
-            return function;
-        }
     }
 }
