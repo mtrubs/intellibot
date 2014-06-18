@@ -79,6 +79,9 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         }
 
         library = library.replace(".py", "").replaceAll("\\.", "\\/");
+        while (library.contains("//")) {
+            library = library.replace("//", "/");
+        }
         String[] file = getFilename(library, ".py");
         // search project scope
         result = findFile(file[0], file[1], ProjectScope.getContentScope(this.myElement.getProject()));
