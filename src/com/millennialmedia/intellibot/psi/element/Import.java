@@ -10,4 +10,6 @@ public interface Import extends PsiElement {
     boolean isResource();
 
     boolean isLibrary();
+    
+    boolean isVariables();
 }

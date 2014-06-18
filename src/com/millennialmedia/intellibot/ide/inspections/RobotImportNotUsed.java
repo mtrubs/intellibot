@@ -43,6 +43,7 @@ public class RobotImportNotUsed extends SimpleRobotInspection {
         if (parent instanceof Import) {
             if (!((Import) parent).isResource()) {
                 // TODO: python libraries
+                // TODO: variables
                 return true;
             }
             PsiElement[] children = parent.getChildren();

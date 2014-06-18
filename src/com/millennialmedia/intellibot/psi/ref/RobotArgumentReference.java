@@ -33,7 +33,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             Import importElement = (Import) parent;
             if (importElement.isResource()) {
                 return resolveResource();
-            } else if (importElement.isLibrary()) {
+            } else if (importElement.isLibrary() || importElement.isVariables()) {
                 return resolveLibrary();
             }
         } else if (parent instanceof KeywordStatement) {

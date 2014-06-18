@@ -25,4 +25,6 @@ public interface Heading extends PsiElement {
 
     @NotNull
     Collection<PsiFile> getFilesFromInvokedKeywords();
+
+    void importsChanged();
 }

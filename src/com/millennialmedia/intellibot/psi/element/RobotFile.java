@@ -30,4 +30,6 @@ public interface RobotFile extends PsiFile {
      */
     @NotNull
     Collection<KeywordFile> getImportedFiles();
+    
+    void importsChanged();
 }

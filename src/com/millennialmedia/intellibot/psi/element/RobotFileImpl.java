@@ -66,6 +66,13 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         return results;
     }
 
+    @Override
+    public void importsChanged() {
+        for (Heading heading : getHeadings()) {
+            heading.importsChanged();
+        }
+    }
+
     @NotNull
     private Collection<Heading> getHeadings() {
         Collection<Heading> results = this.headings;

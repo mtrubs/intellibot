@@ -25,6 +25,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     private Collection<KeywordInvokable> invokedKeywords;
     private Collection<DefinedKeyword> definedKeywords;
+    private Collection<KeywordDefinition> testCases;
     private Collection<KeywordFile> keywordFiles;
     private Collection<PsiFile> referencedFiles;
 
@@ -60,10 +61,50 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
+        if (isSettings()) {
+            PsiFile file = getContainingFile();
+            if (file instanceof RobotFile) {
+                ((RobotFile) file).importsChanged();
+            }
+        }
         this.definedKeywords = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
         this.referencedFiles = null;
+        this.testCases = null;
+    }
+
+    @Override
+    public void importsChanged() {
+        this.definedKeywords = null;
+        this.keywordFiles = null;
+        this.invokedKeywords = null;
+        this.referencedFiles = null;
+        this.testCases = null;
+    }
+
+    @NotNull
+    private Collection<KeywordDefinition> getTestCases() {
+        Collection<KeywordDefinition> results = this.testCases;
+        if (results == null) {
+            results = collectTestCases();
+            this.testCases = results;
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<KeywordDefinition> collectTestCases() {
+        if (!containsTestCases()) {
+            return Collections.emptySet();
+        }
+        List<KeywordDefinition> result = new ArrayList<KeywordDefinition>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof KeywordDefinition) {
+                result.add(((KeywordDefinition) child));
+            }
+        }
+        return result;
     }
 
     @NotNull
@@ -152,6 +193,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 }
             }
         }
+        for (KeywordDefinition testCase : getTestCases()) {
+            results.addAll(testCase.getInvokedKeywords());
+        }
         for (DefinedKeyword definedKeyword : getDefinedKeywords()) {
             results.addAll(definedKeyword.getInvokedKeywords());
         }
@@ -185,7 +229,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                             files.add((KeywordFile) resolution);
                         }
                     }
-                } else if (imp.isLibrary()) {
+                } else if (imp.isLibrary() || imp.isVariables()) {
                     Argument argument = PsiTreeUtil.findChildOfType(imp, Argument.class);
                     if (argument != null) {
                         PsiElement resolved = resolveImport(argument);

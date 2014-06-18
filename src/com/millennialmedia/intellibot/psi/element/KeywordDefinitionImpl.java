@@ -53,6 +53,12 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
                         results.add((KeywordInvokable) subStatement);
                     }
                 }
+            } else if (statement instanceof BracketSetting) {
+                for (PsiElement subStatement : statement.getChildren()) {
+                    if (subStatement instanceof KeywordInvokable) {
+                        results.add((KeywordInvokable) subStatement);
+                    }
+                }
             }
         }
         return results;
