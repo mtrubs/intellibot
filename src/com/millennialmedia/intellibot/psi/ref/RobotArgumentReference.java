@@ -55,15 +55,15 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         PsiFile file = getElement().getContainingFile();
         String text = getElement().getPresentableText();
         if (file instanceof RobotFile) {
+            // TODO set_test_variable, set_suite_variable, set_global_variable
             // TODO prior keywords defining
             // TODO keyword definition/arguments
-            Collection<VariableDefinition> fileVariables = ((RobotFile) file).getDeclaredVariables();
-            for (VariableDefinition variable : fileVariables) {
+            Collection<DefinedVariable> fileVariables = ((RobotFile) file).getDefinedVariables();
+            for (DefinedVariable variable : fileVariables) {
                 if (variable.matches(text)) {
                     return variable.reference();
                 }
             }
-            // TODO: variables import
         }
         return null;
     }

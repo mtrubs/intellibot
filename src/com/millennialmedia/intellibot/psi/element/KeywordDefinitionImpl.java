@@ -84,7 +84,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
             Pattern namePattern = this.pattern;
             if (namePattern == null) {
                 String myNamespace = getNamespace(getContainingFile());
-                namePattern = Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE);
+                namePattern = Pattern.compile(buildPattern(myNamespace, myText.trim()), Pattern.CASE_INSENSITIVE);
                 this.pattern = namePattern;
             }
 

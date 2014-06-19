@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
 import com.millennialmedia.intellibot.psi.RobotLanguage;
+import com.millennialmedia.intellibot.psi.dto.ImportType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -35,15 +36,21 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         super.subtreeChanged();
         this.headings = null;
     }
-    
+
     @NotNull
     @Override
-    public Collection<VariableDefinition> getDeclaredVariables() {
-        Collection<VariableDefinition> results = new ArrayList<VariableDefinition>();
+    public Collection<DefinedVariable> getDefinedVariables() {
+        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
         for (Heading heading : getHeadings()) {
-            results.addAll(heading.getDeclaredVariables());
+            results.addAll(heading.getDefinedVariables());
         }
         return results;
+    }
+
+    @NotNull
+    @Override
+    public ImportType getImportType() {
+        return ImportType.RESOURCE;
     }
 
     @NotNull
