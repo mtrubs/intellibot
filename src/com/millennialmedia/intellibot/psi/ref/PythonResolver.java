@@ -68,7 +68,6 @@ public class PythonResolver {
     }
 
     private static boolean detectPython(Project project) {
-        // TODO: there should be a better way to figure this out
         if (PlatformUtils.isPyCharm()) {
             return true;
         } else if (project instanceof ProjectImpl) {

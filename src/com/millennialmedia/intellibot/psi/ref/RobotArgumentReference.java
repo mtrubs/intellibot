@@ -40,7 +40,6 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             PsiElement reference = resolveKeyword();
             return reference == null ? resolveVariable() : reference;
         }
-        // TODO: handle other argument types
         return null;
     }
 
@@ -55,9 +54,9 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         PsiFile file = getElement().getContainingFile();
         String text = getElement().getPresentableText();
         if (file instanceof RobotFile) {
-            // TODO set_test_variable, set_suite_variable, set_global_variable
-            // TODO prior keywords defining
-            // TODO keyword definition/arguments
+            // TODO in previously invoked keywords: set_test_variable, set_suite_variable, set_global_variable
+            // TODO in previous statements
+            // TODO in keyword definition/arguments
             Collection<DefinedVariable> fileVariables = ((RobotFile) file).getDefinedVariables();
             for (DefinedVariable variable : fileVariables) {
                 if (variable.matches(text)) {

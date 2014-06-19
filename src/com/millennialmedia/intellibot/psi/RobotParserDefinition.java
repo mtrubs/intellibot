@@ -60,7 +60,6 @@ public class RobotParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
-        // TODO: most of what these do need to be flushed out
         if (node.getElementType() == RobotTokenTypes.KEYWORD_DEFINITION) return new KeywordDefinitionImpl(node);
         if (node.getElementType() == RobotTokenTypes.KEYWORD_STATEMENT) return new KeywordStatementImpl(node);
         if (node.getElementType() == RobotTokenTypes.KEYWORD) return new KeywordInvokableImpl(node);
@@ -82,7 +81,7 @@ public class RobotParserDefinition implements ParserDefinition {
 
     @Override
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-        // todo SMA: guessing this is for code cleanup
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: guessing this is for code cleanup
+        return null;
     }
 }
