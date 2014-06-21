@@ -14,4 +14,12 @@ public interface KeywordDefinition extends PsiElement {
 
     @NotNull
     Collection<KeywordInvokable> getInvokedKeywords();
+
+    /**
+     * This does not include variables that are saved globally as a result of calling this keyword.
+     *
+     * @return a list of variables as defined in the arguments of this keyword
+     */
+    @NotNull
+    Collection<DefinedVariable> getDeclaredVariables();
 }

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.Argument;
+import com.millennialmedia.intellibot.psi.element.BracketSetting;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,9 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
         }
         PsiElement parent = element.getParent();
         if (parent instanceof Argument) {
+            if (parent.getParent() instanceof BracketSetting) {
+                return true;
+            }
             String text = element.getText();
             // stick to just ${variables}
             if (text.startsWith("${") && text.endsWith("}")) {

@@ -68,7 +68,7 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile 
 
             @Override
             public boolean process(PyTargetExpression expression) {
-                String keyword = functionToKeyword(expression.getName());
+                String keyword = expression.getName();
                 if (keyword != null) {
                     results.add(new VariableDto(expression, keyword));
                 }

@@ -54,7 +54,7 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
     public Collection<DefinedVariable> getDefinedVariables() {
         final Collection<DefinedVariable> results = new HashSet<DefinedVariable>();
         for (PyTargetExpression expression : this.pythonFile.getTopLevelAttributes()) {
-            String keyword = functionToKeyword(expression.getName());
+            String keyword = expression.getName();
             if (keyword != null) {
                 results.add(new VariableDto(expression, keyword));
             }
