@@ -32,9 +32,10 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
             if (parent.getParent() instanceof BracketSetting) {
                 return true;
             }
+            // TODO: ignore if is a 'set test variable' call && isArg1 && arg2 exists
             String text = element.getText();
             // stick to just ${variables}
-            if (text.startsWith("${") && text.endsWith("}")) {
+            if ((text.startsWith("${") || text.startsWith("@{")) && text.endsWith("}")) {
                 PsiReference reference = parent.getReference();
                 return reference != null && reference.resolve() != null;
             } else {

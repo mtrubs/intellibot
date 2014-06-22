@@ -2,6 +2,7 @@ package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -62,7 +63,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             // we want to go backwards to get the latest setter
             PsiElement[] children = containingStatement.getChildren();
             boolean seenParent = false;
-            for (int i = children.length -1; i >=0; i--) {
+            for (int i = children.length - 1; i >= 0; i--) {
                 PsiElement child = children[i];
                 // skip everything until we go past ourselves
                 if (child == parent) {
@@ -80,8 +81,21 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
                     }
                 } else if (child instanceof KeywordStatement) {
                     // set test variable  ${x}  ${y}
-                    int a = 1;
-                    // TODO: set_test_variable, set_suite_variable, set_global_variable
+                    DefinedVariable variable = ((KeywordStatement) child).getGlobalVariable();
+                    if (variable != null && variable.matches(text)) {
+                        return variable.reference();
+                    } else {
+                        KeywordInvokable invokable = ((KeywordStatement) child).getInvokable();
+                        if (invokable != null) {
+                            PsiReference reference = invokable.getReference();
+                            if (reference != null) {
+                                PsiElement resolved = reference.resolve();
+                                if (resolved != null) {
+                                    // TODO: global variables of keyword definition
+                                }
+                            }
+                        }
+                    }
                 }
             }
             for (DefinedVariable variable : ((KeywordDefinition) containingStatement).getDeclaredVariables()) {
