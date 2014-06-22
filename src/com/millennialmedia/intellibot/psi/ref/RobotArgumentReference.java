@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Scott Albertine
@@ -80,21 +82,9 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
                         return child;
                     }
                 } else if (child instanceof KeywordStatement) {
-                    // set test variable  ${x}  ${y}
-                    DefinedVariable variable = ((KeywordStatement) child).getGlobalVariable();
-                    if (variable != null && variable.matches(text)) {
-                        return variable.reference();
-                    } else {
-                        KeywordInvokable invokable = ((KeywordStatement) child).getInvokable();
-                        if (invokable != null) {
-                            PsiReference reference = invokable.getReference();
-                            if (reference != null) {
-                                PsiElement resolved = reference.resolve();
-                                if (resolved != null) {
-                                    // TODO: global variables of keyword definition
-                                }
-                            }
-                        }
+                    PsiElement reference = walkKeyword((KeywordStatement) child, text);
+                    if (reference != null) {
+                        return reference;
                     }
                 }
             }
@@ -118,6 +108,50 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         return null;
     }
 
+    /**
+     * Walks the keyword tree looking for global variable setting keywords.
+     * This only includes variables that are set in this manner as everything else
+     * is out of scope.
+     *
+     * @param statement the keyword statement to find a variable in.
+     * @param text      the variable text we are looking for.
+     * @return the matching definition if it exists; null otherwise.
+     */
+    @Nullable
+    private PsiElement walkKeyword(@Nullable KeywordStatement statement, String text) {
+        if (statement == null) {
+            return null;
+        }
+        // set test variable  ${x}  ${y}
+        DefinedVariable variable = statement.getGlobalVariable();
+        if (variable != null && variable.matches(text)) {
+            return variable.reference();
+        } else {
+            KeywordInvokable invokable = statement.getInvokable();
+            if (invokable != null) {
+                PsiReference reference = invokable.getReference();
+                if (reference != null) {
+                    PsiElement resolved = reference.resolve();
+                    if (resolved instanceof KeywordDefinition) {
+                        List<KeywordInvokable> keywords = ((KeywordDefinition) resolved).getInvokedKeywords();
+                        Collections.reverse(keywords);
+                        for (KeywordInvokable invoked : keywords) {
+                            PsiElement parent = invoked.getParent();
+                            if (parent instanceof KeywordStatement) {
+                                PsiElement result = walkKeyword((KeywordStatement) parent, text);
+                                if (result != null) {
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     private PsiElement resolveLibrary() {
         String library = getElement().getPresentableText();
         if (library == null) {

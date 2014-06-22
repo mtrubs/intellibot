@@ -37,9 +37,10 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
 
     @Nullable
     private KeywordInvokable collectInvokable() {
-        PsiElement child = getFirstChild();
-        if (child instanceof KeywordInvokable) {
-            return (KeywordInvokable) child;
+        for (PsiElement child : getChildren()) {
+            if (child instanceof KeywordInvokable) {
+                return (KeywordInvokable) child;
+            }
         }
         return null;
     }

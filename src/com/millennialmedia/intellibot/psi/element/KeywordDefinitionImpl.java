@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +24,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private static final String DOT = ".";
 
     private Pattern pattern;
-    private Collection<KeywordInvokable> invokedKeywords;
+    private List<KeywordInvokable> invokedKeywords;
     private Collection<DefinedVariable> definedInlineVariables;
     private Collection<DefinedVariable> definedArguments;
 
@@ -39,8 +39,8 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     @Override
-    public Collection<KeywordInvokable> getInvokedKeywords() {
-        Collection<KeywordInvokable> results = this.invokedKeywords;
+    public List<KeywordInvokable> getInvokedKeywords() {
+        List<KeywordInvokable> results = this.invokedKeywords;
         if (results == null) {
             results = collectInvokedKeywords();
             this.invokedKeywords = results;
@@ -48,8 +48,8 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
-    private Collection<KeywordInvokable> collectInvokedKeywords() {
-        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+    private List<KeywordInvokable> collectInvokedKeywords() {
+        List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
         for (PsiElement statement : getChildren()) {
             if (statement instanceof KeywordStatement) {
                 for (PsiElement subStatement : statement.getChildren()) {
