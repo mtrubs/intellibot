@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.5.5</version>
+    <version>0.6</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -127,7 +127,7 @@
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotVariableNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
-                         level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
         <!-- TODO: inspection: warn: resource import is not a robot file -->
         <!-- Inspections: cleanup -->
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
