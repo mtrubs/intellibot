@@ -127,7 +127,7 @@
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotVariableNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
-                         level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
         <!-- TODO: inspection: warn: resource import is not a robot file -->
         <!-- Inspections: cleanup -->
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
