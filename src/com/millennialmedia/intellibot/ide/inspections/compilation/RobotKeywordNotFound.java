@@ -1,8 +1,9 @@
-package com.millennialmedia.intellibot.ide.inspections;
+package com.millennialmedia.intellibot.ide.inspections.compilation;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import org.jetbrains.annotations.Nls;

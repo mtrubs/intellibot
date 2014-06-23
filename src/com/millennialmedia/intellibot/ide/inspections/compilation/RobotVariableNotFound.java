@@ -1,11 +1,13 @@
-package com.millennialmedia.intellibot.ide.inspections;
+package com.millennialmedia.intellibot.ide.inspections.compilation;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.BracketSetting;
+import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import com.millennialmedia.intellibot.psi.element.KeywordStatement;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +40,17 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
                 return true;
             }
             if (container instanceof KeywordStatement) {
+                KeywordInvokable invokable = ((KeywordStatement) container).getInvokable();
+                String text = invokable == null ? null : invokable.getPresentableText();
+                if (text != null) {
+                    if (text.startsWith(":")) {
+                        // TODO: for loops
+                        return true;
+                    } else if (text.startsWith("\\")) {
+                        // TODO: for loops
+                        return true;
+                    }
+                }
                 // this is the case where we have a 'set test variable' call with more than one arg
                 // the first is the variable name, the second is the value
                 // if there is only one argument then we might want to see where it was created
@@ -48,7 +61,6 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
                     }
                 }
             }
-            // TODO: ignore if is a 'set test variable' call && isArg1 && arg2 exists
             String text = element.getText();
             // stick to just ${variables}
             if ((text.startsWith("${") || text.startsWith("@{")) && text.endsWith("}")) {

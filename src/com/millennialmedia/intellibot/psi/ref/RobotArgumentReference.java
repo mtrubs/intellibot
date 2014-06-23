@@ -214,7 +214,8 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
     @NotNull
     private static String[] getFilename(@NotNull String path, @NotNull String suffix) {
-        String[] pathElements = path.split("/");
+        // support either / or ${/}
+        String[] pathElements = path.split("(\\$\\{)?/(\\})?");
         String result;
         if (pathElements.length == 0) {
             result = path;
@@ -222,7 +223,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             result = pathElements[pathElements.length - 1];
         }
         String[] results = new String[2];
-        results[0] = path.replace(result, "");
+        results[0] = path.replace(result, "").replace("${/}", "/");
         if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
             result += suffix;
         }
