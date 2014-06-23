@@ -17,7 +17,7 @@ public class RobotPsiManager extends AbstractModificationTracker implements Proj
 
     @Override
     protected boolean isInsideCodeBlock(PsiElement element) {
-        // TODO: MTR
+        // TODO: usage?
         return false;
     }
 

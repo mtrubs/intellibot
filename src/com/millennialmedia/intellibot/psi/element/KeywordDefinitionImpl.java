@@ -4,10 +4,13 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,9 +23,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private static final String ANY = ".*?";
     private static final String DOT = ".";
 
-    private Boolean arguments;
     private Pattern pattern;
-    private Collection<KeywordInvokable> invokedKeywords;
+    private List<KeywordInvokable> invokedKeywords;
+    private Collection<DefinedVariable> definedInlineVariables;
+    private Collection<DefinedVariable> definedArguments;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.KEYWORD_DEFINITION);
@@ -35,8 +39,8 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     @Override
-    public Collection<KeywordInvokable> getInvokedKeywords() {
-        Collection<KeywordInvokable> results = this.invokedKeywords;
+    public List<KeywordInvokable> getInvokedKeywords() {
+        List<KeywordInvokable> results = this.invokedKeywords;
         if (results == null) {
             results = collectInvokedKeywords();
             this.invokedKeywords = results;
@@ -44,8 +48,8 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
-    private Collection<KeywordInvokable> collectInvokedKeywords() {
-        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+    private List<KeywordInvokable> collectInvokedKeywords() {
+        List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
         for (PsiElement statement : getChildren()) {
             if (statement instanceof KeywordStatement) {
                 for (PsiElement subStatement : statement.getChildren()) {
@@ -64,10 +68,80 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
+    @NotNull
+    @Override
+    public Collection<DefinedVariable> getDeclaredVariables() {
+        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        results.addAll(getArguments());
+        results.addAll(getInlineVariables());
+        return results;
+    }
+
+    @NotNull
+    public Collection<DefinedVariable> getInlineVariables() {
+        Collection<DefinedVariable> results = this.definedInlineVariables;
+        if (results == null) {
+            results = collectInlineVariables();
+            this.definedInlineVariables = results;
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<DefinedVariable> collectInlineVariables() {
+        String text = this.getPresentableText();
+        if (text == null) {
+            return Collections.emptySet();
+        }
+        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        int index;
+        while ((index = text.indexOf("${")) > 0) {
+            int close = text.indexOf("}", index);
+            if (close < index) {
+                break;
+            }
+            results.add(new VariableDto(this, text.substring(index, close + 1)));
+            text = text.substring(close);
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<DefinedVariable> getArguments() {
+        Collection<DefinedVariable> results = this.definedArguments;
+        if (results == null) {
+            results = determineArguments();
+            this.definedArguments = results;
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<DefinedVariable> determineArguments() {
+        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof BracketSetting) {
+                BracketSetting bracket = (BracketSetting) child;
+                if (bracket.isArguments()) {
+                    for (PsiElement argument : bracket.getChildren()) {
+                        if (argument instanceof Argument) {
+                            String text = ((Argument) argument).getPresentableText();
+                            if (text != null) {
+                                results.add(new VariableDto(argument, text));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
-        this.arguments = null;
+        this.definedArguments = null;
+        this.definedInlineVariables = null;
         this.pattern = null;
         this.invokedKeywords = null;
     }
@@ -84,7 +158,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
             Pattern namePattern = this.pattern;
             if (namePattern == null) {
                 String myNamespace = getNamespace(getContainingFile());
-                namePattern = Pattern.compile(buildPattern(myNamespace, myText), Pattern.CASE_INSENSITIVE);
+                namePattern = Pattern.compile(buildPattern(myNamespace, myText.trim()), Pattern.CASE_INSENSITIVE);
                 this.pattern = namePattern;
             }
 
@@ -138,23 +212,6 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @Override
     public boolean hasArguments() {
-        Boolean results = this.arguments;
-        if (results == null) {
-            results = determineArguments();
-            this.arguments = results;
-        }
-        return results;
-    }
-
-    private boolean determineArguments() {
-        for (PsiElement child : getChildren()) {
-            if (child instanceof BracketSetting) {
-                BracketSetting bracket = (BracketSetting) child;
-                if (bracket.isArguments()) {
-                    return bracket.hasArgs();
-                }
-            }
-        }
-        return false;
+        return !getArguments().isEmpty();
     }
 }

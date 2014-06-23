@@ -2,6 +2,7 @@ package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Scott Albertine
@@ -40,7 +43,6 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             PsiElement reference = resolveKeyword();
             return reference == null ? resolveVariable() : reference;
         }
-        // TODO: handle other argument types
         return null;
     }
 
@@ -52,22 +54,104 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     }
 
     private PsiElement resolveVariable() {
-        PsiFile file = getElement().getContainingFile();
         String text = getElement().getPresentableText();
-        if (file instanceof RobotFile) {
-            // TODO prior keywords defining
-            // TODO keyword definition/arguments
-            Collection<VariableDefinition> fileVariables = ((RobotFile) file).getDeclaredVariables();
-            for (VariableDefinition variable : fileVariables) {
+        PsiElement parent = getElement().getParent();
+        PsiElement containingStatement = parent.getParent();
+        if (containingStatement instanceof VariableDefinition) {
+            parent = containingStatement;
+            containingStatement = containingStatement.getParent();
+        }
+        if (containingStatement instanceof KeywordDefinition) {
+            // we want to go backwards to get the latest setter
+            PsiElement[] children = containingStatement.getChildren();
+            boolean seenParent = false;
+            for (int i = children.length - 1; i >= 0; i--) {
+                PsiElement child = children[i];
+                // skip everything until we go past ourselves
+                if (child == parent) {
+                    seenParent = true;
+                    continue;
+                }
+                if (!seenParent) {
+                    continue;
+                }
+                // now start checking for definitions
+                if (child instanceof DefinedVariable) {
+                    // ${x}  some keyword results
+                    if (((DefinedVariable) child).matches(text)) {
+                        return child;
+                    }
+                } else if (child instanceof KeywordStatement) {
+                    PsiElement reference = walkKeyword((KeywordStatement) child, text);
+                    if (reference != null) {
+                        return reference;
+                    }
+                }
+            }
+            for (DefinedVariable variable : ((KeywordDefinition) containingStatement).getDeclaredVariables()) {
                 if (variable.matches(text)) {
                     return variable.reference();
                 }
             }
-            // TODO: variables import
+        }
+        PsiFile file = getElement().getContainingFile();
+        if (file instanceof RobotFile) {
+            Collection<DefinedVariable> fileVariables = ((RobotFile) file).getDefinedVariables();
+            for (DefinedVariable variable : fileVariables) {
+                if (variable.matches(text)) {
+                    return variable.reference();
+                }
+            }
+            // TODO: __init__ files...
+            // TODO: global variables: ~/.robot-env/lib/python2.7/site-packages/robot/variables/__init__.py
         }
         return null;
     }
 
+    /**
+     * Walks the keyword tree looking for global variable setting keywords.
+     * This only includes variables that are set in this manner as everything else
+     * is out of scope.
+     *
+     * @param statement the keyword statement to find a variable in.
+     * @param text      the variable text we are looking for.
+     * @return the matching definition if it exists; null otherwise.
+     */
+    @Nullable
+    private PsiElement walkKeyword(@Nullable KeywordStatement statement, String text) {
+        if (statement == null) {
+            return null;
+        }
+        // set test variable  ${x}  ${y}
+        DefinedVariable variable = statement.getGlobalVariable();
+        if (variable != null && variable.matches(text)) {
+            return variable.reference();
+        } else {
+            KeywordInvokable invokable = statement.getInvokable();
+            if (invokable != null) {
+                PsiReference reference = invokable.getReference();
+                if (reference != null) {
+                    PsiElement resolved = reference.resolve();
+                    if (resolved instanceof KeywordDefinition) {
+                        List<KeywordInvokable> keywords = ((KeywordDefinition) resolved).getInvokedKeywords();
+                        Collections.reverse(keywords);
+                        for (KeywordInvokable invoked : keywords) {
+                            PsiElement parent = invoked.getParent();
+                            if (parent instanceof KeywordStatement) {
+                                PsiElement result = walkKeyword((KeywordStatement) parent, text);
+                                if (result != null) {
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     private PsiElement resolveLibrary() {
         String library = getElement().getPresentableText();
         if (library == null) {
@@ -130,7 +214,8 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
     @NotNull
     private static String[] getFilename(@NotNull String path, @NotNull String suffix) {
-        String[] pathElements = path.split("/");
+        // support either / or ${/}
+        String[] pathElements = path.split("(\\$\\{)?/(\\})?");
         String result;
         if (pathElements.length == 0) {
             result = path;
@@ -138,7 +223,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             result = pathElements[pathElements.length - 1];
         }
         String[] results = new String[2];
-        results[0] = path.replace(result, "");
+        results[0] = path.replace(result, "").replace("${/}", "/");
         if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
             result += suffix;
         }

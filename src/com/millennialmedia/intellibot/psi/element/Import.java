@@ -7,6 +7,8 @@ import com.intellij.psi.PsiElement;
  */
 public interface Import extends PsiElement {
 
+    String getPresentableText();
+
     boolean isResource();
 
     boolean isLibrary();

@@ -32,7 +32,7 @@ public interface RobotFile extends PsiFile {
     Collection<KeywordFile> getImportedFiles();
 
     @NotNull
-    Collection<VariableDefinition> getDeclaredVariables();
+    Collection<DefinedVariable> getDefinedVariables();
     
     void importsChanged();
 }

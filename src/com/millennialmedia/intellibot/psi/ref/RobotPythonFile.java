@@ -3,8 +3,11 @@ package com.millennialmedia.intellibot.psi.ref;
 import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.psi.PyTargetExpression;
+import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.dto.KeywordDto;
+import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,10 +22,12 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
 
     private final String library;
     private final PyFile pythonFile;
+    private final ImportType importType;
 
-    public RobotPythonFile(@NotNull String library, @NotNull PyFile pythonFile) {
+    public RobotPythonFile(@NotNull String library, @NotNull PyFile pythonFile, @NotNull ImportType importType) {
         this.library = library;
         this.pythonFile = pythonFile;
+        this.importType = importType;
     }
 
     @NotNull
@@ -42,5 +47,24 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
             }
         }
         return results;
+    }
+
+    @NotNull
+    @Override
+    public Collection<DefinedVariable> getDefinedVariables() {
+        final Collection<DefinedVariable> results = new HashSet<DefinedVariable>();
+        for (PyTargetExpression expression : this.pythonFile.getTopLevelAttributes()) {
+            String keyword = expression.getName();
+            if (keyword != null) {
+                results.add(new VariableDto(expression, keyword));
+            }
+        }
+        return results;
+    }
+
+    @NotNull
+    @Override
+    public ImportType getImportType() {
+        return this.importType;
     }
 }

@@ -1,6 +1,7 @@
 package com.millennialmedia.intellibot.psi;
 
 import com.intellij.testFramework.ParsingTestCase;
+import com.millennialmedia.intellibot.ResourceLoader;
 import org.junit.Test;
 
 public class RobotParserTest extends ParsingTestCase {
@@ -26,9 +27,7 @@ public class RobotParserTest extends ParsingTestCase {
 
     @Override
     protected String getTestDataPath() {
-        // TODO: weak
-//        return "/samples";
-        return "/Users/mrubino/hack/intellibot/testData/samples";
+        return ResourceLoader.getResourcePath("samples");
     }
 
     @Override

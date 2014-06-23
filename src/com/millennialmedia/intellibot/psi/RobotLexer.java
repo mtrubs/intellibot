@@ -107,7 +107,6 @@ public class RobotLexer extends LexerBase {
                 this.level.clear();
                 this.level.push(TEST_CASES_HEADING);
             } else if (isKeywords(line) || isUserKeywords(line)) {
-                // TODO: not sure if keywords and user keywords need to behave differently
                 this.level.clear();
                 this.level.push(KEYWORDS_HEADING);
             } else if (isVariables(line)) {
@@ -121,7 +120,6 @@ public class RobotLexer extends LexerBase {
 
         // the rest is based on state
         if (level.empty()) {
-            // TODO: not sure
             goToEndOfLine();
             this.currentToken = RobotTokenTypes.ERROR;
         } else {

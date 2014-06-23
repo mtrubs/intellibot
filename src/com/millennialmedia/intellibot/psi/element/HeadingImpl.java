@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonFile;
@@ -28,7 +29,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordDefinition> testCases;
     private Collection<KeywordFile> keywordFiles;
     private Collection<PsiFile> referencedFiles;
-    private Collection<VariableDefinition> declaredVariables;
+    private Collection<DefinedVariable> declaredVariables;
 
     public HeadingImpl(@NotNull final ASTNode node) {
         super(node, RobotTokenTypes.HEADING);
@@ -93,8 +94,8 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     @Override
-    public Collection<VariableDefinition> getDeclaredVariables() {
-        Collection<VariableDefinition> results = this.declaredVariables;
+    public Collection<DefinedVariable> getDefinedVariables() {
+        Collection<DefinedVariable> results = this.declaredVariables;
         if (results == null) {
             results = collectVariables();
             this.declaredVariables = results;
@@ -103,17 +104,26 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     }
 
     @NotNull
-    Collection<VariableDefinition> collectVariables() {
-        if (!containsVariables()) {
+    Collection<DefinedVariable> collectVariables() {
+        if (containsVariables()) {
+            List<DefinedVariable> results = new ArrayList<DefinedVariable>();
+            for (PsiElement child : getChildren()) {
+                if (child instanceof DefinedVariable) {
+                    results.add((DefinedVariable) child);
+                }
+            }
+            return results;
+        } else if (containsImports()) {
+            List<DefinedVariable> results = new ArrayList<DefinedVariable>();
+            for (KeywordFile imported : getImportedFiles()) {
+                if (imported.getImportType() == ImportType.VARIABLES) {
+                    results.addAll(imported.getDefinedVariables());
+                }
+            }
+            return results;
+        } else {
             return Collections.emptySet();
         }
-        List<VariableDefinition> results = new ArrayList<VariableDefinition>();
-        for (PsiElement child : getChildren()) {
-            if (child instanceof VariableDefinition) {
-                results.add((VariableDefinition) child);
-            }
-        }
-        return results;
     }
 
     @NotNull
@@ -268,11 +278,13 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                         PsiElement resolved = resolveImport(argument);
                         PyClass resolution = PythonResolver.castClass(resolved);
                         if (resolution != null) {
-                            files.add(new RobotPythonClass(argument.getPresentableText(), resolution));
+                            files.add(new RobotPythonClass(argument.getPresentableText(), resolution,
+                                    ImportType.getType(imp.getPresentableText())));
                         }
                         PyFile file = PythonResolver.castFile(resolved);
                         if (file != null) {
-                            files.add(new RobotPythonFile(argument.getPresentableText(), file));
+                            files.add(new RobotPythonFile(argument.getPresentableText(), file,
+                                    ImportType.getType(imp.getPresentableText())));
                         }
                     }
                 }
@@ -285,7 +297,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private void addBuiltIn(List<KeywordFile> files) {
         PyClass builtIn = PythonResolver.findClass(ROBOT_BUILT_IN, getProject());
         if (builtIn != null) {
-            files.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn));
+            files.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn, ImportType.LIBRARY));
         }
     }
 

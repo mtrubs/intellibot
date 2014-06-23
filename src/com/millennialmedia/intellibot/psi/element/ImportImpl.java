@@ -13,6 +13,11 @@ public class ImportImpl extends RobotPsiElementBase implements Import {
         super(node, RobotTokenTypes.IMPORT);
     }
 
+    @Override
+    public String getPresentableText() {
+        return getTextData();
+    }
+
     public boolean isResource() {
         // TODO: better OO
         String text = getTextData();

@@ -3,6 +3,7 @@ package com.millennialmedia.intellibot.psi.dto;
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
+import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -18,8 +19,6 @@ import java.util.regex.Pattern;
 public class KeywordDto implements DefinedKeyword {
 
     private static final String DOT = ".";
-    private static final String SPACE = " ";
-    private static final String UNDERSCORE = "_";
 
     private PsiElement reference;
     private String name;
@@ -28,7 +27,7 @@ public class KeywordDto implements DefinedKeyword {
 
     public KeywordDto(PsiElement reference, @NotNull String namespace, @NotNull String name, boolean args) {
         this.reference = reference;
-        this.name = functionToKeyword(name).trim();
+        this.name = PatternUtil.functionToKeyword(name).trim();
         this.namePattern = Pattern.compile(buildPattern(namespace, this.name), Pattern.CASE_INSENSITIVE);
         this.args = args;
     }
@@ -38,10 +37,6 @@ public class KeywordDto implements DefinedKeyword {
             namespace = "(" + Pattern.quote(namespace + DOT) + ")?";
         }
         return namespace + Pattern.quote(name);
-    }
-
-    private String functionToKeyword(String function) {
-        return function.replaceAll(UNDERSCORE, SPACE);
     }
 
     @Override
@@ -57,7 +52,7 @@ public class KeywordDto implements DefinedKeyword {
     @Override
     public boolean matches(String text) {
         return text != null &&
-                this.namePattern.matcher(functionToKeyword(text).trim()).matches();
+                this.namePattern.matcher(PatternUtil.functionToKeyword(text).trim()).matches();
     }
 
     @Override

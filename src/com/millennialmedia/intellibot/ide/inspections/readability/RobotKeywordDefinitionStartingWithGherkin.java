@@ -1,7 +1,8 @@
-package com.millennialmedia.intellibot.ide.inspections;
+package com.millennialmedia.intellibot.ide.inspections.readability;
 
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.KeywordDefinition;

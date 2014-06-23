@@ -1,5 +1,6 @@
 package com.millennialmedia.intellibot.psi;
 
+import com.millennialmedia.intellibot.ResourceLoader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,9 +43,7 @@ public class RobotLexerTest {
     @Test
     public void testParse() {
         this.maxState = -1;
-        // TODO: weak
-//        String data = getData("/samples/ParsingTestData.robot");
-        String data = getData("/Users/mrubino/hack/intellibot/testData/samples/ParsingTestData.robot");
+        String data = getData(ResourceLoader.getResourcePath("samples/ParsingTestData.robot"));
 
         RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);

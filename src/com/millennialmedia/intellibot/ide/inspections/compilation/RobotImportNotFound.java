@@ -1,24 +1,25 @@
-package com.millennialmedia.intellibot.ide.inspections;
+package com.millennialmedia.intellibot.ide.inspections.compilation;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
-import com.millennialmedia.intellibot.psi.element.Argument;
+import com.millennialmedia.intellibot.psi.element.Import;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author mrubino
- * @since 2014-06-18
+ * @since 2014-06-07
  */
-public class RobotVariableNotFound extends SimpleRobotInspection {
+public class RobotImportNotFound extends SimpleRobotInspection {
 
     @Nls
     @NotNull
     @Override
     public String getDisplayName() {
-        return RobotBundle.message("INSP.NAME.variable.undefined");
+        return RobotBundle.message("INSP.NAME.import.undefined");
     }
 
     @Override
@@ -27,15 +28,16 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
             return true;
         }
         PsiElement parent = element.getParent();
-        if (parent instanceof Argument) {
-            String text = element.getText();
-            // stick to just ${variables}
-            if (text.startsWith("${") && text.endsWith("}")) {
-                PsiReference reference = parent.getReference();
+        if (parent instanceof Import) {
+            PsiElement[] children = parent.getChildren();
+            // first child seems to be different than this
+            if (children.length > 0 && children[0] == element) {
+                PsiReference reference = element.getReference();
                 return reference != null && reference.resolve() != null;
             } else {
                 return true;
             }
+            
         } else {
             return true;
         }
@@ -43,6 +45,6 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
 
     @Override
     public String getMessage() {
-        return RobotBundle.message("INSP.variable.undefined");
+        return RobotBundle.message("INSP.import.undefined");
     }
 }
