@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.ProjectScope;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,6 +121,8 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     @Nullable
     private PsiElement walkKeyword(@Nullable KeywordStatement statement, String text) {
         if (statement == null) {
+            return null;
+        } else if (!RobotOptionsProvider.getInstance(getElement().getProject()).allowGlobalVariables()) {
             return null;
         }
         // set test variable  ${x}  ${y}
