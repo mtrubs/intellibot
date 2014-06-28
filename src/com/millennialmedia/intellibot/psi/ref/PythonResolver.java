@@ -28,7 +28,7 @@ public class PythonResolver {
     }
 
     public static PyClass castClass(PsiElement element) {
-        if (hasPython) {
+        if (element != null && hasPython(element.getProject())) {
             if (element instanceof PyClass) {
                 return (PyClass) element;
             }
@@ -37,7 +37,7 @@ public class PythonResolver {
     }
     
     public static PyFile castFile(PsiElement element) {
-        if (hasPython) {
+        if (element != null && hasPython(element.getProject())) {
             if (element instanceof PyFile) {
                 return (PyFile) element;
             }
