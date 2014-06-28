@@ -12,6 +12,7 @@ import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonFile;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,8 +98,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     public Collection<DefinedVariable> getDefinedVariables() {
         Collection<DefinedVariable> results = this.declaredVariables;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "defined variables");
             results = collectVariables();
             this.declaredVariables = results;
+            debug.complete();
         }
         return results;
     }
@@ -130,8 +133,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordDefinition> getTestCases() {
         Collection<KeywordDefinition> results = this.testCases;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "test cases");
             results = collectTestCases();
             this.testCases = results;
+            debug.complete();
         }
         return results;
     }
@@ -155,8 +160,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     public Collection<DefinedKeyword> getDefinedKeywords() {
         Collection<DefinedKeyword> results = this.definedKeywords;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "defined keywords");
             results = collectDefinedKeywords();
             this.definedKeywords = results;
+            debug.complete();
         }
         return results;
     }
@@ -180,8 +187,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     public Collection<PsiFile> getFilesFromInvokedKeywords() {
         Collection<PsiFile> results = this.referencedFiles;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "files from invoked keywords");
             results = collectReferencedFiles();
             this.referencedFiles = results;
+            debug.complete();
         }
         return results;
     }
@@ -218,8 +227,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordInvokable> getInvokedKeywords() {
         Collection<KeywordInvokable> results = this.invokedKeywords;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "invoked keywords");
             results = collectInvokedKeywords();
             this.invokedKeywords = results;
+            debug.complete();
         }
         return results;
     }
@@ -250,8 +261,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     public Collection<KeywordFile> getImportedFiles() {
         Collection<KeywordFile> results = this.keywordFiles;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "imported files");
             results = collectImportFiles();
             this.keywordFiles = results;
+            debug.complete();
         }
         return results;
     }

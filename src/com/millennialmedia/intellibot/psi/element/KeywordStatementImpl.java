@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +16,7 @@ import java.util.List;
 /**
  * @author mrubino
  */
-public class KeywordStatementImpl extends RobotPsiElementBase implements KeywordStatement {
+public class KeywordStatementImpl extends RobotPsiElementBase implements KeywordStatement, PerformanceEntity {
 
     private List<Argument> arguments;
     private DefinedVariable variable;
@@ -29,8 +31,10 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
     public KeywordInvokable getInvokable() {
         KeywordInvokable result = this.invokable;
         if (result == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "invokable");
             result = collectInvokable();
             this.invokable = result;
+            debug.complete();
         }
         return result;
     }
@@ -50,8 +54,10 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
     public List<Argument> getArguments() {
         List<Argument> results = this.arguments;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "arguments");
             results = collectArguments();
             this.arguments = results;
+            debug.complete();
         }
         return results;
     }
@@ -71,17 +77,19 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
     public DefinedVariable getGlobalVariable() {
         DefinedVariable result = this.variable;
         if (result == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "global variable");
             result = collectGlobalVariable();
             this.variable = result;
+            debug.complete();
         }
         return result;
     }
 
     @Nullable
     private DefinedVariable collectGlobalVariable() {
-        KeywordInvokable invokeable = getInvokable();
-        if (invokeable != null) {
-            String text = invokeable.getPresentableText();
+        KeywordInvokable invokable = getInvokable();
+        if (invokable != null) {
+            String text = invokable.getPresentableText();
             if (PatternUtil.isVariableSettingKeyword(text)) {
                 List<Argument> arguments = getArguments();
                 if (arguments.size() > 0) {
@@ -99,5 +107,12 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
         this.arguments = null;
         this.invokable = null;
         this.variable = null;
+    }
+
+    @Override
+    public String getDebugText() {
+        KeywordInvokable invokable = getInvokable();
+        String text = invokable == null ? null : getInvokable().getPresentableText();
+        return text == null ? "EMPTY" : text;
     }
 }

@@ -9,6 +9,8 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.ProjectScope;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.*;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,18 +35,22 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     @Override
     public PsiElement resolve() {
         PsiElement parent = getElement().getParent();
+        // TODO: potentially unsafe cast
+        PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) getElement(), "resolve");
+        PsiElement result = null;
         if (parent instanceof Import) {
             Import importElement = (Import) parent;
             if (importElement.isResource()) {
-                return resolveResource();
+                result = resolveResource();
             } else if (importElement.isLibrary() || importElement.isVariables()) {
-                return resolveLibrary();
+                result = resolveLibrary();
             }
         } else if (parent instanceof KeywordStatement) {
             PsiElement reference = resolveKeyword();
-            return reference == null ? resolveVariable() : reference;
+            result = reference == null ? resolveVariable() : reference;
         }
-        return null;
+        debug.complete();
+        return result;
     }
 
     private PsiElement resolveKeyword() {

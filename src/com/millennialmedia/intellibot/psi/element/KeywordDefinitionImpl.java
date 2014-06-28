@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.regex.Pattern;
 /**
  * @author Stephen Abrams
  */
-public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition, DefinedKeyword {
+public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition, DefinedKeyword, PerformanceEntity {
 
     private static final Pattern PATTERN = Pattern.compile("(.*?)(\\$\\{.*?\\})(.*)");
     private static final String ANY = ".*?";
@@ -42,8 +44,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     public List<KeywordInvokable> getInvokedKeywords() {
         List<KeywordInvokable> results = this.invokedKeywords;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "invoked keywords");
             results = collectInvokedKeywords();
             this.invokedKeywords = results;
+            debug.complete();
         }
         return results;
     }
@@ -81,8 +85,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     public Collection<DefinedVariable> getInlineVariables() {
         Collection<DefinedVariable> results = this.definedInlineVariables;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "inline variables");
             results = collectInlineVariables();
             this.definedInlineVariables = results;
+            debug.complete();
         }
         return results;
     }
@@ -110,8 +116,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private Collection<DefinedVariable> getArguments() {
         Collection<DefinedVariable> results = this.definedArguments;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "arguments");
             results = determineArguments();
             this.definedArguments = results;
+            debug.complete();
         }
         return results;
     }

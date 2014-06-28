@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable;
 import com.millennialmedia.intellibot.psi.RobotElementType;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ import javax.swing.*;
 /**
  * @author Stephen Abrams
  */
-public abstract class RobotPsiElementBase extends ASTWrapperPsiElement {
+public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implements PerformanceEntity {
 
     private static final String EMPTY = "";
 
@@ -55,5 +56,16 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement {
             return firstText.getText();
         }
         return EMPTY;
+    }
+    
+    @NotNull
+    @Override
+    public String getDebugFileName() {
+        return getContainingFile().getVirtualFile().getName();
+    }
+
+    @Override
+    public String getDebugText() {
+        return getTextData();
     }
 }
