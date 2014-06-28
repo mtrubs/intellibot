@@ -1,8 +1,10 @@
 package com.millennialmedia.intellibot.psi.ref;
 
-import com.intellij.openapi.compiler.CompilerManager;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationDisplayType;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -19,6 +21,10 @@ import org.jetbrains.annotations.Nullable;
  * @since 2014-06-28
  */
 public class RobotFileManager {
+
+    private RobotFileManager() {
+        Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
+    }
 
     @Nullable
     public static PsiElement findRobot(@Nullable String resource, @NotNull Project project) {
@@ -136,9 +142,8 @@ public class RobotFileManager {
 
     private static void debug(@NotNull String lookup, String data, @NotNull Project project) {
         if (RobotOptionsProvider.getInstance(project).isDebug()) {
-            CompilerManager.NOTIFICATION_GROUP.createNotification(
-                    String.format("[RobotFileManager][%s] %s", lookup, data),
-                    MessageType.INFO).notify(project);
+            String message = String.format("[RobotFileManager][%s] %s", lookup, data);
+            Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
         }
 
     }

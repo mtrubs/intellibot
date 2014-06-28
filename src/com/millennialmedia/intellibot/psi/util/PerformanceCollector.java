@@ -1,7 +1,9 @@
 package com.millennialmedia.intellibot.psi.util;
 
-import com.intellij.openapi.compiler.CompilerManager;
-import com.intellij.openapi.ui.MessageType;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationDisplayType;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +24,7 @@ public class PerformanceCollector {
         this.entity = entity;
         this.context = context;
         this.start = System.currentTimeMillis();
+        Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
     }
 
     public void complete() {
@@ -30,7 +33,7 @@ public class PerformanceCollector {
             if (duration > MINIMUM) {
                 String message = String.format("[%s][%s][%s] %d%s",
                         this.entity.getDebugFileName(), this.context, this.entity.getDebugText(), duration, MILLISECONDS);
-                CompilerManager.NOTIFICATION_GROUP.createNotification(message, MessageType.INFO).notify(this.entity.getProject());
+                Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
             }
         }
     }
