@@ -4,10 +4,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.ProjectScope;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.*;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,18 +32,36 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     @Override
     public PsiElement resolve() {
         PsiElement parent = getElement().getParent();
+        // TODO: potentially unsafe cast
+        PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) getElement(), "resolve");
+        PsiElement result = null;
+        // we only want to attempt to resolve a resource/library for the first argument
         if (parent instanceof Import) {
-            Import importElement = (Import) parent;
-            if (importElement.isResource()) {
-                return resolveResource();
-            } else if (importElement.isLibrary() || importElement.isVariables()) {
-                return resolveLibrary();
+            PsiElement secondChild = getSecondChild(parent);
+            if (secondChild == getElement()) {
+                Import importElement = (Import) parent;
+                if (importElement.isResource()) {
+                    result = resolveResource();
+                } else if (importElement.isLibrary() || importElement.isVariables()) {
+                    result = resolveLibrary();
+                }
+            //} else {
+                //result = resolveVariable();
             }
         } else if (parent instanceof KeywordStatement) {
             PsiElement reference = resolveKeyword();
-            return reference == null ? resolveVariable() : reference;
+            result = reference == null ? resolveVariable() : reference;
         }
-        return null;
+        debug.complete();
+        return result;
+    }
+
+    private static PsiElement getSecondChild(PsiElement element) {
+        if (element == null) {
+            return null;
+        }
+        PsiElement[] children = element.getChildren();
+        return children.length > 0 ? children[0] : null;
     }
 
     private PsiElement resolveKeyword() {
@@ -121,6 +139,8 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     private PsiElement walkKeyword(@Nullable KeywordStatement statement, String text) {
         if (statement == null) {
             return null;
+        } else if (!RobotOptionsProvider.getInstance(getElement().getProject()).allowGlobalVariables()) {
+            return null;
         }
         // set test variable  ${x}  ${y}
         DefinedVariable variable = statement.getGlobalVariable();
@@ -153,82 +173,13 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
     @Nullable
     private PsiElement resolveLibrary() {
-        String library = getElement().getPresentableText();
-        if (library == null) {
-            return null;
-        }
-        PsiElement result = PythonResolver.findClass(library, myElement.getProject());
-        if (result != null) {
-            return result;
-        }
-
-        library = library.replace(".py", "").replaceAll("\\.", "\\/");
-        while (library.contains("//")) {
-            library = library.replace("//", "/");
-        }
-        String[] file = getFilename(library, ".py");
-        // search project scope
-        result = findFile(file[0], file[1], ProjectScope.getContentScope(this.myElement.getProject()));
-        if (result != null) {
-            return result;
-        }
-        // search global scope... this can get messy
-        result = findFile(file[0], file[1], GlobalSearchScope.allScope(this.myElement.getProject()));
-        if (result != null) {
-            return result;
-        }
-        return null;
+        return RobotFileManager.findPython(getElement().getPresentableText(),
+                getElement().getProject());
     }
 
     private PsiElement resolveResource() {
-        String resource = getElement().getPresentableText();
-        if (resource == null) {
-            return null;
-        }
-        String[] file = getFilename(resource, "");
-        return findFile(file[0], file[1], GlobalSearchScope.allScope(this.myElement.getProject()));
-    }
-
-    @Nullable
-    private PsiFile findFile(@NotNull String path, @NotNull String filename, @NotNull GlobalSearchScope search) {
-        PsiFile[] files = FilenameIndex.getFilesByName(this.myElement.getProject(), filename, search);
-        StringBuilder builder = new StringBuilder();
-        builder.append(path);
-        builder.append(filename);
-        path = builder.reverse().toString();
-        for (PsiFile file : files) {
-            if (acceptablePath(path, file)) {
-                return file;
-            }
-        }
-        return null;
-    }
-
-    private boolean acceptablePath(@NotNull String path, @Nullable PsiFile file) {
-        if (file == null) {
-            return false;
-        }
-        String filePath = new StringBuilder(file.getVirtualFile().getCanonicalPath()).reverse().toString();
-        return filePath.startsWith(path);
-    }
-
-    @NotNull
-    private static String[] getFilename(@NotNull String path, @NotNull String suffix) {
-        // support either / or ${/}
-        String[] pathElements = path.split("(\\$\\{)?/(\\})?");
-        String result;
-        if (pathElements.length == 0) {
-            result = path;
-        } else {
-            result = pathElements[pathElements.length - 1];
-        }
-        String[] results = new String[2];
-        results[0] = path.replace(result, "").replace("${/}", "/");
-        if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
-            result += suffix;
-        }
-        results[1] = result;
-        return results;
+        return RobotFileManager.findRobot(getElement().getPresentableText(),
+                getElement().getProject());
     }
 
     @NotNull

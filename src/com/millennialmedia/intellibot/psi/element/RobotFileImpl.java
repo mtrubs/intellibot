@@ -8,6 +8,8 @@ import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
 import com.millennialmedia.intellibot.psi.RobotLanguage;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.HashSet;
 /**
  * @author Stephen Abrams
  */
-public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile {
+public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile, PerformanceEntity {
 
     private Collection<Heading> headings;
 
@@ -94,8 +96,10 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     private Collection<Heading> getHeadings() {
         Collection<Heading> results = this.headings;
         if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "headings");
             results = collectHeadings();
             this.headings = results;
+            debug.complete();
         }
         return results;
     }
@@ -109,5 +113,16 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
             }
         }
         return results;
+    }
+
+    @NotNull
+    @Override
+    public String getDebugFileName() {
+        return getVirtualFile().getName();
+    }
+
+    @Override
+    public String getDebugText() {
+        return ".";
     }
 }

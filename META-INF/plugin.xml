@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6</version>
+    <version>0.6.1</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -94,6 +94,9 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        
+        <projectConfigurable instance="com.millennialmedia.intellibot.ide.config.RobotConfiguration"/>
+        <projectService serviceImplementation="com.millennialmedia.intellibot.ide.config.RobotOptionsProvider"/>
 
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
         <colorSettingsPage implementation="com.millennialmedia.intellibot.ide.config.RobotColorsPage"/>
