@@ -1,6 +1,7 @@
 package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ComponentConfig;
@@ -12,10 +13,12 @@ import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.stubs.PyClassNameIndex;
 import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * @author mrubino
@@ -25,6 +28,7 @@ public class PythonResolver {
     private static Boolean hasPython;
 
     private PythonResolver() {
+        Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
     }
 
     public static PyClass castClass(PsiElement element) {
@@ -35,7 +39,7 @@ public class PythonResolver {
         }
         return null;
     }
-    
+
     public static PyFile castFile(PsiElement element) {
         if (element != null && hasPython(element.getProject())) {
             if (element instanceof PyFile) {
@@ -58,7 +62,12 @@ public class PythonResolver {
         return classes.iterator().next();
     }
 
-    private static final String PYTHON_ID = "Pythonid";
+    private static final Collection<String> PYTHON_PLUGINS = new HashSet<String>();
+
+    static {
+        PYTHON_PLUGINS.add("Pythonid");
+        PYTHON_PLUGINS.add("PythonCore");
+    }
 
     private static synchronized boolean hasPython(Project project) {
         if (hasPython == null) {
@@ -71,12 +80,16 @@ public class PythonResolver {
         if (PlatformUtils.isPyCharm()) {
             return true;
         } else if (project instanceof ProjectImpl) {
+            Collection<String> plugins = new HashSet<String>();
             for (ComponentConfig component : ((ProjectImpl) project).getComponentConfigurations()) {
                 String pluginId = component.getPluginId().getIdString();
-                if (PYTHON_ID.equals(pluginId)) {
+                plugins.add(pluginId);
+                if (PYTHON_PLUGINS.contains(pluginId)) {
+                    debug(project, "python support enabled by: " + pluginId);
                     return true;
                 }
             }
+            debug(project, "no python support found: " + plugins.toString());
             if (PlatformUtils.isIntelliJ()) {
                 Notifications.Bus.notify(new Notification("intellibot.python",
                         RobotBundle.message("plugin.python.missing.title"),
@@ -85,6 +98,13 @@ public class PythonResolver {
             }
         }
         return false;
+    }
+
+    private static void debug(Project project, String message) {
+        if (RobotOptionsProvider.getInstance(project).isDebug()) {
+            message = String.format("[PythonResolver][plugins] %s", message);
+            Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
+        }
     }
 
     private static PyClass safeFindClass(String name, Project project) {
