@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6.3</version>
+    <version>0.6.4</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -26,8 +26,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
-      <h2>0.6.3</h2>
+      <h2>0.6.4</h2>
       <ul>
+        <li>add transitive import support</li>
         <li>add support for python community version</li>
         <li>add config page for debug logging</li>
       </ul>

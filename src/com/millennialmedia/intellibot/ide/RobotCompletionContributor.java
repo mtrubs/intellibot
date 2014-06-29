@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.RecommendationWord;
 import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
@@ -177,7 +178,8 @@ public class RobotCompletionContributor extends CompletionContributor {
         int idx = 0;
         addKeywordsToResult(robotFile.getDefinedKeywords(), result, idx++);
 
-        for (KeywordFile f : robotFile.getImportedFiles()) {
+        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+        for (KeywordFile f : robotFile.getImportedFiles(includeTransitive)) {
             addKeywordsToResult(f.getDefinedKeywords(), result, idx++);
         }
     }

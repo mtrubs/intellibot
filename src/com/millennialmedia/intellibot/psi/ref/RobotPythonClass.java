@@ -13,6 +13,7 @@ import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -84,4 +85,23 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile 
         return this.importType;
     }
 
+    @NotNull
+    @Override
+    public Collection<KeywordFile> getImportedFiles(boolean includeTransitive) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RobotPythonClass that = (RobotPythonClass) o;
+        return this.pythonClass.equals(that.pythonClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.pythonClass.hashCode();
+    }
 }

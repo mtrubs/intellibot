@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * @author Stephen Abrams
@@ -77,12 +78,24 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
 
     @NotNull
     @Override
-    public Collection<KeywordFile> getImportedFiles() {
-        Collection<KeywordFile> results = new ArrayList<KeywordFile>();
+    public Collection<KeywordFile> getImportedFiles(boolean includeTransitive) {
+        Collection<KeywordFile> results = new LinkedHashSet<KeywordFile>();
         for (Heading heading : getHeadings()) {
-            results.addAll(heading.getImportedFiles());
+            for (KeywordFile file : heading.getImportedFiles()) {
+                addKeywordFiles(results, file, includeTransitive);
+            }
         }
         return results;
+    }
+
+    private void addKeywordFiles(Collection<KeywordFile> files, KeywordFile current, boolean includeTransitive) {
+        if (files.add(current)) {
+            if (includeTransitive) {
+                for (KeywordFile file : current.getImportedFiles(false)) {
+                    addKeywordFiles(files, file, true);
+                }
+            }
+        }
     }
 
     @Override
