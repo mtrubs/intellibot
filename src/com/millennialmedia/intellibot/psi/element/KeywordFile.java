@@ -21,4 +21,7 @@ public interface KeywordFile {
     
     @NotNull
     ImportType getImportType();
+
+    @NotNull
+    Collection<KeywordFile> getImportedFiles(boolean includeTransitive);
 }
