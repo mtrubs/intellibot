@@ -42,7 +42,7 @@ Scenario: This is also a keyword definition
   [Documentation]  adding another
   # just for fun
   ...  keyword will be classified correctly
-    Given this works
+    Given this sometimes works
     Then I will be happy  
     And I will be happy  12  123
 
@@ -57,8 +57,9 @@ Clean Database
     Close All Browsers
     
 
-This works
+This ${rate} works
     its a new keyword
+    run keyword if  ${a}=${b}  equal  not equal
 
 I will be happy
     there is a smile on my face  ...
