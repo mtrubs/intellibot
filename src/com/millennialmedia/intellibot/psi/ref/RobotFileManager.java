@@ -10,9 +10,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.ProjectScope;
+import com.intellij.util.containers.MultiMap;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This handles finding Robot files or python classes/files.
@@ -21,6 +26,33 @@ import org.jetbrains.annotations.Nullable;
  * @since 2014-06-28
  */
 public class RobotFileManager {
+
+    private static final Map<String, PsiElement> FILE_CACHE = new HashMap<String, PsiElement>();
+    private static final MultiMap<PsiElement, String> FILE_NAMES = MultiMap.createSet();
+
+    @Nullable
+    private static synchronized PsiElement getFromCache(@NotNull String value) {
+        return FILE_CACHE.get(value);
+    }
+
+    private static synchronized void addToCache(@Nullable PsiElement element, @NotNull String value) {
+        if (element != null) {
+            FILE_CACHE.put(value, element);
+            FILE_NAMES.putValue(element, value);
+        }
+    }
+
+    // TODO: not sure when
+    public static synchronized void evict(@Nullable PsiElement element) {
+        if (element != null) {
+            Collection<String> keys = FILE_NAMES.remove(element);
+            if (keys != null) {
+                for (String key : keys) {
+                    FILE_CACHE.remove(key);
+                }
+            }
+        }
+    }
 
     private RobotFileManager() {
         Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
@@ -31,9 +63,15 @@ public class RobotFileManager {
         if (resource == null) {
             return null;
         }
+        PsiElement result = getFromCache(resource);
+        if (result != null) {
+            return result;
+        }
         String[] file = getFilename(resource, "");
         debug(resource, "Attempting global search", project);
-        return findGlobalFile(resource, file[0], file[1], project);
+        result = findGlobalFile(resource, file[0], file[1], project);
+        addToCache(result, resource);
+        return result;
     }
 
     @Nullable
@@ -41,9 +79,14 @@ public class RobotFileManager {
         if (library == null) {
             return null;
         }
-        debug(library, "Attempting class search", project);
-        PsiElement result = PythonResolver.findClass(library, project);
+        PsiElement result = getFromCache(library);
         if (result != null) {
+            return result;
+        }
+        debug(library, "Attempting class search", project);
+        result = PythonResolver.findClass(library, project);
+        if (result != null) {
+            addToCache(result, library);
             return result;
         }
 
@@ -56,12 +99,14 @@ public class RobotFileManager {
         debug(library, "Attempting project search", project);
         result = findProjectFile(library, file[0], file[1], project);
         if (result != null) {
+            addToCache(result, library);
             return result;
         }
         // search global scope... this can get messy
         debug(library, "Attempting global search", project);
         result = findGlobalFile(library, file[0], file[1], project);
         if (result != null) {
+            addToCache(result, library);
             return result;
         }
         return null;
