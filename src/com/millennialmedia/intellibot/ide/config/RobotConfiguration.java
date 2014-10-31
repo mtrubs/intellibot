@@ -22,6 +22,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox enableDebug;
     private JCheckBox allowTransitiveImports;
     private JCheckBox allowGlobalVariables;
+    private JCheckBox capitalizeKeywords;
 
     public RobotConfiguration(Project project, RobotOptionsProvider provider) {
         this.provider = provider;
@@ -61,7 +62,8 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     public boolean isModified() {
         return this.provider.isDebug() != this.enableDebug.isSelected() ||
                 this.provider.allowTransitiveImports() != this.allowTransitiveImports.isSelected() ||
-                this.provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected();
+                this.provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected() ||
+                this.provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected();
     }
 
     @Override
@@ -69,6 +71,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.provider.setDebug(this.enableDebug.isSelected());
         this.provider.setTransitiveImports(this.allowTransitiveImports.isSelected());
         this.provider.setGlobalVariables(this.allowGlobalVariables.isSelected());
+        this.provider.setCapitalizeKeywords(this.capitalizeKeywords.isSelected());
     }
 
     @Override
@@ -76,6 +79,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.enableDebug.setSelected(this.provider.isDebug());
         this.allowTransitiveImports.setSelected(this.provider.allowTransitiveImports());
         this.allowGlobalVariables.setSelected(this.provider.allowGlobalVariables());
+        this.capitalizeKeywords.setSelected(this.provider.capitalizeKeywords());
     }
 
     @Override

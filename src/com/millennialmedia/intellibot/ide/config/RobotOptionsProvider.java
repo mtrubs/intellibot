@@ -21,6 +21,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean transitiveImports = true;
         public boolean globalVariables = true;
         public boolean debug = false;
+        public boolean capitalizeKeywords = false;
     }
 
     private State state = new State();
@@ -47,6 +48,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         this.state.debug = state.debug;
         this.state.transitiveImports = state.transitiveImports;
         this.state.globalVariables = state.globalVariables;
+        this.state.capitalizeKeywords = state.capitalizeKeywords;
     }
 
     public boolean isDebug() {
@@ -71,5 +73,13 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
 
     public void setGlobalVariables(boolean globalVariables) {
         this.state.globalVariables = globalVariables;
+    }
+
+    public boolean capitalizeKeywords() {
+        return this.state.capitalizeKeywords;
+    }
+
+    public void setCapitalizeKeywords(boolean capitalizeKeywords) {
+        this.state.capitalizeKeywords = capitalizeKeywords;
     }
 }
