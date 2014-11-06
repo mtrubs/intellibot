@@ -93,18 +93,14 @@ public class RobotFileManager {
 
         if (path.contains("./")) {
             // contains a relative path
-            try {
-                VirtualFile workingDir = originalElement.getContainingFile().getVirtualFile().getParent();
-                VirtualFile relativePath = workingDir.findFileByRelativePath(path);
-                if (relativePath != null && relativePath.isDirectory() && relativePath.getCanonicalPath() != null) {
-                    debug(original, "changing relative path to: " + relativePath.getCanonicalPath(), project);
-                    path = new File(relativePath.getCanonicalPath()).getCanonicalPath();
-                    if (!path.endsWith(File.separator)) {
-                        path += File.separator;
-                    }
+            VirtualFile workingDir = originalElement.getContainingFile().getVirtualFile().getParent();
+            VirtualFile relativePath = workingDir.findFileByRelativePath(path);
+            if (relativePath != null && relativePath.isDirectory() && relativePath.getCanonicalPath() != null) {
+                debug(original, "changing relative path to: " + relativePath.getCanonicalPath(), project);
+                path = relativePath.getCanonicalPath();
+                if (!path.endsWith("/")) {
+                    path += "/";
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 
