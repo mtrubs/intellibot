@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class PerformanceCollector {
 
     private static final String MILLISECONDS = "ms";
-    private static final long MINIMUM = 100;
+    private static final long MINIMUM = 500;
 
     private String context;
     PerformanceEntity entity;

@@ -14,7 +14,7 @@ import static com.millennialmedia.intellibot.psi.RobotLexer.*;
 /**
  * @author mrubino
  */
-public class RobotLexerTest {
+public class RobotLexer2Test {
 
     private int maxState = -1;
 

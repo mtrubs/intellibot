@@ -17,13 +17,13 @@ import static org.junit.Assert.assertEquals;
  * @since 2014-06-18
  */
 @RunWith(Parameterized.class)
-public class RobotArgumentReferenceTest {
+public class RobotFileManagerTest {
 
     private String path;
     private String suffix;
     private String[] expected;
 
-    public RobotArgumentReferenceTest(String path, String suffix, String[] expected) {
+    public RobotFileManagerTest(String path, String suffix, String[] expected) {
         this.path = path;
         this.suffix = suffix;
         this.expected = expected;
@@ -33,7 +33,7 @@ public class RobotArgumentReferenceTest {
     @Test
     public void testGetFilename() {
         try {
-            Method method = RobotArgumentReference.class.getDeclaredMethod("getFilename", String.class, String.class);
+            Method method = RobotFileManager.class.getDeclaredMethod("getFilename", String.class, String.class);
             method.setAccessible(true);
             String[] actual = (String[]) method.invoke(null, this.path, this.suffix);
             assertNotNull(actual);
