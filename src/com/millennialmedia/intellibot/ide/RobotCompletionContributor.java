@@ -19,6 +19,7 @@ import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.Heading;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
+import org.apache.commons.lang.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -176,23 +177,32 @@ public class RobotCompletionContributor extends CompletionContributor {
         RobotFile robotFile = (RobotFile) file;
 
         int idx = 0;
-        addKeywordsToResult(robotFile.getDefinedKeywords(), result, idx++);
+        addKeywordsToResult(robotFile.getDefinedKeywords(),
+                result,
+                idx++,
+                RobotOptionsProvider.getInstance(robotFile.getProject()).capitalizeKeywords());
 
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         for (KeywordFile f : robotFile.getImportedFiles(includeTransitive)) {
-            addKeywordsToResult(f.getDefinedKeywords(), result, idx++);
+            addKeywordsToResult(f.getDefinedKeywords(),
+                    result,
+                    idx++,
+                    RobotOptionsProvider.getInstance(file.getProject()).capitalizeKeywords());
         }
     }
 
     private static void addKeywordsToResult(final Collection<DefinedKeyword> keywords,
                                             final CompletionResultSet result,
-                                            int priority) {
+                                            int priority,
+                                            boolean capitalize) {
         for (DefinedKeyword keyword : keywords) {
             LookupElement element = TailTypeDecorator.withTail(
-                    LookupElementBuilder.create(keyword.getKeywordName())
+                    LookupElementBuilder.create((capitalize ? WordUtils.capitalize(keyword.getKeywordName()) :
+                            keyword.getKeywordName()))
                             .withLookupString(keyword.getKeywordName())
                             .withLookupString(keyword.getKeywordName().toLowerCase())
-                            .withPresentableText(keyword.getKeywordName())
+                            .withPresentableText((capitalize ? WordUtils.capitalize(keyword.getKeywordName()) :
+                                    keyword.getKeywordName()))
                             .withCaseSensitivity(true),
                     keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
             result.addElement(PrioritizedLookupElement.withPriority(element, priority));
