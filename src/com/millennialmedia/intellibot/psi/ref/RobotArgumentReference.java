@@ -174,12 +174,12 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     @Nullable
     private PsiElement resolveLibrary() {
         return RobotFileManager.findPython(getElement().getPresentableText(),
-                getElement().getProject());
+                getElement().getProject(), getElement());
     }
 
     private PsiElement resolveResource() {
         return RobotFileManager.findRobot(getElement().getPresentableText(),
-                getElement().getProject());
+                getElement().getProject(), getElement());
     }
 
     @NotNull
