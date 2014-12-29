@@ -28,6 +28,10 @@
     <change-notes><![CDATA[
       <h2>0.6.5</h2>
       <ul>
+        <li>fix resolving of relative imports</li>
+      </ul>
+      <h2>0.6.4</h2>
+      <ul>
         <li>add transitive import support</li>
         <li>add support for python community version</li>
         <li>add config page for debug logging</li>

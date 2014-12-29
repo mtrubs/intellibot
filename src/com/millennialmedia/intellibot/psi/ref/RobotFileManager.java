@@ -5,6 +5,7 @@ import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -59,7 +60,8 @@ public class RobotFileManager {
     }
 
     @Nullable
-    public static PsiElement findRobot(@Nullable String resource, @NotNull Project project) {
+    public static PsiElement findRobot(@Nullable String resource, @NotNull Project project,
+                                       @NotNull PsiElement originalElement) {
         if (resource == null) {
             return null;
         }
@@ -69,13 +71,14 @@ public class RobotFileManager {
         }
         String[] file = getFilename(resource, "");
         debug(resource, "Attempting global search", project);
-        result = findGlobalFile(resource, file[0], file[1], project);
+        result = findGlobalFile(resource, file[0], file[1], project, originalElement);
         addToCache(result, resource);
         return result;
     }
 
     @Nullable
-    public static PsiElement findPython(@Nullable String library, @NotNull Project project) {
+    public static PsiElement findPython(@Nullable String library, @NotNull Project project,
+                                        @NotNull PsiElement originalElement) {
         if (library == null) {
             return null;
         }
@@ -97,14 +100,14 @@ public class RobotFileManager {
         String[] file = getFilename(mod, ".py");
         // search project scope
         debug(library, "Attempting project search", project);
-        result = findProjectFile(library, file[0], file[1], project);
+        result = findProjectFile(library, file[0], file[1], project, originalElement);
         if (result != null) {
             addToCache(result, library);
             return result;
         }
         // search global scope... this can get messy
         debug(library, "Attempting global search", project);
-        result = findGlobalFile(library, file[0], file[1], project);
+        result = findGlobalFile(library, file[0], file[1], project, originalElement);
         if (result != null) {
             addToCache(result, library);
             return result;
@@ -114,21 +117,36 @@ public class RobotFileManager {
 
     @Nullable
     private static PsiFile findProjectFile(@NotNull String original, @NotNull String path, @NotNull String fileName,
-                                           @NotNull Project project) {
-        return findFile(original, path, fileName, project, ProjectScope.getContentScope(project));
+                                           @NotNull Project project, @NotNull PsiElement originalElement) {
+        return findFile(original, path, fileName, project, ProjectScope.getContentScope(project), originalElement);
     }
 
     @Nullable
     private static PsiFile findGlobalFile(@NotNull String original, @NotNull String path, @NotNull String fileName,
-                                          @NotNull Project project) {
-        return findFile(original, path, fileName, project, GlobalSearchScope.allScope(project));
+                                          @NotNull Project project, @NotNull PsiElement originalElement) {
+        return findFile(original, path, fileName, project, GlobalSearchScope.allScope(project), originalElement);
     }
 
     @Nullable
     private static PsiFile findFile(@NotNull String original, @NotNull String path, @NotNull String fileName,
-                                    @NotNull Project project, @NotNull GlobalSearchScope search) {
+                                    @NotNull Project project, @NotNull GlobalSearchScope search,
+                                    @NotNull PsiElement originalElement) {
         debug(original, "path::" + path, project);
         debug(original, "file::" + fileName, project);
+
+        if (path.contains("./")) {
+            // contains a relative path
+            VirtualFile workingDir = originalElement.getContainingFile().getVirtualFile().getParent();
+            VirtualFile relativePath = workingDir.findFileByRelativePath(path);
+            if (relativePath != null && relativePath.isDirectory() && relativePath.getCanonicalPath() != null) {
+                debug(original, "changing relative path to: " + relativePath.getCanonicalPath(), project);
+                path = relativePath.getCanonicalPath();
+                if (!path.endsWith("/")) {
+                    path += "/";
+                }
+            }
+        }
+
         PsiFile[] files = FilenameIndex.getFilesByName(project, fileName, search);
         StringBuilder builder = new StringBuilder();
         builder.append(path);
@@ -136,6 +154,7 @@ public class RobotFileManager {
         path = builder.reverse().toString();
         debug(original, "matching: " + arrayToString(files), project);
         for (PsiFile file : files) {
+            debug(original, "trying: " + file.getVirtualFile().getCanonicalPath(), project);
             if (acceptablePath(path, file)) {
                 debug(original, "matched: " + file.getVirtualFile().getCanonicalPath(), project);
                 return file;
