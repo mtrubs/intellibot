@@ -104,4 +104,9 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile 
     public int hashCode() {
         return this.pythonClass.hashCode();
     }
+    
+    @Override
+    public String toString() {
+        return this.library;
+    }
 }

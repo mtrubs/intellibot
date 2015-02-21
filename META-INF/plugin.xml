@@ -28,7 +28,8 @@
     <change-notes><![CDATA[
       <h2>0.6.5</h2>
       <ul>
-        <li>fix resolving of relative imports</li>
+        <li>fix resolving of relative imports (thanks to Kidlike)</li>
+        <li>add option to capitalize keywords (thanks to puhnastik)</li>
       </ul>
       <h2>0.6.4</h2>
       <ul>
