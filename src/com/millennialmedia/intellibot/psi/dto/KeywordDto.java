@@ -81,4 +81,9 @@ public class KeywordDto implements DefinedKeyword {
     public int hashCode() {
         return name.hashCode();
     }
+    
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
