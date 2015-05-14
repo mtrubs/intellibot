@@ -6,6 +6,7 @@ import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
+import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import org.jetbrains.annotations.Nullable;
 
 /**
