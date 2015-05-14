@@ -72,6 +72,10 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     }
 
     private PsiElement resolveVariable() {
+        Argument element = getElement();
+        String variable = element.getPresentableText();
+        return ResolverUtils.resolveVariableFromFile(variable, element.getContainingFile());
+        /*
         String text = getElement().getPresentableText();
         PsiElement parent = getElement().getParent();
         PsiElement containingStatement = parent.getParent();
@@ -124,6 +128,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
             // TODO: global variables: ~/.robot-env/lib/python2.7/site-packages/robot/variables/__init__.py
         }
         return null;
+        */
     }
 
     /**

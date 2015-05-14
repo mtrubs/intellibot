@@ -42,4 +42,30 @@ public class ResolverUtils {
         }
         return null;
     }
+
+    @Nullable
+    public static PsiElement resolveVariableFromFile(@Nullable String variableText, @Nullable PsiFile file) {
+        if (variableText == null) {
+            return null;
+        } else if (file == null) {
+            return null;
+        } else if (!(file instanceof RobotFile)) {
+            return null;
+        }
+        RobotFile robotFile = (RobotFile) file;
+        for (DefinedVariable variable : robotFile.getDefinedVariables()) {
+            if (variable.matches(variableText)) {
+                return variable.reference();
+            }
+        }
+        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+        for (KeywordFile imported : robotFile.getImportedFiles(includeTransitive)) {
+            for (DefinedVariable variable : imported.getDefinedVariables()) {
+                if (variable.matches(variableText)) {
+                    return variable.reference();
+                }
+            }
+        }
+        return null;
+    }
 }
