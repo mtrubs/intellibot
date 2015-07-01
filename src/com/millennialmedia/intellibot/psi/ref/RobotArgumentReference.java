@@ -11,7 +11,6 @@ import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -72,9 +71,48 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     }
 
     private PsiElement resolveVariable() {
-        Argument element = getElement();
-        String variable = element.getPresentableText();
-        return ResolverUtils.resolveVariableFromFile(variable, element.getContainingFile());
+        String text = getElement().getPresentableText();
+        PsiElement parent = getElement().getParent();
+        PsiElement containingStatement = parent.getParent();
+        if (containingStatement instanceof VariableDefinition) {
+            parent = containingStatement;
+            containingStatement = containingStatement.getParent();
+        }
+        if (containingStatement instanceof KeywordDefinition) {
+            // we want to go backwards to get the latest setter
+            PsiElement[] children = containingStatement.getChildren();
+            boolean seenParent = false;
+            for (int i = children.length - 1; i >= 0; i--) {
+                PsiElement child = children[i];
+                // skip everything until we go past ourselves
+                if (child == parent) {
+                    seenParent = true;
+                    continue;
+                }
+                if (!seenParent) {
+                    continue;
+                }
+                // now start checking for definitions
+                if (child instanceof DefinedVariable) {
+                    // ${x}  some keyword results
+                    if (((DefinedVariable) child).matches(text)) {
+                        return child;
+                    }
+                } else if (child instanceof KeywordStatement) {
+                    PsiElement reference = walkKeyword((KeywordStatement) child, text);
+                    if (reference != null) {
+                        return reference;
+                    }
+                }
+            }
+            for (DefinedVariable variable : ((KeywordDefinition) containingStatement).getDeclaredVariables()) {
+                if (variable.matches(text)) {
+                    return variable.reference();
+                }
+            }
+        }
+        PsiFile file = getElement().getContainingFile();
+        return ResolverUtils.resolveVariableFromFile(text, file);
     }
 
     /**

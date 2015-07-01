@@ -4,9 +4,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.element.RobotFile;
-import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -67,6 +67,8 @@ public class ResolverUtils {
                 }
             }
         }
+        // TODO: __init__ files...
+        // TODO: global variables: ~/.robot-env/lib/python2.7/site-packages/robot/variables/__init__.py
         return null;
     }
 }
