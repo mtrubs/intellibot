@@ -48,6 +48,8 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         } else if (parent instanceof KeywordStatement) {
             PsiElement reference = resolveKeyword();
             result = reference == null ? resolveVariable() : reference;
+        } else if (parent instanceof VariableDefinition) {
+            result = resolveVariable();
         }
         debug.complete();
         return result;
