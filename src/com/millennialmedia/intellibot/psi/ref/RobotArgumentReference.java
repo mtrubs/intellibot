@@ -2,17 +2,15 @@ package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
-import com.millennialmedia.intellibot.psi.element.*;
+import com.millennialmedia.intellibot.psi.element.Argument;
+import com.millennialmedia.intellibot.psi.element.Import;
+import com.millennialmedia.intellibot.psi.element.KeywordStatement;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Scott Albertine
@@ -44,7 +42,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
                 } else if (importElement.isLibrary() || importElement.isVariables()) {
                     result = resolveLibrary();
                 }
-            //} else {
+                //} else {
                 //result = resolveVariable();
             }
         } else if (parent instanceof KeywordStatement) {
@@ -73,91 +71,13 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
     private PsiElement resolveVariable() {
         String text = getElement().getPresentableText();
         PsiElement parent = getElement().getParent();
-        PsiElement containingStatement = parent.getParent();
-        if (containingStatement instanceof VariableDefinition) {
-            parent = containingStatement;
-            containingStatement = containingStatement.getParent();
-        }
-        if (containingStatement instanceof KeywordDefinition) {
-            // we want to go backwards to get the latest setter
-            PsiElement[] children = containingStatement.getChildren();
-            boolean seenParent = false;
-            for (int i = children.length - 1; i >= 0; i--) {
-                PsiElement child = children[i];
-                // skip everything until we go past ourselves
-                if (child == parent) {
-                    seenParent = true;
-                    continue;
-                }
-                if (!seenParent) {
-                    continue;
-                }
-                // now start checking for definitions
-                if (child instanceof DefinedVariable) {
-                    // ${x}  some keyword results
-                    if (((DefinedVariable) child).matches(text)) {
-                        return child;
-                    }
-                } else if (child instanceof KeywordStatement) {
-                    PsiElement reference = walkKeyword((KeywordStatement) child, text);
-                    if (reference != null) {
-                        return reference;
-                    }
-                }
-            }
-            for (DefinedVariable variable : ((KeywordDefinition) containingStatement).getDeclaredVariables()) {
-                if (variable.matches(text)) {
-                    return variable.reference();
-                }
-            }
+        PsiElement results = ResolverUtils.resolveVariableFromStatement(text, parent,
+                RobotOptionsProvider.getInstance(getElement().getProject()).allowGlobalVariables());
+        if (results != null) {
+            return results;
         }
         PsiFile file = getElement().getContainingFile();
         return ResolverUtils.resolveVariableFromFile(text, file);
-    }
-
-    /**
-     * Walks the keyword tree looking for global variable setting keywords.
-     * This only includes variables that are set in this manner as everything else
-     * is out of scope.
-     *
-     * @param statement the keyword statement to find a variable in.
-     * @param text      the variable text we are looking for.
-     * @return the matching definition if it exists; null otherwise.
-     */
-    @Nullable
-    private PsiElement walkKeyword(@Nullable KeywordStatement statement, String text) {
-        if (statement == null) {
-            return null;
-        } else if (!RobotOptionsProvider.getInstance(getElement().getProject()).allowGlobalVariables()) {
-            return null;
-        }
-        // set test variable  ${x}  ${y}
-        DefinedVariable variable = statement.getGlobalVariable();
-        if (variable != null && variable.matches(text)) {
-            return variable.reference();
-        } else {
-            KeywordInvokable invokable = statement.getInvokable();
-            if (invokable != null) {
-                PsiReference reference = invokable.getReference();
-                if (reference != null) {
-                    PsiElement resolved = reference.resolve();
-                    if (resolved instanceof KeywordDefinition) {
-                        List<KeywordInvokable> keywords = ((KeywordDefinition) resolved).getInvokedKeywords();
-                        Collections.reverse(keywords);
-                        for (KeywordInvokable invoked : keywords) {
-                            PsiElement parent = invoked.getParent();
-                            if (parent instanceof KeywordStatement) {
-                                PsiElement result = walkKeyword((KeywordStatement) parent, text);
-                                if (result != null) {
-                                    return result;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     @Nullable

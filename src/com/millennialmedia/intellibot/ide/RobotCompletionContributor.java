@@ -160,6 +160,9 @@ public class RobotCompletionContributor extends CompletionContributor {
                     }
                 });
 
+        // This is the rule for adding included variable definitions
+        // TODO: MTR: only in test cases and keyword definitions
+        // TODO: MTR: include variables defined in the current statement
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
                 new CompletionProvider<CompletionParameters>() {
@@ -225,14 +228,18 @@ public class RobotCompletionContributor extends CompletionContributor {
                                              final CompletionResultSet result,
                                              int priority) {
         for (DefinedVariable variable : variables) {
-            LookupElement element = TailTypeDecorator.withTail(
-                    LookupElementBuilder.create(variable.reference().getText().split("\\s+")[0])
-                            .withLookupString(variable.reference().getText())
-                            .withLookupString(variable.reference().getText().toLowerCase())
-                            .withPresentableText(variable.reference().getText())
-                            .withCaseSensitivity(true),
-                    TailType.NONE);
-            result.addElement(PrioritizedLookupElement.withPriority(element, priority));
+            PsiElement reference = variable.reference();
+            if (reference != null) {
+                String text = reference.getText();
+                LookupElement element = TailTypeDecorator.withTail(
+                        LookupElementBuilder.create(text.split("\\s+")[0])
+                                .withLookupString(text)
+                                .withLookupString(text.toLowerCase())
+                                .withPresentableText(text)
+                                .withCaseSensitivity(true),
+                        TailType.NONE);
+                result.addElement(PrioritizedLookupElement.withPriority(element, priority));
+            }
         }
     }
 
@@ -241,11 +248,12 @@ public class RobotCompletionContributor extends CompletionContributor {
                                             int priority,
                                             boolean capitalize) {
         for (DefinedKeyword keyword : keywords) {
+            String text = keyword.getKeywordName();
             LookupElement element = TailTypeDecorator.withTail(
-                    LookupElementBuilder.create(capitalize ? WordUtils.capitalize(keyword.getKeywordName()) : keyword.getKeywordName())
-                            .withLookupString(keyword.getKeywordName())
-                            .withLookupString(keyword.getKeywordName().toLowerCase())
-                            .withPresentableText(capitalize ? WordUtils.capitalize(keyword.getKeywordName())  : keyword.getKeywordName())
+                    LookupElementBuilder.create(capitalize ? WordUtils.capitalize(text) : text)
+                            .withLookupString(text)
+                            .withLookupString(text.toLowerCase())
+                            .withPresentableText(capitalize ? WordUtils.capitalize(text) : text)
                             .withCaseSensitivity(true),
                     keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
             result.addElement(PrioritizedLookupElement.withPriority(element, priority));
