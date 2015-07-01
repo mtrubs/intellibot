@@ -15,10 +15,7 @@ import com.millennialmedia.intellibot.psi.RecommendationWord;
 import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
-import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
-import com.millennialmedia.intellibot.psi.element.Heading;
-import com.millennialmedia.intellibot.psi.element.KeywordFile;
-import com.millennialmedia.intellibot.psi.element.RobotFile;
+import com.millennialmedia.intellibot.psi.element.*;
 import org.apache.commons.lang.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -162,6 +159,17 @@ public class RobotCompletionContributor extends CompletionContributor {
                         addRobotKeywords(result, parameters.getOriginalFile());
                     }
                 });
+
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters,
+                                                  ProcessingContext context,
+                                                  @NotNull CompletionResultSet result) {
+                        addRobotVariables(result, parameters.getOriginalFile());
+                    }
+                });
     }
 
     @Override
@@ -190,6 +198,41 @@ public class RobotCompletionContributor extends CompletionContributor {
                     result,
                     idx++,
                     capitalize);
+        }
+    }
+
+    private static void addRobotVariables(CompletionResultSet result, PsiFile file) {
+        if (!(file instanceof RobotFile)) {
+            return;
+        }
+        RobotFile robotFile = (RobotFile) file;
+
+        int idx = 0;
+        addVariablesToResult(robotFile.getDefinedVariables(),
+                result,
+                idx++);
+
+        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+        Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
+        for (KeywordFile f : importedFiles) {
+            addVariablesToResult(f.getDefinedVariables(),
+                    result,
+                    idx++);
+        }
+    }
+
+    private static void addVariablesToResult(final Collection<DefinedVariable> variables,
+                                             final CompletionResultSet result,
+                                             int priority) {
+        for (DefinedVariable variable : variables) {
+            LookupElement element = TailTypeDecorator.withTail(
+                    LookupElementBuilder.create(variable.reference().getText().split("\\s+")[0])
+                            .withLookupString(variable.reference().getText())
+                            .withLookupString(variable.reference().getText().toLowerCase())
+                            .withPresentableText(variable.reference().getText())
+                            .withCaseSensitivity(true),
+                    TailType.NONE);
+            result.addElement(PrioritizedLookupElement.withPriority(element, priority));
         }
     }
 
