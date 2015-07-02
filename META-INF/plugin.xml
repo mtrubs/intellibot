@@ -28,10 +28,12 @@
     <change-notes><![CDATA[
       <h2>0.6.7</h2>
       <ul>
-        <li>add support for assignment of multiple variables as a result of keyword call</li>
-        <li>resolve variable references in variable definition statements</li>
-        <li>resolve references to list variables</li>
-        <li>support list variable access with syntax @{NAME}[i]</li>
+        <li>add support for assignment of multiple variables as a result of keyword call (thanks to eezltn)</li>
+        <li>resolve variable references in variable definition statements (thanks to eezltn)</li>
+        <li>resolve references to list variables (thanks to eezltn)</li>
+        <li>support list variable access with syntax @{NAME}[i] (thanks to eezltn)</li>
+        <li>add support for variables defined in other files (thanks to MikeBeardman)</li>
+        <li>add support for variable auto-completion (excluding statement level variables) (thanks to MikeBeardman)</li>
       </ul>
       <h2>0.6.6</h2>
       <ul>
