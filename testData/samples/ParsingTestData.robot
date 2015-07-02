@@ -25,6 +25,7 @@ Suite Teardown  This works
 ${Total_Requests}  97,000
 ${kw_timeout}  20 sec
 ${kw_retry_interval}  0.5 sec
+@{some_letters}  A  B  C
 
 *** Test Cases ***
 
@@ -52,6 +53,7 @@ Clean Database
   [Documentation]  Cleans the database
     Clean  Kyle
     ${var1} =  This works  1
+    ${var2}  ${var3} =  This should work  2
     Clean  Ike
 #    Clean  Other Stuff
     Close All Browsers

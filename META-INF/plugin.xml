@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6.6</version>
+    <version>0.6.7</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -26,6 +26,13 @@
       ]]></description>
 
     <change-notes><![CDATA[
+      <h2>0.6.7</h2>
+      <ul>
+        <li>add support for assignment of multiple variables as a result of keyword call</li>
+        <li>resolve variable references in variable definition statements</li>
+        <li>resolve references to list variables</li>
+        <li>support list variable access with syntax @{NAME}[i]</li>
+      </ul>
       <h2>0.6.6</h2>
       <ul>
         <li>fix java version issue</li>

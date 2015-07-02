@@ -215,8 +215,15 @@ public class RobotLexer extends LexerBase {
                 } else {
                     goToNextNewLineOrSuperSpace();
                     if (VARIABLE_DEFINITION == state && level.get(level.size() - 2) == KEYWORD_DEFINITION) {
-                        level.push(KEYWORD);
-                        this.currentToken = RobotTokenTypes.KEYWORD;
+                        // this is a variable assignment inside a keyword definition
+                        // next token may be another variable or a keyword
+                        String word = this.buffer.subSequence(this.startOffset, this.position).toString();
+                        if (isVariableDeclaration(word)){
+                            this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
+                        } else{
+                            level.push(KEYWORD);
+                            this.currentToken = RobotTokenTypes.KEYWORD;
+                        }
                     } else {
                         level.push(ARG);
                         this.currentToken = RobotTokenTypes.ARGUMENT;
