@@ -7,6 +7,7 @@ import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
 import com.millennialmedia.intellibot.psi.element.KeywordStatement;
+import com.millennialmedia.intellibot.psi.element.VariableDefinition;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
