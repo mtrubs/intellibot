@@ -26,4 +26,4 @@ This version may be slightly ahead of the JetBrains repository though potentiall
 
 The plugin will, by default, operate against any *.robot file in the project.
 If you are using PyCharm then any Python libraries should be detected.
-If you are using IntelliJ then you can install the Python plugin; see the [wiki page](https://github.com/millennialmedia/intellibot/wiki/Python-Ineterpretor).
+If you are using IntelliJ then you can install the Python plugin; see the [wiki page](https://github.com/millennialmedia/intellibot/wiki/Python-Interpreter).
