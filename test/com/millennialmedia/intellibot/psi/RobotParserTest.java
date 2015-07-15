@@ -25,6 +25,11 @@ public class RobotParserTest extends ParsingTestCase {
         doTest(true);
     }
 
+    @Test
+    public void testDemo() {
+        doTest(true);
+    }
+
     @Override
     protected String getTestDataPath() {
         return ResourceLoader.getResourcePath("samples");
