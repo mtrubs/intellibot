@@ -23,4 +23,7 @@ public interface KeywordDefinition extends PsiElement {
      */
     @NotNull
     Collection<DefinedVariable> getDeclaredVariables();
+
+    @NotNull
+    Collection<Variable> getUsedVariables();
 }

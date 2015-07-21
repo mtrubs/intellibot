@@ -5,10 +5,7 @@ import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
 import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
-import com.millennialmedia.intellibot.psi.element.Argument;
-import com.millennialmedia.intellibot.psi.element.BracketSetting;
-import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
-import com.millennialmedia.intellibot.psi.element.KeywordStatement;
+import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +26,22 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
 
     @Override
     public boolean skip(PsiElement element) {
-        if (element.getNode().getElementType() != RobotTokenTypes.ARGUMENT) {
+        if (element.getNode().getElementType() != RobotTokenTypes.VARIABLE) {
             return true;
         }
+
         PsiElement parent = element.getParent();
+        if (parent instanceof Variable) {
+            PsiReference reference = parent.getReference();
+            if (reference != null && reference.resolve() != null) {
+                return true;
+            }
+        } else {
+            return true;
+        }
+
+        // TODO: what is needed below this point...
+        parent = element.getParent().getParent();
         if (parent instanceof Argument) {
             PsiElement container = parent.getParent();
             if (container instanceof BracketSetting) {
@@ -61,17 +70,8 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
                     }
                 }
             }
-            String text = element.getText();
-            // stick to just ${variables}
-            if ((text.startsWith("${") || text.startsWith("@{")) && text.endsWith("}")) {
-                PsiReference reference = parent.getReference();
-                return reference != null && reference.resolve() != null;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
         }
+        return false;
     }
 
     @Override

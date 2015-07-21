@@ -28,6 +28,7 @@
     <change-notes><![CDATA[
       <h2>0.6.7</h2>
       <ul>
+        <li>better recognize variables in general</li>
         <li>add support for assignment of multiple variables as a result of keyword call (thanks to eezltn)</li>
         <li>resolve variable references in variable definition statements (thanks to eezltn)</li>
         <li>resolve references to list variables (thanks to eezltn)</li>
@@ -145,6 +146,8 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Variable"
+                                 implementationClass="com.millennialmedia.intellibot.psi.manip.VariableManipulator"/>
         
         <!-- Inspections: compilation -->
         <localInspection language="Robot" shortName="RobotKeywordNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"

@@ -3,6 +3,7 @@ package com.millennialmedia.intellibot.psi.dto;
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
+import com.millennialmedia.intellibot.psi.element.Variable;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,6 +67,12 @@ public class KeywordDto implements DefinedKeyword {
         return Collections.emptyList();
     }
 
+    @NotNull
+    @Override
+    public Collection<Variable> getUsedVariables() {
+        return Collections.emptyList();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,14 +81,14 @@ public class KeywordDto implements DefinedKeyword {
         KeywordDto that = (KeywordDto) o;
 
         // I am not sure if we care about arguments in terms of uniqueness here
-        return name.equals(that.name);
+        return this.name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return this.name.hashCode();
     }
-    
+
     @Override
     public String toString() {
         return this.name;

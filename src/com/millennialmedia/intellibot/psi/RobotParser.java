@@ -139,8 +139,8 @@ public class RobotParser implements PsiParser {
                     seenKeyword = true;
                     parseSimple(builder, RobotTokenTypes.KEYWORD);
                 }
-            } else if (type == RobotTokenTypes.ARGUMENT) {
-                parseSimple(builder, type);
+            } else if (type == RobotTokenTypes.ARGUMENT || type == RobotTokenTypes.VARIABLE) {
+                parseArgWithVars(builder, type, RobotTokenTypes.VARIABLE);
             } else if (type == RobotTokenTypes.VARIABLE_DEFINITION) {
                 if (seenKeyword) {
                     break;
@@ -162,22 +162,22 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseBracketSetting(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.BRACKET_SETTING);
+        parseWithArguments(builder, RobotTokenTypes.BRACKET_SETTING, RobotTokenTypes.VARIABLE_DEFINITION);
     }
 
     private static void parseImport(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.IMPORT);
+        parseWithArguments(builder, RobotTokenTypes.IMPORT, RobotTokenTypes.VARIABLE);
     }
 
     private static void parseVariableDefinition(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION);
+        parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION, RobotTokenTypes.VARIABLE);
     }
 
     private static void parseSetting(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.SETTING);
+        parseWithArguments(builder, RobotTokenTypes.SETTING, null);
     }
 
-    private static void parseWithArguments(PsiBuilder builder, RobotElementType markType) {
+    private static void parseWithArguments(PsiBuilder builder, IElementType markType, IElementType subType) {
         IElementType type = builder.getTokenType();
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
@@ -187,13 +187,36 @@ public class RobotParser implements PsiParser {
                 break;
             }
             type = builder.getTokenType();
-            if (RobotTokenTypes.ARGUMENT == type) {
-                parseSimple(builder, RobotTokenTypes.ARGUMENT);
+            if (RobotTokenTypes.ARGUMENT == type || RobotTokenTypes.VARIABLE == type) {
+                parseArgWithVars(builder, RobotTokenTypes.ARGUMENT, subType);
+            } else if (markType != RobotTokenTypes.VARIABLE_DEFINITION && RobotTokenTypes.VARIABLE_DEFINITION == type) {
+                if (builder.rawLookup(-1) == RobotTokenTypes.WHITESPACE && builder.rawLookup(-2) == RobotTokenTypes.WHITESPACE) {
+                    break;
+                }
+                parseVariableDefinition(builder);
+
             } else {
                 break;
             }
         }
         importMarker.done(markType);
+    }
+
+    private static void parseArgWithVars(PsiBuilder builder, IElementType type, IElementType subType) {
+        PsiBuilder.Marker arg = builder.mark();
+        while (type == RobotTokenTypes.ARGUMENT || type == subType) {
+            boolean end = builder.rawLookup(1) == RobotTokenTypes.WHITESPACE;
+            if (type == subType) {
+                parseSimple(builder, type);
+            } else {
+                builder.advanceLexer();
+            }
+            if (end) {
+                break;
+            }
+            type = builder.getTokenType();
+        }
+        arg.done(RobotTokenTypes.ARGUMENT);
     }
 
     private static void parseSimple(PsiBuilder builder, IElementType type) {

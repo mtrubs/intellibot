@@ -68,10 +68,10 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
 
     @NotNull
     @Override
-    public Collection<PsiFile> getFilesFromInvokedKeywords() {
+    public Collection<PsiFile> getFilesFromInvokedKeywordsAndVariables() {
         Collection<PsiFile> results = new HashSet<PsiFile>();
         for (Heading heading : getHeadings()) {
-            results.addAll(heading.getFilesFromInvokedKeywords());
+            results.addAll(heading.getFilesFromInvokedKeywordsAndVariables());
         }
         return results;
     }

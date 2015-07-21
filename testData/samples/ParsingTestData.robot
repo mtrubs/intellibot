@@ -51,8 +51,9 @@ Scenario: This is also a keyword definition
 
 Clean Database
   [Documentation]  Cleans the database
-    Clean  Kyle
+  [Arguments]  ${defined}
     ${var1} =  This works  1
+    Clean  Kyle
     ${var2}  ${var3} =  This should work  2
     Clean  Ike
 #    Clean  Other Stuff

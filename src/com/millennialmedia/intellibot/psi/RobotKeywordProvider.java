@@ -24,6 +24,7 @@ public class RobotKeywordProvider {
     private static final Set<String> GLOBAL_SETTINGS = new HashSet<String>();
     private static final Set<String> SETTINGS_FOLLOWED_BY_KEYWORDS = new HashSet<String>();
     private static final Set<String> SETTINGS_FOLLOWED_BY_STRINGS = new HashSet<String>();
+    private static final Set<String> SETTINGS_FOLLOWED_BY_VARIABLE_DEFINITIONS = new HashSet<String>();
 
     static {
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Settings ***");
@@ -164,12 +165,13 @@ public class RobotKeywordProvider {
         SETTINGS_FOLLOWED_BY_STRINGS.add("Test Timeout");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Tags");
         SETTINGS_FOLLOWED_BY_STRINGS.add("[Tags]");
-        SETTINGS_FOLLOWED_BY_STRINGS.add("Arguments");
-        SETTINGS_FOLLOWED_BY_STRINGS.add("[Arguments]");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Return");
         SETTINGS_FOLLOWED_BY_STRINGS.add("[Return]");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Timeout");
         SETTINGS_FOLLOWED_BY_STRINGS.add("[Timeout]");
+
+        SETTINGS_FOLLOWED_BY_VARIABLE_DEFINITIONS.add("Arguments");
+        SETTINGS_FOLLOWED_BY_VARIABLE_DEFINITIONS.add("[Arguments]");
     }
 
     private static void addRecommendation(@NotNull RobotElementType type, @NotNull String word, @NotNull String lookup) {
@@ -186,6 +188,10 @@ public class RobotKeywordProvider {
 
     public boolean isSyntaxFollowedByString(String word) {
         return SETTINGS_FOLLOWED_BY_STRINGS.contains(word);
+    }
+
+    public boolean isSyntaxFollowedByVariableDefinition(String word) {
+        return SETTINGS_FOLLOWED_BY_VARIABLE_DEFINITIONS.contains(word);
     }
 
     public boolean isSyntaxOfType(RobotElementType type, String word) {

@@ -26,6 +26,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private static final String ROBOT_BUILT_IN = "BuiltIn";
 
     private Collection<KeywordInvokable> invokedKeywords;
+    private Collection<Variable> usedVariables;
     private Collection<DefinedKeyword> definedKeywords;
     private Collection<KeywordDefinition> testCases;
     private Collection<KeywordFile> keywordFiles;
@@ -78,6 +79,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.definedKeywords = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
+        this.usedVariables = null;
         this.referencedFiles = null;
         this.testCases = null;
         this.declaredVariables = null;
@@ -88,6 +90,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.definedKeywords = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
+        this.usedVariables = null;
         this.referencedFiles = null;
         this.testCases = null;
         this.declaredVariables = null;
@@ -184,7 +187,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     @Override
-    public Collection<PsiFile> getFilesFromInvokedKeywords() {
+    public Collection<PsiFile> getFilesFromInvokedKeywordsAndVariables() {
         Collection<PsiFile> results = this.referencedFiles;
         if (results == null) {
             PerformanceCollector debug = new PerformanceCollector(this, "files from invoked keywords");
@@ -207,6 +210,15 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 }
             }
             addReferencedArguments(results, keyword);
+        }
+        for (Variable variable : getUsedVariables()) {
+            PsiReference reference = variable.getReference();
+            if (reference != null) {
+                PsiElement resolved = reference.resolve();
+                if (resolved != null) {
+                    results.add(resolved.getContainingFile());
+                }
+            }
         }
         return results;
     }
@@ -252,6 +264,37 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         }
         for (DefinedKeyword definedKeyword : getDefinedKeywords()) {
             results.addAll(definedKeyword.getInvokedKeywords());
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<Variable> getUsedVariables() {
+        Collection<Variable> results = this.usedVariables;
+        if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "used variables");
+            results = collectUsedVariables();
+            this.usedVariables = results;
+            debug.complete();
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<Variable> collectUsedVariables() {
+        List<Variable> results = new ArrayList<Variable>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof Import) {
+                //noinspection unchecked
+                Collection<Variable> variables = PsiTreeUtil.collectElementsOfType(child, Variable.class);
+                results.addAll(variables);
+            }
+        }
+        for (KeywordDefinition testCase : getTestCases()) {
+            results.addAll(testCase.getUsedVariables());
+        }
+        for (DefinedKeyword definedKeyword : getDefinedKeywords()) {
+            results.addAll(definedKeyword.getUsedVariables());
         }
         return results;
     }

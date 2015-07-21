@@ -3,7 +3,6 @@ package com.millennialmedia.intellibot.psi;
 import com.intellij.psi.tree.IElementType;
 import com.millennialmedia.intellibot.ResourceLoader;
 import org.junit.Assert;
-import org.junit.ComparisonFailure;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -34,7 +33,7 @@ public class RobotLexerTest {
         gold.push(10);
         gold.push(5);
         int state = RobotLexer.toState(gold);
-        Assert.assertEquals(122125, state);
+        Assert.assertEquals(221103, state);
         Stack<Integer> parsed = RobotLexer.fromState(state);
         Assert.assertEquals(gold.size(), parsed.size());
         while (!gold.isEmpty()) {
@@ -149,11 +148,15 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "timeout=${ENV['selenium']['timeout']}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "timeout=", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "${ENV['selenium']['timeout']}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
         lexer.advance();
-        assertState(lexer, "implicit_wait=${ENV['selenium']['implicit_wait']}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "implicit_wait=", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "${ENV['selenium']['implicit_wait']}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
         lexer.advance();
@@ -331,11 +334,11 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
-        assertState(lexer, "${ACCOUNT_MANAGER.user.name}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "${ACCOUNT_MANAGER.user.name}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
-        assertState(lexer, "${ACCOUNT_MANAGER.user.password}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "${ACCOUNT_MANAGER.user.password}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
@@ -465,13 +468,13 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "Clean", RobotTokenTypes.KEYWORD, KEYWORD);
+        assertState(lexer, "[Arguments]", RobotTokenTypes.BRACKET_SETTING, SETTINGS);
         lexer.advance();
-        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, SETTINGS);
         lexer.advance();
-        assertState(lexer, "Kyle", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "${defined}", RobotTokenTypes.VARIABLE_DEFINITION, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
@@ -486,6 +489,16 @@ public class RobotLexerTest {
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
         assertState(lexer, "1", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
+        lexer.advance();
+        assertState(lexer, "Clean", RobotTokenTypes.KEYWORD, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
+        lexer.advance();
+        assertState(lexer, "Kyle", RobotTokenTypes.ARGUMENT, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
@@ -549,7 +562,11 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
-        assertState(lexer, "${a}=${b}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "${a}", RobotTokenTypes.VARIABLE, ARG);
+        lexer.advance();
+        assertState(lexer, "=", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
+        assertState(lexer, "${b}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
@@ -580,7 +597,7 @@ public class RobotLexerTest {
         Assert.assertEquals(lexer.getTokenEnd(), lexer.getBufferEnd());
         lexer.advance();
         // just a check on how close we get to Integer.MAX_VALUE; 2147483647
-        Assert.assertEquals(157058, this.maxState);
+        Assert.assertEquals(326076, this.maxState);
     }
 
     @Test
@@ -736,7 +753,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
-        assertState(lexer, "${expression}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "${expression}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
@@ -748,7 +765,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "Push buttons", RobotTokenTypes.KEYWORD, KEYWORD);
+        assertState(lexer, "Push button", RobotTokenTypes.KEYWORD, KEYWORD);
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
@@ -768,15 +785,14 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();
-        assertState(lexer, "${result}", RobotTokenTypes.ARGUMENT, ARG);
+        assertState(lexer, "${result}", RobotTokenTypes.VARIABLE, ARG);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
         // confirm we are at the end
         Assert.assertEquals(lexer.getTokenEnd(), lexer.getBufferEnd());
         lexer.advance();
         // just a check on how close we get to Integer.MAX_VALUE; 2147483647
-        Assert.assertEquals(13059, this.maxState);
-
+        Assert.assertEquals(23257, this.maxState);
     }
 
     private void assertState(RobotLexer lexer, String data, RobotElementType token, int state) {
@@ -785,13 +801,13 @@ public class RobotLexerTest {
         IElementType actualToken = lexer.getTokenType();
         String message = "\"" + actualData + "\", RobotTokenTypes." + actualToken + ", " + actualState;
 
-        try {
-            Assert.assertEquals("Data: " + message, data, actualData);
-            Assert.assertEquals("Token: " + message, token, actualToken);
-            Assert.assertEquals("State: " + message, state, actualState);
-        } catch (ComparisonFailure e) {
-            System.out.println(message);
-        }
+        //try {
+        Assert.assertEquals("Data: " + message, data, actualData);
+        Assert.assertEquals("Token: " + message, token, actualToken);
+        Assert.assertEquals("State: " + message, state, actualState);
+        //} catch (ComparisonFailure e) {
+        //    System.out.println(message);
+        //}
         int currentState = lexer.getState();
         if (currentState > this.maxState) {
             this.maxState = currentState;

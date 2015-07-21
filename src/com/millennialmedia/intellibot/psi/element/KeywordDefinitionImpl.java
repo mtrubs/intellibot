@@ -1,8 +1,10 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
@@ -28,6 +30,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private Pattern pattern;
     private List<KeywordInvokable> invokedKeywords;
     private Collection<DefinedVariable> definedInlineVariables;
+    private Collection<Variable> usedVariables;
     private Collection<DefinedVariable> definedArguments;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
@@ -132,8 +135,8 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
                 BracketSetting bracket = (BracketSetting) child;
                 if (bracket.isArguments()) {
                     for (PsiElement argument : bracket.getChildren()) {
-                        if (argument instanceof Argument) {
-                            String text = ((Argument) argument).getPresentableText();
+                        if (argument instanceof VariableDefinition) {
+                            String text = argument.getText();
                             if (text != null) {
                                 results.add(new VariableDto(argument, text));
                             }
@@ -145,11 +148,31 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
+    @NotNull
+    @Override
+    public Collection<Variable> getUsedVariables() {
+        Collection<Variable> results = this.usedVariables;
+        if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "inline variables");
+            results = collectUsedVariables();
+            this.usedVariables = results;
+            debug.complete();
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<Variable> collectUsedVariables() {
+        //noinspection unchecked
+        return PsiTreeUtil.collectElementsOfType(this, Variable.class);
+    }
+
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
         this.definedArguments = null;
         this.definedInlineVariables = null;
+        this.usedVariables = null;
         this.pattern = null;
         this.invokedKeywords = null;
     }
@@ -180,7 +203,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     }
 
     private String getNamespace(@NotNull PsiFile file) {
-        String name = file.getVirtualFile().getName();
+        VirtualFile virtualFile = file.getVirtualFile();
+        if (virtualFile == null) {
+            return null;
+        }
+        String name = virtualFile.getName();
         // remove the extension
         int index = name.lastIndexOf(DOT);
         if (index > 0) {

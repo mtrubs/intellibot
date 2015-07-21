@@ -11,16 +11,16 @@ import java.util.Collection;
 public interface RobotFile extends PsiFile {
 
     /**
-     * @return locally defined keywords
+     * @return locally defined keywords.
      */
     @NotNull
     Collection<DefinedKeyword> getDefinedKeywords();
 
     /**
-     * @return all files that contain references to invoked keywords
+     * @return all files that contain references to invoked keywords and used variables.
      */
     @NotNull
-    Collection<PsiFile> getFilesFromInvokedKeywords();
+    Collection<PsiFile> getFilesFromInvokedKeywordsAndVariables();
 
     /**
      * Gets all the imported keyword files that are considered in scope for this file.  This

@@ -81,6 +81,9 @@ public class ResolverUtils {
         } else if (parent == null) {
             return null;
         }
+        if (parent instanceof Argument) {
+            parent = parent.getParent();
+        }
         PsiElement containingStatement = parent.getParent();
         if (containingStatement instanceof VariableDefinition) {
             parent = containingStatement;

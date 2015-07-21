@@ -24,4 +24,7 @@ public interface DefinedKeyword {
 
     @NotNull
     Collection<KeywordInvokable> getInvokedKeywords();
+
+    @NotNull
+    Collection<Variable> getUsedVariables();
 }

@@ -59,7 +59,7 @@ public class RobotImportNotUsed extends SimpleRobotInspection {
                     return true; // we cannot find the file thus we do not know if we use it
                 }
                 
-                Collection<PsiFile> referenced = ((RobotFile) file).getFilesFromInvokedKeywords();
+                Collection<PsiFile> referenced = ((RobotFile) file).getFilesFromInvokedKeywordsAndVariables();
                 return referenced.contains(importFile.getContainingFile());
             } else {
                 return true;
