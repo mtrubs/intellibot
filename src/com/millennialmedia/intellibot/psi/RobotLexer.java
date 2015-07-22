@@ -128,7 +128,6 @@ public class RobotLexer extends LexerBase {
             int state = this.level.peek();
             if (SETTINGS_HEADING == state) {
                 if (isStartOfSuperSpace(this.position)) {
-                    // TODO: error?
                     skipWhitespace();
                 }
                 goToNextNewLineOrSuperSpace();
@@ -154,7 +153,6 @@ public class RobotLexer extends LexerBase {
                 }
             } else if (VARIABLES_HEADING == state) {
                 if (isStartOfSuperSpace(this.position)) {
-                    // TODO: error?
                     skipWhitespace();
                 }
                 goToNextNewLineOrSuperSpace();
@@ -162,7 +160,6 @@ public class RobotLexer extends LexerBase {
                 this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
                 if (isStartOfSuperSpace(this.position)) {
-                    // TODO: error?
                     skipWhitespace();
                 }
                 goToNextNewLineOrSuperSpace();
@@ -278,7 +275,6 @@ public class RobotLexer extends LexerBase {
             } else if (VARIABLE == state) {
                 goToNextNewLineOrSuperSpaceOrVariableEnd();
                 this.level.pop();
-                //this.currentToken = RobotTokenTypes.VARIABLE;
             } else if (GHERKIN == state) {
                 this.level.pop();
                 this.currentToken = RobotTokenTypes.WHITESPACE;
