@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
 import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -24,12 +23,13 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
 
     @Override
     public boolean skip(PsiElement element) {
-        if (element.getNode().getElementType() != RobotTokenTypes.KEYWORD) {
-            return true;
-        }
-        PsiElement parent = element.getParent();
-        if (parent instanceof KeywordInvokable) {
-            String text = element.getText();
+        if (element instanceof KeywordInvokable) {
+            PsiReference reference = element.getReference();
+            if (reference != null && reference.resolve() != null) {
+                return true;
+            }
+
+            String text = ((KeywordInvokable) element).getPresentableText();
             if (text.startsWith(":")) {
                 // TODO: for loops
                 return true;
@@ -37,9 +37,7 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
                 // TODO: for loops
                 return true;
             }
-
-            PsiReference reference = parent.getReference();
-            return reference != null && reference.resolve() != null;
+            return false;
         } else {
             return true;
         }

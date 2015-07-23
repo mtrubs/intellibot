@@ -1,6 +1,7 @@
 package com.millennialmedia.intellibot.psi.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.TreeSet;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
  */
 public class PatternUtil {
 
+    private static final String EMPTY = "";
     private static final Collection<String> VARIABLE_SETTERS;
 
     static {
@@ -20,12 +22,13 @@ public class PatternUtil {
         VARIABLE_SETTERS.add("set suite variable");
         VARIABLE_SETTERS.add("set global variable");
     }
-    
+
     private static final String SPACE = " ";
     private static final String UNDERSCORE = "_";
-    
-    private PatternUtil() {}
-    
+
+    private PatternUtil() {
+    }
+
     @NotNull
     public static String getVariablePattern(@NotNull String text) {
         text = text.trim();
@@ -44,12 +47,32 @@ public class PatternUtil {
         }
         return "[\\$\\@]\\{" + Pattern.quote(text) + "((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?";
     }
-    
+
     public static boolean isVariableSettingKeyword(String keyword) {
         return VARIABLE_SETTERS.contains(functionToKeyword(keyword));
     }
-    
+
     public static String functionToKeyword(String function) {
         return function == null ? null : function.replaceAll(UNDERSCORE, SPACE).trim();
+    }
+
+    @NotNull
+    public static String getPresentableText(@Nullable String text) {
+        if (text == null) {
+            return EMPTY;
+        }
+        int newLine = indexOf(text, "\n");
+        int tab = indexOf(text, "\t");
+        int superSpace = indexOf(text, "  ");
+
+        int index = Math.min(newLine, tab);
+        index = Math.min(index, superSpace);
+
+        return text.substring(0, index).trim();
+    }
+
+    private static int indexOf(@NotNull String text, @NotNull String string) {
+        int index = text.indexOf(string);
+        return index < 0 ? text.length() : index;
     }
 }

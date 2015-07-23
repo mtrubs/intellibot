@@ -1,7 +1,6 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,12 +11,12 @@ public class BracketSettingImpl extends RobotPsiElementBase implements BracketSe
     private static final String ARGUMENTS = "[Arguments]";
 
     public BracketSettingImpl(@NotNull final ASTNode node) {
-        super(node, RobotTokenTypes.BRACKET_SETTING);
+        super(node);
     }
 
     @Override
     public boolean isArguments() {
         // TODO: better OO
-        return ARGUMENTS.equalsIgnoreCase(getTextData());
+        return ARGUMENTS.equalsIgnoreCase(getPresentableText());
     }
 }

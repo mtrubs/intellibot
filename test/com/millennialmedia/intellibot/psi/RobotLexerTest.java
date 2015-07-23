@@ -546,7 +546,11 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
         lexer.advance();
-        assertState(lexer, "This ${rate} works", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
+        assertState(lexer, "This ", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORDS_HEADING);
+        lexer.advance();
+        assertState(lexer, "${rate}", RobotTokenTypes.VARIABLE_DEFINITION, KEYWORDS_HEADING);
+        lexer.advance();
+        assertState(lexer, " works", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
@@ -743,7 +747,11 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
         lexer.advance();
-        assertState(lexer, "User types \"${expression}\"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
+        assertState(lexer, "User types \"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORDS_HEADING);
+        lexer.advance();
+        assertState(lexer, "${expression}", RobotTokenTypes.VARIABLE_DEFINITION, KEYWORDS_HEADING);
+        lexer.advance();
+        assertState(lexer, "\"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
@@ -775,7 +783,11 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
         lexer.advance();
-        assertState(lexer, "Result is \"${result}\"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
+        assertState(lexer, "Result is \"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORDS_HEADING);
+        lexer.advance();
+        assertState(lexer, "${result}", RobotTokenTypes.VARIABLE_DEFINITION, KEYWORDS_HEADING);
+        lexer.advance();
+        assertState(lexer, "\"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();

@@ -2,7 +2,6 @@ package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,11 +16,7 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
     private Pattern pattern;
 
     public VariableDefinitionImpl(@NotNull final ASTNode node) {
-        super(node, RobotTokenTypes.VARIABLE_DEFINITION);
-    }
-
-    private String getPresentableText() {
-        return getTextData();
+        super(node);
     }
 
     @Override
@@ -36,9 +31,6 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
             return false;
         }
         String myText = getPresentableText();
-        if (myText == null) {
-            return false;
-        }
         Pattern pattern = this.pattern;
         if (pattern == null) {
             pattern = Pattern.compile(PatternUtil.getVariablePattern(myText), Pattern.CASE_INSENSITIVE);

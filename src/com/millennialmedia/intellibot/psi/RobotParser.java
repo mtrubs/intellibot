@@ -81,10 +81,12 @@ public class RobotParser implements PsiParser {
         while (true) {
             IElementType type = builder.getTokenType();
             if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
-                if (keywordMarker != null) {
-                    keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
+                if (builder.rawLookup(-1) != RobotTokenTypes.VARIABLE_DEFINITION) {
+                    if (keywordMarker != null) {
+                        keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
+                    }
+                    keywordMarker = builder.mark();
                 }
-                keywordMarker = builder.mark();
                 builder.advanceLexer();
             }
 

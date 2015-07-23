@@ -50,6 +50,7 @@ public class RobotGherkinInspection extends SimpleRobotInspection implements Sim
 
     @Override
     public boolean skip(PsiElement element) {
+        // this should be getPresentableText if we ever formalize the Gherkin type
         return element.getNode().getElementType() != RobotTokenTypes.GHERKIN ||
                 valid(element.getText());
     }

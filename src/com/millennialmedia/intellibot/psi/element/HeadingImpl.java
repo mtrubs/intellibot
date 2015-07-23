@@ -7,7 +7,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
@@ -34,33 +33,34 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<DefinedVariable> declaredVariables;
 
     public HeadingImpl(@NotNull final ASTNode node) {
-        super(node, RobotTokenTypes.HEADING);
+        super(node);
     }
 
     @Override
     public boolean isSettings() {
         // TODO: better OO
-        String text = getTextData();
-        return text != null && text.startsWith("*** Setting");
+        String text = getPresentableText();
+        return text.startsWith("*** Setting");
     }
 
     public boolean containsVariables() {
-        String text = getText();
-        return text != null && text.startsWith("*** Variable");
+        // TODO: better OO
+        String text = getPresentableText();
+        return text.startsWith("*** Variable");
     }
 
     @Override
     public boolean containsTestCases() {
         // TODO: better OO
-        String text = getTextData();
-        return text != null && text.startsWith("*** Test Case");
+        String text = getPresentableText();
+        return text.startsWith("*** Test Case");
     }
 
     @Override
     public boolean containsKeywordDefinitions() {
         // TODO: better OO
-        String text = getTextData();
-        return text != null && (text.startsWith("*** Keyword") || text.startsWith("*** User Keyword"));
+        String text = getPresentableText();
+        return text.startsWith("*** Keyword") || text.startsWith("*** User Keyword");
     }
 
     private boolean containsImports() {

@@ -16,12 +16,12 @@ import static org.junit.Assert.assertTrue;
  * @since 2014-06-19
  */
 @RunWith(Parameterized.class)
-public class PatternUtilTest {
+public class PatternUtilBuildPatternTest {
 
     private String name;
     private String expected;
 
-    public PatternUtilTest(String name, String expected) {
+    public PatternUtilBuildPatternTest(String name, String expected) {
         this.name = name;
         this.expected = expected;
     }

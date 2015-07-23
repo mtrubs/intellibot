@@ -26,16 +26,17 @@ public class RobotKeywordDefinitionStartingWithGherkin extends SimpleRobotInspec
 
     @Override
     public boolean skip(PsiElement element) {
-        return element.getNode().getElementType() != RobotTokenTypes.KEYWORD_DEFINITION ||
-                element instanceof KeywordDefinition || // this is to skip the whole keyword as opposed to just the text
-                valid(element.getText());
+        if (element instanceof KeywordDefinition) {
+            return valid(((KeywordDefinition) element).getPresentableText());
+        } else {
+            return true;
+        }
     }
 
     private boolean valid(String text) {
-        text = text.trim();
         Collection<String> gherkin = RobotKeywordProvider.getInstance().getSyntaxOfType(RobotTokenTypes.GHERKIN);
-        int firstSpace = text.trim().indexOf(" ");
-        
+        int firstSpace = text.indexOf(" ");
+
         String word;
         if (firstSpace < 0) {
             word = text;
