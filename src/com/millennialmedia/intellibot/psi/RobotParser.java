@@ -175,6 +175,19 @@ public class RobotParser implements PsiParser {
         parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION, RobotTokenTypes.VARIABLE);
     }
 
+    private static void parseVariableDefinitionWithDefaults(PsiBuilder builder) {
+        IElementType type = builder.getTokenType();
+        assert RobotTokenTypes.VARIABLE_DEFINITION == type;
+        PsiBuilder.Marker argMarker = builder.mark();
+        PsiBuilder.Marker definitionMarker = builder.mark();
+        builder.advanceLexer();
+        definitionMarker.done(RobotTokenTypes.VARIABLE_DEFINITION);
+        while (builder.getTokenType() == RobotTokenTypes.ARGUMENT) {
+            builder.advanceLexer();
+        }
+        argMarker.done(RobotTokenTypes.ARGUMENT);
+    }
+
     private static void parseSetting(PsiBuilder builder) {
         parseWithArguments(builder, RobotTokenTypes.SETTING, null);
     }
@@ -195,7 +208,7 @@ public class RobotParser implements PsiParser {
                 if (builder.rawLookup(-1) == RobotTokenTypes.WHITESPACE && builder.rawLookup(-2) == RobotTokenTypes.WHITESPACE) {
                     break;
                 }
-                parseVariableDefinition(builder);
+                parseVariableDefinitionWithDefaults(builder);
 
             } else {
                 break;

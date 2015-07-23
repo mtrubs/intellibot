@@ -476,6 +476,8 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "${defined}", RobotTokenTypes.VARIABLE_DEFINITION, ARG);
         lexer.advance();
+        assertState(lexer, "=def", RobotTokenTypes.ARGUMENT, ARG);
+        lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);

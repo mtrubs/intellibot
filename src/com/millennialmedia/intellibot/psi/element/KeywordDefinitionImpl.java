@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
@@ -93,8 +92,8 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private Collection<DefinedVariable> collectInlineVariables() {
         Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
         for (PsiElement child : getChildren()) {
-            if (child instanceof VariableDefinition) {
-                results.add(new VariableDto(child, ((VariableDefinition) child).getPresentableText()));
+            if (child instanceof DefinedVariable) {
+                results.add((DefinedVariable) child);
             }
         }
         return results;
@@ -120,8 +119,12 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
                 BracketSetting bracket = (BracketSetting) child;
                 if (bracket.isArguments()) {
                     for (PsiElement argument : bracket.getChildren()) {
-                        if (argument instanceof VariableDefinition) {
-                            results.add(new VariableDto(argument, ((VariableDefinition) argument).getPresentableText()));
+                        if (argument instanceof Argument) {
+                            for (PsiElement definition : argument.getChildren()) {
+                                if (definition instanceof DefinedVariable) {
+                                    results.add((DefinedVariable) definition);
+                                }
+                            }
                         }
                     }
                 }
