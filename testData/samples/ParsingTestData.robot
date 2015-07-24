@@ -51,7 +51,7 @@ Scenario: This is also a keyword definition
 
 Clean Database
   [Documentation]  Cleans the database
-  [Arguments]  ${defined}=def
+  [Arguments]  ${defined}=${Total_Requests}
     ${var1} =  This works  1
     Clean  Kyle
     ${var2}  ${var3} =  This should work  2

@@ -182,8 +182,17 @@ public class RobotParser implements PsiParser {
         PsiBuilder.Marker definitionMarker = builder.mark();
         builder.advanceLexer();
         definitionMarker.done(RobotTokenTypes.VARIABLE_DEFINITION);
-        while (builder.getTokenType() == RobotTokenTypes.ARGUMENT) {
+        IElementType token = builder.getTokenType();
+        while (token == RobotTokenTypes.ARGUMENT || token == RobotTokenTypes.VARIABLE) {
+            PsiBuilder.Marker variableMarker = null;
+            if (token == RobotTokenTypes.VARIABLE) {
+                variableMarker = builder.mark();
+            }
             builder.advanceLexer();
+            if (token == RobotTokenTypes.VARIABLE && variableMarker != null) {
+                variableMarker.done(RobotTokenTypes.VARIABLE);
+            }
+            token = builder.getTokenType();
         }
         argMarker.done(RobotTokenTypes.ARGUMENT);
     }

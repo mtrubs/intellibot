@@ -65,4 +65,9 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
     public String getDebugText() {
         return getPresentableText();
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "::" + getPresentableText();
+    }
 }
