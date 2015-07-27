@@ -66,7 +66,7 @@ public class RobotParser implements PsiParser {
                 } else if (RobotTokenTypes.KEYWORD == type) {
                     parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, false);
                 } else {
-                    // TODO: other types; error
+                    // other types; error
                     //System.out.println(type);
                     builder.advanceLexer();
                 }
@@ -105,7 +105,7 @@ public class RobotParser implements PsiParser {
                 } else if (RobotTokenTypes.BRACKET_SETTING == type) {
                     parseBracketSetting(builder);
                 } else if (RobotTokenTypes.ERROR == type) {
-                    // TODO: not sure
+                    // not sure
                     builder.advanceLexer();
                 } else if (RobotTokenTypes.VARIABLE_DEFINITION == type) {
                     parseKeywordStatement(builder, RobotTokenTypes.VARIABLE_DEFINITION, true);
@@ -120,10 +120,7 @@ public class RobotParser implements PsiParser {
         PsiBuilder.Marker keywordStatementMarker = builder.mark();
         boolean seenGherkin = skipGherkin;
         boolean seenKeyword = false;
-        while (true) {
-            if (builder.eof()) {
-                break;
-            }
+        while (!builder.eof()) {
             IElementType type = builder.getTokenType();
             if (type == RobotTokenTypes.GHERKIN) {
                 // if we see a keyword or variable there should be no Gherkin unless we are on a new statement
@@ -139,7 +136,7 @@ public class RobotParser implements PsiParser {
                     break;
                 } else {
                     seenKeyword = true;
-                    parseSimple(builder, RobotTokenTypes.KEYWORD);
+                    parseKeyword(builder);
                 }
             } else if (type == RobotTokenTypes.ARGUMENT || type == RobotTokenTypes.VARIABLE) {
                 parseArgWithVars(builder, type, RobotTokenTypes.VARIABLE);
@@ -154,13 +151,18 @@ public class RobotParser implements PsiParser {
                     }
                 }
             } else {
-                // TODO: other types; error?
+                // other types; error?
                 //System.out.println(type);
                 break;
             }
         }
 
         keywordStatementMarker.done(rootType);
+    }
+
+    private static void parseKeyword(PsiBuilder builder) {
+        // TODO: MTR: figure this out for inline variables
+        parseSimple(builder, RobotTokenTypes.KEYWORD);
     }
 
     private static void parseBracketSetting(PsiBuilder builder) {
@@ -183,7 +185,7 @@ public class RobotParser implements PsiParser {
         builder.advanceLexer();
         definitionMarker.done(RobotTokenTypes.VARIABLE_DEFINITION);
         IElementType token = builder.getTokenType();
-        while (token == RobotTokenTypes.ARGUMENT || token == RobotTokenTypes.VARIABLE) {
+        while (!builder.eof() && (token == RobotTokenTypes.ARGUMENT || token == RobotTokenTypes.VARIABLE)) {
             PsiBuilder.Marker variableMarker = null;
             if (token == RobotTokenTypes.VARIABLE) {
                 variableMarker = builder.mark();
@@ -206,10 +208,7 @@ public class RobotParser implements PsiParser {
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
         builder.advanceLexer();
-        while (true) {
-            if (builder.eof()) {
-                break;
-            }
+        while (!builder.eof()) {
             type = builder.getTokenType();
             if (RobotTokenTypes.ARGUMENT == type || RobotTokenTypes.VARIABLE == type) {
                 parseArgWithVars(builder, RobotTokenTypes.ARGUMENT, subType);
@@ -228,7 +227,7 @@ public class RobotParser implements PsiParser {
 
     private static void parseArgWithVars(PsiBuilder builder, IElementType type, IElementType subType) {
         PsiBuilder.Marker arg = builder.mark();
-        while (type == RobotTokenTypes.ARGUMENT || type == subType) {
+        while (!builder.eof() && (type == RobotTokenTypes.ARGUMENT || type == subType)) {
             boolean end = builder.rawLookup(1) == RobotTokenTypes.WHITESPACE;
             if (type == subType) {
                 parseSimple(builder, type);
