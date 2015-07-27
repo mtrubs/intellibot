@@ -61,7 +61,7 @@ Clean Database
     
 
 This ${rate} works
-    its a new keyword
+    its a new ${rate} keyword
     run keyword if  ${a}=${b}  equal  not equal
 
 I will be happy

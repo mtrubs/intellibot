@@ -560,7 +560,7 @@ public class RobotLexerTest {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "its a new keyword", RobotTokenTypes.KEYWORD, KEYWORD);
+        assertState(lexer, "its a new ${rate} keyword", RobotTokenTypes.KEYWORD, KEYWORD);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
