@@ -30,7 +30,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
     private final Project myProject;
 
     public RobotOptionsProvider(@NotNull Project project) {
-        myProject = project;
+        this.myProject = project;
     }
 
     public static RobotOptionsProvider getInstance(Project project) {
