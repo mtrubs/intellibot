@@ -1,7 +1,9 @@
 package com.millennialmedia.intellibot.psi;
 
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 import com.millennialmedia.intellibot.ResourceLoader;
+import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +17,7 @@ import static com.millennialmedia.intellibot.psi.RobotLexer.*;
 /**
  * @author mrubino
  */
-public class RobotLexerTest {
+public class RobotLexerTest extends TestCase {
 
     private int maxState = -1;
 
@@ -42,9 +44,35 @@ public class RobotLexerTest {
     }
 
     @Test
+    public void testParsingTestData() {
+        runLexer(11906);
+    }
+
+    @Test
+    public void testDemo() {
+        runLexer(1682);
+    }
+
+    @Test
+    public void testEmptyHeaders() {
+        runLexer(963);
+    }
+
+    @Test
+    public void testJunk() {
+        runLexer(0);
+    }
+
+    @Test
+    public void testVariables() {
+        runLexer(11763);
+    }
+
+    @Test
     public void testParse() {
         this.maxState = -1;
         String data = getData(ResourceLoader.getResourcePath("samples/ParsingTestData.robot"));
+
 
         RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);
@@ -622,207 +650,21 @@ public class RobotLexerTest {
         Assert.assertEquals(11906, this.maxState);
     }
 
-    @Test
-    public void testDemo() {
-        this.maxState = -1;
-        String data = getData(ResourceLoader.getResourcePath("samples/Demo.robot"));
+    private void writeState(RobotLexer lexer, StringBuilder string) {
+        CharSequence actualData = lexer.getBufferSequence().subSequence(lexer.getTokenStart(), lexer.getTokenEnd());
+        int actualState = lexer.peekState();
+        IElementType actualToken = lexer.getTokenType();
+        String message = "\"" + actualData + "\", RobotTokenTypes." + actualToken + ", " + actualState;
+        message = message.replaceAll("\n", "\\\\n");
+        message = message.replaceAll("\t", "\\\\t");
 
-        RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
-        lexer.start(data);
-        assertState(lexer, "invalid", RobotTokenTypes.ERROR, 0);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, 0);
-        lexer.advance();
-        assertState(lexer, "*** Settings ***", RobotTokenTypes.HEADING, SETTINGS_HEADING);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
-        lexer.advance();
-        assertState(lexer, "Documentation", RobotTokenTypes.SETTING, IMPORT);
-        lexer.advance();
-        assertState(lexer, "     ", RobotTokenTypes.WHITESPACE, IMPORT);
-        lexer.advance();
-        assertState(lexer, "This is some demo text", RobotTokenTypes.ARGUMENT, IMPORT);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
-        lexer.advance();
-        assertState(lexer, "Library", RobotTokenTypes.IMPORT, IMPORT);
-        lexer.advance();
-        assertState(lexer, "           ", RobotTokenTypes.WHITESPACE, IMPORT);
-        lexer.advance();
-        assertState(lexer, "CalculatorLibrary", RobotTokenTypes.ARGUMENT, IMPORT);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);
-        lexer.advance();
-        assertState(lexer, "*** Variables ***", RobotTokenTypes.HEADING, VARIABLES_HEADING);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
-        lexer.advance();
-        assertState(lexer, "${var1}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "12345", RobotTokenTypes.ARGUMENT, VARIABLE_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
-        lexer.advance();
-        assertState(lexer, "${var2}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "another variable", RobotTokenTypes.ARGUMENT, VARIABLE_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, VARIABLES_HEADING);
-        lexer.advance();
-        assertState(lexer, "*** Test Cases ***", RobotTokenTypes.HEADING, TEST_CASES_HEADING);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, TEST_CASES_HEADING);
-        lexer.advance();
-        assertState(lexer, "Addition", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "[Tags]", RobotTokenTypes.BRACKET_SETTING, IMPORT);
-        lexer.advance();
-        assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, IMPORT);
-        lexer.advance();
-        assertState(lexer, "Calculator", RobotTokenTypes.ARGUMENT, IMPORT);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, IMPORT);
-        lexer.advance();
-        assertState(lexer, "Given calculator has been cleared", RobotTokenTypes.ARGUMENT, IMPORT);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "When", RobotTokenTypes.GHERKIN, GHERKIN);
-        lexer.advance();
-        assertState(lexer, " ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "user types \"1 + 1\"", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "And", RobotTokenTypes.GHERKIN, GHERKIN);
-        lexer.advance();
-        assertState(lexer, " ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "user pushes equals", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "Then", RobotTokenTypes.GHERKIN, GHERKIN);
-        lexer.advance();
-        assertState(lexer, " ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "result is \"2\"", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "#Subtraction", RobotTokenTypes.COMMENT, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "#  [Tags]  Calculator", RobotTokenTypes.COMMENT, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "#    TODO: implement me", RobotTokenTypes.COMMENT, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, TEST_CASES_HEADING);
-        lexer.advance();
-        assertState(lexer, "*** Keywords ***", RobotTokenTypes.HEADING, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "Calculator has been cleared", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "Push button", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "C", RobotTokenTypes.ARGUMENT, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "User types \"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "${expression}", RobotTokenTypes.VARIABLE_DEFINITION, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "\"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "Push buttons", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "${expression}", RobotTokenTypes.VARIABLE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "User pushes equals", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "Push button", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "=", RobotTokenTypes.ARGUMENT, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "Result is \"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "${result}", RobotTokenTypes.VARIABLE_DEFINITION, KEYWORDS_HEADING);
-        lexer.advance();
-        assertState(lexer, "\"", RobotTokenTypes.KEYWORD_DEFINITION, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
-        lexer.advance();
-        assertState(lexer, "Result should be", RobotTokenTypes.KEYWORD, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "${result}", RobotTokenTypes.VARIABLE, KEYWORD);
-        lexer.advance();
-        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, KEYWORDS_HEADING);
-        // confirm we are at the end
-        Assert.assertEquals(lexer.getTokenEnd(), lexer.getBufferEnd());
-        lexer.advance();
-        // just a check on how close we get to Integer.MAX_VALUE; 2147483647
-        Assert.assertEquals(1682, this.maxState);
+        string.append(message);
+        string.append("\n");
+
+        int currentState = lexer.getState();
+        if (currentState > this.maxState) {
+            this.maxState = currentState;
+        }
     }
 
     private void assertState(RobotLexer lexer, String data, RobotElementType token, int state) {
@@ -842,6 +684,31 @@ public class RobotLexerTest {
         if (currentState > this.maxState) {
             this.maxState = currentState;
         }
+    }
+
+    private String getTestName() {
+        return StringUtil.trimStart(getName(), "test");
+    }
+
+    private void runLexer(int maxState) {
+        String name = getTestName();
+        this.maxState = -1;
+        String data = getData(ResourceLoader.getResourcePath("samples/" + name + ".robot"));
+        String expected = getData(ResourceLoader.getResourcePath("samples/" + name + ".lexer.txt"));
+        StringBuilder actual = new StringBuilder();
+
+        RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
+        lexer.start(data);
+        while (lexer.getTokenEnd() < lexer.getBufferEnd()) {
+            writeState(lexer, actual);
+            lexer.advance();
+        }
+        writeState(lexer, actual);
+        lexer.advance();
+        writeState(lexer, actual);
+        // just a check on how close we get to Integer.MAX_VALUE; 2147483647
+        Assert.assertEquals(maxState, this.maxState);
+        Assert.assertEquals(expected, actual.toString());
     }
 
     private String getData(String file) {

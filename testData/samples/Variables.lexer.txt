@@ -1,0 +1,111 @@
+"*** Settings ***", RobotTokenTypes.HEADING, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Library", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Selenium2Library", RobotTokenTypes.ARGUMENT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"${variable}", RobotTokenTypes.VARIABLE, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"*** Variables ***", RobotTokenTypes.HEADING, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"${variable}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"1234", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"*** Test Cases ***", RobotTokenTypes.HEADING, 2
+"\n", RobotTokenTypes.WHITESPACE, 2
+"Do It Up", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"User types "water"", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"User then types falls", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+""are" is then entered by user", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"pretty is entered by user", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 2
+"*** Keywords ***", RobotTokenTypes.HEADING, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"User types "", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${text}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+""", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Enter", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${text}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"User then types ", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${text}", RobotTokenTypes.VARIABLE_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Enter", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${text}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"${text}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+" is entered by user", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Enter", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${text}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+""", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${text}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+"" is then entered by user", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Enter", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${text}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"User types "", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${a}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+"" and "", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${b}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+""", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${a}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+" is entered by user", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${b}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+" is entered by user", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"Enter", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Arguments]", RobotTokenTypes.BRACKET_SETTING, 7
+"  ", RobotTokenTypes.WHITESPACE, 7
+"${text}", RobotTokenTypes.VARIABLE_DEFINITION, 7
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${results}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"log", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${text}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Return]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"${results}", RobotTokenTypes.VARIABLE, 5
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.null, 3

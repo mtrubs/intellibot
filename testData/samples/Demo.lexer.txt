@@ -1,0 +1,96 @@
+"invalid", RobotTokenTypes.ERROR, 0
+"\n", RobotTokenTypes.WHITESPACE, 0
+"*** Settings ***", RobotTokenTypes.HEADING, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Documentation", RobotTokenTypes.SETTING, 5
+"     ", RobotTokenTypes.WHITESPACE, 5
+"This is some demo text", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Library", RobotTokenTypes.IMPORT, 5
+"           ", RobotTokenTypes.WHITESPACE, 5
+"CalculatorLibrary", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"*** Variables ***", RobotTokenTypes.HEADING, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"${var1}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"12345", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"${var2}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"another variable", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"*** Test Cases ***", RobotTokenTypes.HEADING, 2
+"\n", RobotTokenTypes.WHITESPACE, 2
+"Addition", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Tags]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Calculator", RobotTokenTypes.ARGUMENT, 5
+"    ", RobotTokenTypes.WHITESPACE, 5
+"Given calculator has been cleared", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"When", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"user types "1 + 1"", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"And", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"user pushes equals", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Then", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"result is "2"", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 6
+"\n", RobotTokenTypes.WHITESPACE, 6
+"#Subtraction", RobotTokenTypes.COMMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 6
+"#  [Tags]  Calculator", RobotTokenTypes.COMMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 6
+"#    TODO: implement me", RobotTokenTypes.COMMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 2
+"*** Keywords ***", RobotTokenTypes.HEADING, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"Calculator has been cleared", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Push button", RobotTokenTypes.KEYWORD, 6
+"    ", RobotTokenTypes.WHITESPACE, 6
+"C", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"User types "", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${expression}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+""", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Push buttons", RobotTokenTypes.KEYWORD, 6
+"    ", RobotTokenTypes.WHITESPACE, 6
+"${expression}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"User pushes equals", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Push button", RobotTokenTypes.KEYWORD, 6
+"    ", RobotTokenTypes.WHITESPACE, 6
+"=", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"Result is "", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${result}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+""", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Result should be", RobotTokenTypes.KEYWORD, 6
+"    ", RobotTokenTypes.WHITESPACE, 6
+"${result}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.null, 3
