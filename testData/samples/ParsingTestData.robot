@@ -55,7 +55,7 @@ Clean Database
     ${var1} =  This works  1
     Clean  Kyle
     ${var2}  ${var3} =  This should work  2
-    Clean  Ike
+    ${defined} Clean  Ike
 #    Clean  Other Stuff
     Close All Browsers
     

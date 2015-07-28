@@ -171,13 +171,18 @@ public class RobotLexer extends LexerBase {
                     skipWhitespace();
                     this.currentToken = RobotTokenTypes.WHITESPACE;
                 } else if (isVariable(this.position)) {
-                    // TODO: if this is an invokable keyword then it starts with a variable as opposed to a definition
                     goToNextNewLineOrSuperSpaceOrVariableEnd();
                     if (isVariableDefinition(this.position)) {
                         goToNextNewLineOrSuperSpace();
+                        this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
+                        this.level.push(VARIABLE_DEFINITION);
+                    } else {
+                        this.currentToken = RobotTokenTypes.VARIABLE;
+                        this.level.push(KEYWORD);
+                        if (!isSuperSpaceOrNewline(this.position)) {
+                            this.level.push(KEYWORD);
+                        }
                     }
-                    this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
-                    this.level.push(VARIABLE_DEFINITION);
                 } else {
                     skipNonWhitespace();
                     String word = getCurrentSequence();

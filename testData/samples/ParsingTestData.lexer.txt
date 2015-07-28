@@ -237,7 +237,8 @@
 "2", RobotTokenTypes.ARGUMENT, 6
 "\n", RobotTokenTypes.WHITESPACE, 8
 "    ", RobotTokenTypes.WHITESPACE, 8
-"Clean", RobotTokenTypes.KEYWORD, 6
+"${defined}", RobotTokenTypes.VARIABLE, 6
+" Clean", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6
 "Ike", RobotTokenTypes.ARGUMENT, 6
 "\n", RobotTokenTypes.WHITESPACE, 6

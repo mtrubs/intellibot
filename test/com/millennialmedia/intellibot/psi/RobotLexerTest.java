@@ -17,6 +17,7 @@ import static com.millennialmedia.intellibot.psi.RobotLexer.*;
 /**
  * @author mrubino
  */
+@SuppressWarnings("JUnit4AnnotatedMethodInJUnit3TestCase")
 public class RobotLexerTest extends TestCase {
 
     private int maxState = -1;
@@ -554,7 +555,9 @@ public class RobotLexerTest extends TestCase {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "Clean", RobotTokenTypes.KEYWORD, KEYWORD);
+        assertState(lexer, "${defined}", RobotTokenTypes.VARIABLE, KEYWORD);
+        lexer.advance();
+        assertState(lexer, " Clean", RobotTokenTypes.KEYWORD, KEYWORD);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, KEYWORD);
         lexer.advance();

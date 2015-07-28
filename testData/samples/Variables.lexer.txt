@@ -81,11 +81,11 @@
 """, RobotTokenTypes.KEYWORD_DEFINITION, 8
 "\n", RobotTokenTypes.WHITESPACE, 8
 "    ", RobotTokenTypes.WHITESPACE, 8
-"${a}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"${a}", RobotTokenTypes.VARIABLE, 6
 " is entered by user", RobotTokenTypes.KEYWORD, 6
 "\n", RobotTokenTypes.WHITESPACE, 8
 "    ", RobotTokenTypes.WHITESPACE, 8
-"${b}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"${b}", RobotTokenTypes.VARIABLE, 6
 " is entered by user", RobotTokenTypes.KEYWORD, 6
 "\n", RobotTokenTypes.WHITESPACE, 8
 "\n", RobotTokenTypes.WHITESPACE, 3

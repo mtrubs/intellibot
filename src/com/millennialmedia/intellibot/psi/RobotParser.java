@@ -54,6 +54,7 @@ public class RobotParser implements PsiParser {
             } else {
                 type = builder.getTokenType();
                 if (RobotTokenTypes.HEADING == type) {
+                    //noinspection UnnecessaryContinue
                     continue;
                 } else if (RobotTokenTypes.IMPORT == type) {
                     parseImport(builder);
@@ -131,14 +132,16 @@ public class RobotParser implements PsiParser {
                     // nothing to do for this
                     builder.advanceLexer();
                 }
-            } else if (type == RobotTokenTypes.KEYWORD) {
+            } else if (type == RobotTokenTypes.KEYWORD ||
+                    (type ==RobotTokenTypes.VARIABLE && builder.rawLookup(1) == RobotTokenTypes.KEYWORD)) {
                 if (seenKeyword) {
                     break;
                 } else {
                     seenKeyword = true;
                     parseKeyword(builder);
                 }
-            } else if (type == RobotTokenTypes.ARGUMENT || type == RobotTokenTypes.VARIABLE) {
+            } else if ((type == RobotTokenTypes.ARGUMENT || type == RobotTokenTypes.VARIABLE) &&
+                    builder.rawLookup(1) != RobotTokenTypes.KEYWORD) {
                 parseWith(builder, RobotTokenTypes.ARGUMENT);
             } else if (type == RobotTokenTypes.VARIABLE_DEFINITION) {
                 if (seenKeyword) {
@@ -161,7 +164,6 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseKeyword(PsiBuilder builder) {
-        // TODO: MTR: figure this out for inline variables
         parseWith(builder, RobotTokenTypes.KEYWORD);
     }
 
