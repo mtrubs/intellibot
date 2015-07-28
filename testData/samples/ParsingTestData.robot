@@ -63,6 +63,7 @@ Clean Database
 This ${rate} works
     its a new ${rate} keyword
     run keyword if  ${a}=${b}  equal  not equal
+  [Return]  ${Total_Requests}
 
 I will be happy
     there is a smile on my face  ...

@@ -139,7 +139,7 @@ public class RobotParser implements PsiParser {
                     parseKeyword(builder);
                 }
             } else if (type == RobotTokenTypes.ARGUMENT || type == RobotTokenTypes.VARIABLE) {
-                parseArgWithVars(builder, type, RobotTokenTypes.VARIABLE);
+                parseWith(builder, RobotTokenTypes.ARGUMENT);
             } else if (type == RobotTokenTypes.VARIABLE_DEFINITION) {
                 if (seenKeyword) {
                     break;
@@ -162,19 +162,19 @@ public class RobotParser implements PsiParser {
 
     private static void parseKeyword(PsiBuilder builder) {
         // TODO: MTR: figure this out for inline variables
-        parseSimple(builder, RobotTokenTypes.KEYWORD);
+        parseWith(builder, RobotTokenTypes.KEYWORD);
     }
 
     private static void parseBracketSetting(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.BRACKET_SETTING, RobotTokenTypes.VARIABLE_DEFINITION);
+        parseWithArguments(builder, RobotTokenTypes.BRACKET_SETTING);
     }
 
     private static void parseImport(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.IMPORT, RobotTokenTypes.VARIABLE);
+        parseWithArguments(builder, RobotTokenTypes.IMPORT);
     }
 
     private static void parseVariableDefinition(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION, RobotTokenTypes.VARIABLE);
+        parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION);
     }
 
     private static void parseVariableDefinitionWithDefaults(PsiBuilder builder) {
@@ -200,10 +200,10 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseSetting(PsiBuilder builder) {
-        parseWithArguments(builder, RobotTokenTypes.SETTING, null);
+        parseWithArguments(builder, RobotTokenTypes.SETTING);
     }
 
-    private static void parseWithArguments(PsiBuilder builder, IElementType markType, IElementType subType) {
+    private static void parseWithArguments(PsiBuilder builder, IElementType markType) {
         IElementType type = builder.getTokenType();
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
@@ -211,7 +211,7 @@ public class RobotParser implements PsiParser {
         while (!builder.eof()) {
             type = builder.getTokenType();
             if (RobotTokenTypes.ARGUMENT == type || RobotTokenTypes.VARIABLE == type) {
-                parseArgWithVars(builder, RobotTokenTypes.ARGUMENT, subType);
+                parseWith(builder, RobotTokenTypes.ARGUMENT);
             } else if (markType != RobotTokenTypes.VARIABLE_DEFINITION && RobotTokenTypes.VARIABLE_DEFINITION == type) {
                 if (builder.rawLookup(-1) == RobotTokenTypes.WHITESPACE && builder.rawLookup(-2) == RobotTokenTypes.WHITESPACE) {
                     break;
@@ -225,21 +225,22 @@ public class RobotParser implements PsiParser {
         importMarker.done(markType);
     }
 
-    private static void parseArgWithVars(PsiBuilder builder, IElementType type, IElementType subType) {
+    private static void parseWith(PsiBuilder builder, IElementType type) {
         PsiBuilder.Marker arg = builder.mark();
-        while (!builder.eof() && (type == RobotTokenTypes.ARGUMENT || type == subType)) {
+        IElementType current = builder.getTokenType();
+        while (!builder.eof() && (type == current || RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current)) {
             boolean end = builder.rawLookup(1) == RobotTokenTypes.WHITESPACE;
-            if (type == subType) {
-                parseSimple(builder, type);
+            if (RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current) {
+                parseSimple(builder, current);
             } else {
                 builder.advanceLexer();
             }
             if (end) {
                 break;
             }
-            type = builder.getTokenType();
+            current = builder.getTokenType();
         }
-        arg.done(RobotTokenTypes.ARGUMENT);
+        arg.done(type);
     }
 
     private static void parseSimple(PsiBuilder builder, IElementType type) {
