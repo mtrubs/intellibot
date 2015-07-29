@@ -249,23 +249,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     private Collection<KeywordInvokable> collectInvokedKeywords() {
-        List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
-        for (PsiElement child : getChildren()) {
-            if (child instanceof KeywordStatement) {
-                for (PsiElement statement : child.getChildren()) {
-                    if (statement instanceof KeywordInvokable) {
-                        results.add((KeywordInvokable) statement);
-                    }
-                }
-            }
-        }
-        for (KeywordDefinition testCase : getTestCases()) {
-            results.addAll(testCase.getInvokedKeywords());
-        }
-        for (DefinedKeyword definedKeyword : getDefinedKeywords()) {
-            results.addAll(definedKeyword.getInvokedKeywords());
-        }
-        return results;
+        return PsiTreeUtil.findChildrenOfType(this, KeywordInvokable.class);
     }
 
     @NotNull
@@ -282,21 +266,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     private Collection<Variable> collectUsedVariables() {
-        List<Variable> results = new ArrayList<Variable>();
-        for (PsiElement child : getChildren()) {
-            if (child instanceof Import) {
-                //noinspection unchecked
-                Collection<Variable> variables = PsiTreeUtil.collectElementsOfType(child, Variable.class);
-                results.addAll(variables);
-            }
-        }
-        for (KeywordDefinition testCase : getTestCases()) {
-            results.addAll(testCase.getUsedVariables());
-        }
-        for (DefinedKeyword definedKeyword : getDefinedKeywords()) {
-            results.addAll(definedKeyword.getUsedVariables());
-        }
-        return results;
+        return PsiTreeUtil.findChildrenOfType(this, Variable.class);
     }
 
     @NotNull

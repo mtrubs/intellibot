@@ -35,29 +35,30 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
             }
 
             // TODO: what is needed below this point...
-            element = element.getParent().getParent();
-            if (element instanceof Argument) {
-                PsiElement container = element.getParent();
-                if (container instanceof KeywordStatement) {
-                    KeywordInvokable invokable = ((KeywordStatement) container).getInvokable();
-                    String text = invokable == null ? null : invokable.getPresentableText();
-                    if (text != null) {
-                        if (text.startsWith(":")) {
-                            // TODO: for loops
-                            return true;
-                        } else if (text.startsWith("\\")) {
-                            // TODO: for loops
-                            return true;
-                        }
+            PsiElement container = element.getParent();
+            element = container;
+            if (container instanceof Argument) {
+                container = container.getParent();
+            }
+            if (container instanceof KeywordStatement) {
+                KeywordInvokable invokable = ((KeywordStatement) container).getInvokable();
+                String text = invokable == null ? null : invokable.getPresentableText();
+                if (text != null) {
+                    if (text.startsWith(":")) {
+                        // TODO: for loops
+                        return true;
+                    } else if (text.startsWith("\\")) {
+                        // TODO: for loops
+                        return true;
                     }
-                    // this is the case where we have a 'set test variable' call with more than one arg
-                    // the first is the variable name, the second is the value
-                    // if there is only one argument then we might want to see where it was created
-                    if (((KeywordStatement) container).getGlobalVariable() != null) {
-                        List<Argument> arguments = ((KeywordStatement) container).getArguments();
-                        if (arguments.size() > 1 && element == arguments.get(0)) {
-                            return true;
-                        }
+                }
+                // this is the case where we have a 'set test variable' call with more than one arg
+                // the first is the variable name, the second is the value
+                // if there is only one argument then we might want to see where it was created
+                if (((KeywordStatement) container).getGlobalVariable() != null) {
+                    List<Argument> arguments = ((KeywordStatement) container).getArguments();
+                    if (arguments.size() > 1 && element == arguments.get(0)) {
+                        return true;
                     }
                 }
             }

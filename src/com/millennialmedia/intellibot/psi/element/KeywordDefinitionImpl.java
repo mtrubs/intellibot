@@ -47,24 +47,12 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
-    // TODO: MTR: check all 'used' variables are collected
-    // TODO: MTR: nested variables
-
     private List<KeywordInvokable> collectInvokedKeywords() {
         List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
         for (PsiElement statement : getChildren()) {
-            if (statement instanceof KeywordStatement) {
-                for (PsiElement subStatement : statement.getChildren()) {
-                    if (subStatement instanceof KeywordInvokable) {
-                        results.add((KeywordInvokable) subStatement);
-                    }
-                }
-            } else if (statement instanceof BracketSetting) {
-                for (PsiElement subStatement : statement.getChildren()) {
-                    if (subStatement instanceof KeywordInvokable) {
-                        results.add((KeywordInvokable) subStatement);
-                    }
-                }
+            if (statement instanceof KeywordStatement || statement instanceof BracketSetting) {
+                //noinspection unchecked
+                results.addAll(PsiTreeUtil.collectElementsOfType(statement, KeywordInvokable.class));
             }
         }
         return results;
