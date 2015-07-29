@@ -42,14 +42,6 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
         return toPresentableText(getNode());
     }
 
-    protected String getTextData() {
-        ItemPresentation presentation = getPresentation();
-        if (presentation != null) {
-            return presentation.getPresentableText();
-        }
-        return null;
-    }
-
     @NotNull
     private static String toPresentableText(ASTNode node) {
         return PatternUtil.getPresentableText(node.getText());
@@ -65,9 +57,4 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
     public String getDebugText() {
         return getPresentableText();
     }
-
-//    @Override
-//    public String toString() {
-//        return super.toString() + "::" + getPresentableText();
-//    }
 }

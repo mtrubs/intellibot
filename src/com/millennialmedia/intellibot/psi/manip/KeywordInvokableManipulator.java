@@ -7,7 +7,6 @@ import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * TODO: purpose
  * we seem to need this but it is not really used at this time.  it prevents NPEs for the jump to source.
  * we likely need it to do intelligent refactoring.
  *
