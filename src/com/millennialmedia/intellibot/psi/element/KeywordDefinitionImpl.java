@@ -47,6 +47,9 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
+    // TODO: MTR: check all 'used' variables are collected
+    // TODO: MTR: nested variables
+
     private List<KeywordInvokable> collectInvokedKeywords() {
         List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
         for (PsiElement statement : getChildren()) {

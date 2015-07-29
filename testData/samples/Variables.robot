@@ -13,25 +13,32 @@ Do It Up
     "are" is then entered by user
     pretty is entered by user
 
+Do It Up Again
+    User types "${variable}"
+    User then types ${variable}
+    "${variable}" is then entered by user
+    ${variable} is entered by user
+    User types "${variable}" and "${variable}"
+
 *** Keywords ***
 
-User types "${text}"
-    Enter  ${text}
+${a} is entered by user
+    Enter  ${a}
 
-User then types ${text}
-    Enter  ${text}
-
-${text} is entered by user
-    Enter  ${text}
-
-"${text}" is then entered by user
-    Enter  ${text}
-
-User types "${a}" and "${b}"
-    ${a} is entered by user
+User types "${b}" and "${c}"
     ${b} is entered by user
+    ${c} is entered by user
+
+"${d}" is then entered by user
+    Enter  ${d}
+
+User then types ${e}
+    Enter  ${e}
+
+User types "${f}"
+    Enter  ${f}
 
 Enter
-  [Arguments]  ${text}
-    ${results}  log  ${text}
-  [Return]  ${results}
+  [Arguments]  ${g}
+    ${h}  log  ${g}
+  [Return]  ${h}

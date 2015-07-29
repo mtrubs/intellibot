@@ -58,11 +58,12 @@ public class RobotParser implements PsiParser {
                     continue;
                 } else if (RobotTokenTypes.IMPORT == type) {
                     parseImport(builder);
-                } else if (RobotTokenTypes.VARIABLE_DEFINITION == type) {
+                } else if (RobotTokenTypes.VARIABLE_DEFINITION == type && builder.rawLookup(1) == RobotTokenTypes.WHITESPACE) {
                     parseVariableDefinition(builder);
                 } else if (RobotTokenTypes.SETTING == type) {
                     parseSetting(builder);
-                } else if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
+                } else if (RobotTokenTypes.KEYWORD_DEFINITION == type  ||
+                        RobotTokenTypes.VARIABLE_DEFINITION == type && builder.rawLookup(1) == RobotTokenTypes.KEYWORD_DEFINITION) {
                     parseKeywordDefinition(builder);
                 } else if (RobotTokenTypes.KEYWORD == type) {
                     parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, false);
@@ -76,19 +77,22 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseKeywordDefinition(PsiBuilder builder) {
-        assert RobotTokenTypes.KEYWORD_DEFINITION == builder.getTokenType();
+        //assert RobotTokenTypes.KEYWORD_DEFINITION == builder.getTokenType();
 
         PsiBuilder.Marker keywordMarker = null;
         while (true) {
             IElementType type = builder.getTokenType();
-            if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
+            if (RobotTokenTypes.KEYWORD_DEFINITION == type ||
+                    RobotTokenTypes.VARIABLE_DEFINITION == type && builder.rawLookup(1) == RobotTokenTypes.KEYWORD_DEFINITION) {
                 if (builder.rawLookup(-1) != RobotTokenTypes.VARIABLE_DEFINITION) {
                     if (keywordMarker != null) {
                         keywordMarker.done(RobotTokenTypes.KEYWORD_DEFINITION);
                     }
                     keywordMarker = builder.mark();
                 }
-                builder.advanceLexer();
+                if (RobotTokenTypes.KEYWORD_DEFINITION == type) {
+                    builder.advanceLexer();
+                }
             }
 
             if (builder.eof()) {
@@ -148,8 +152,10 @@ public class RobotParser implements PsiParser {
                     break;
                 } else {
                     seenKeyword = true;
+                    boolean isPartOfKeywordDefinition = builder.rawLookup(-1) == RobotTokenTypes.KEYWORD_DEFINITION ||
+                            builder.rawLookup(1) == RobotTokenTypes.KEYWORD_DEFINITION;
                     builder.advanceLexer();
-                    if (builder.getTokenType() == RobotTokenTypes.KEYWORD) {
+                    if (!isPartOfKeywordDefinition && builder.getTokenType() == RobotTokenTypes.KEYWORD) {
                         parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, true);
                     }
                 }
