@@ -81,7 +81,7 @@ public class ResolverUtils {
         } else if (parent == null) {
             return null;
         }
-        if (parent instanceof Argument) {
+        if (parent instanceof Argument || parent instanceof KeywordInvokable) {
             parent = parent.getParent();
         }
         PsiElement containingStatement = parent.getParent();
