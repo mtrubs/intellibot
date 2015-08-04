@@ -6,6 +6,10 @@
 "Selenium2Library", RobotTokenTypes.ARGUMENT, 5
 "  ", RobotTokenTypes.WHITESPACE, 5
 "${variable}", RobotTokenTypes.VARIABLE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"${", RobotTokenTypes.VARIABLE, 12
+"${variable}", RobotTokenTypes.VARIABLE, 12
+".length}", RobotTokenTypes.VARIABLE, 5
 "\n", RobotTokenTypes.WHITESPACE, 1
 "\n", RobotTokenTypes.WHITESPACE, 1
 "*** Variables ***", RobotTokenTypes.HEADING, 4
@@ -104,6 +108,13 @@
 "  ", RobotTokenTypes.WHITESPACE, 6
 "${e}", RobotTokenTypes.VARIABLE, 6
 "\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"log", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${", RobotTokenTypes.VARIABLE, 12
+"${e}", RobotTokenTypes.VARIABLE, 12
+"[0]}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
 "\n", RobotTokenTypes.WHITESPACE, 3
 "User types "", RobotTokenTypes.KEYWORD_DEFINITION, 3
 "${f}", RobotTokenTypes.VARIABLE_DEFINITION, 3
@@ -113,6 +124,13 @@
 "Enter", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6
 "${f}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Return]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"${", RobotTokenTypes.VARIABLE, 12
+"${f}", RobotTokenTypes.VARIABLE, 12
+"}", RobotTokenTypes.VARIABLE, 5
 "\n", RobotTokenTypes.WHITESPACE, 8
 "\n", RobotTokenTypes.WHITESPACE, 3
 "Enter", RobotTokenTypes.KEYWORD_DEFINITION, 8
@@ -128,6 +146,19 @@
 "log", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6
 "${g}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${", RobotTokenTypes.VARIABLE_DEFINITION, 12
+"${h}", RobotTokenTypes.VARIABLE, 12
+"}", RobotTokenTypes.VARIABLE_DEFINITION, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"${", RobotTokenTypes.VARIABLE_DEFINITION, 12
+"${g}", RobotTokenTypes.VARIABLE, 12
+"}=", RobotTokenTypes.VARIABLE_DEFINITION, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"log", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"stuff", RobotTokenTypes.ARGUMENT, 6
 "\n", RobotTokenTypes.WHITESPACE, 8
 "  ", RobotTokenTypes.WHITESPACE, 8
 "[Return]", RobotTokenTypes.BRACKET_SETTING, 5
