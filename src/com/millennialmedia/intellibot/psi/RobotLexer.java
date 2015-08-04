@@ -157,7 +157,7 @@ public class RobotLexer extends LexerBase {
                     skipWhitespace();
                 }
                 if (isVariable(this.position)) {
-                    goToNextNewLineOrSuperSpaceOrVariableEnd();
+                    goToVariableEnd();
                     this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
                 } else {
                     goToNextNewLineOrSuperSpaceOrVariable();
@@ -171,7 +171,7 @@ public class RobotLexer extends LexerBase {
                     skipWhitespace();
                     this.currentToken = RobotTokenTypes.WHITESPACE;
                 } else if (isVariable(this.position)) {
-                    goToNextNewLineOrSuperSpaceOrVariableEnd();
+                    goToVariableEnd();
                     if (isVariableDefinition(this.position)) {
                         goToNextNewLineOrSuperSpace();
                         this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
@@ -235,7 +235,7 @@ public class RobotLexer extends LexerBase {
                         // this is a variable assignment inside a keyword definition: "${var} =  some keyword  arg1  arg2"
                         // next token may be another variable or a keyword
                         if (isVariable(this.position)) {
-                            goToNextNewLineOrSuperSpaceOrVariableEnd();
+                            goToVariableEnd();
                             if (isVariableDefinition(this.position)) {
                                 goToNextNewLineOrSuperSpace();
                             }
@@ -246,7 +246,7 @@ public class RobotLexer extends LexerBase {
                             this.currentToken = RobotTokenTypes.KEYWORD;
                         }
                     } else if (isVariable(this.position)) {
-                        goToNextNewLineOrSuperSpaceOrVariableEnd();
+                        goToVariableEnd();
                         // if we are in a bracket settings then it is variable definition rather than a variable
                         if (SETTINGS == state && isSuperSpacePrevious()) {
                             this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
@@ -286,11 +286,19 @@ public class RobotLexer extends LexerBase {
 
     private boolean isVariable(int position) {
         // potential start of variable
-        if ((charAtEquals(position, '$') || charAtEquals(position, '@')) && charAtEquals(position + 1, '{')) {
-            position = position + 2;
-            while (position < this.endOffset) {
-                if (charAtEquals(position, '}')) {
-                    return true;
+        if (isVariableStart(position)) {
+            position += 2;
+            int count = 1;
+            while (count > 0 && position < this.endOffset && position >= 0) {
+                if (isVariableEnd(position)) {
+                    count--;
+                    if (count == 0) {
+                        return true;
+                    }
+                }
+                if (isVariableStart(position)) {
+                    count++;
+                    position += 2;
                 }
                 if (isSuperSpaceOrNewline(position)) {
                     return false;
@@ -301,12 +309,26 @@ public class RobotLexer extends LexerBase {
         return false;
     }
 
+    private boolean isVariableDefinition(int position) {
+        return isSuperSpaceOrNewline(position) ||
+                charAtEquals(position, '=') && isSuperSpaceOrNewline(position + 1) ||
+                isSpace(position) && charAtEquals(position + 1, '=') && isSuperSpaceOrNewline(position + 2);
+    }
+
     private boolean isComment(int position) {
         while (position < this.endOffset && (isWhitespace(position) || isNewLine(position))) {
             position++;
         }
 
         return charAtEquals(position, '#');
+    }
+
+    private boolean isVariableStart(int position) {
+        return (charAtEquals(position, '$') || charAtEquals(position, '@')) && charAtEquals(position + 1, '{');
+    }
+
+    private boolean isVariableEnd(int position) {
+        return charAtEquals(position, '}');
     }
 
     private boolean isNewLine(int position) {
@@ -357,12 +379,6 @@ public class RobotLexer extends LexerBase {
             position--;
         }
         return true;
-    }
-
-    private boolean isVariableDefinition(int position) {
-        return isSuperSpaceOrNewline(position) ||
-                charAtEquals(position, '=') && isSuperSpaceOrNewline(position + 1) ||
-                isSpace(position) && charAtEquals(position + 1, '=') && isSuperSpaceOrNewline(position + 2);
     }
 
     private boolean isSuperSpace(int position) {
@@ -476,13 +492,27 @@ public class RobotLexer extends LexerBase {
         }
     }
 
-    private void goToNextNewLineOrSuperSpaceOrVariableEnd() {
-        while (this.position < this.endOffset && !isSuperSpaceOrNewline(this.position) && !charAtEquals(this.position, '}')) {
+    private void goToVariableEnd() {
+        // TODO: make better for nested variables
+        // this only works currently because it is always wrapped in an isVariable(position) call
+        // so we can safely assume that we are at the beginning of a balanced set of { and }
+        int count = 0;
+        if (isVariableStart(this.position)) {
+            count++;
             this.position++;
         }
-        if (charAtEquals(this.position, '}')) {
+        while (this.position < this.endOffset && count > 0) {
+            if (isVariableStart(this.position)) {
+                count++;
+            } else if (isVariableEnd(this.position)) {
+                count--;
+            }
             this.position++;
+
         }
+//        if (isVariableEnd(this.position)) {
+//            this.position++;
+//        }
     }
 
     private void skipNonWhitespace() {
