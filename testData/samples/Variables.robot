@@ -1,6 +1,6 @@
 *** Settings ***
 
-Library  Selenium2Library  ${variable}  ${${variable}.length}
+Library  Selenium2Library  ${variable}
 
 *** Variables ***
 
@@ -34,14 +34,11 @@ User types "${b}" and "${c}"
 
 User then types ${e}
     Enter  ${e}
-    log  ${${e}[0]}
 
 User types "${f}"
     Enter  ${f}
-  [Return]  ${${f}}
 
 Enter
   [Arguments]  ${g}
     ${h}  log  ${g}
-    ${${h}}  ${${g}}=  log  stuff
   [Return]  ${h}

@@ -66,7 +66,7 @@ public class RobotLexerTest extends TestCase {
 
     @Test
     public void testVariables() {
-        runLexer(270963);
+        runLexer(11763);
     }
 
     @Test
@@ -709,9 +709,9 @@ public class RobotLexerTest extends TestCase {
         writeState(lexer, actual);
         lexer.advance();
         writeState(lexer, actual);
-        Assert.assertEquals(expected, actual.toString());
         // just a check on how close we get to Integer.MAX_VALUE; 2147483647
         Assert.assertEquals(maxState, this.maxState);
+        Assert.assertEquals(expected, actual.toString());
     }
 
     private String getData(String file) {
