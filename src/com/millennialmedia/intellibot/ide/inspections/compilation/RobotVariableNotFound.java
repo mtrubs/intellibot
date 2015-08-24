@@ -76,4 +76,10 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
     public String getMessage() {
         return RobotBundle.message("INSP.variable.undefined");
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.compilation";
+    }
 }

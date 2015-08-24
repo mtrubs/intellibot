@@ -35,4 +35,10 @@ public class RobotNestedVariableDefinition extends SimpleRobotInspection {
     public String getMessage() {
         return RobotBundle.message("INSP.variableDefinition.nested");
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.complexity";
+    }
 }

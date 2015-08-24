@@ -47,4 +47,10 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
     public String getMessage() {
         return RobotBundle.message("INSP.keyword.undefined");
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.compilation";
+    }
 }

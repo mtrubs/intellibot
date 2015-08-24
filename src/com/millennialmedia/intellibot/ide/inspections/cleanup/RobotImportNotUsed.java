@@ -73,4 +73,10 @@ public class RobotImportNotUsed extends SimpleRobotInspection {
     public String getMessage() {
         return RobotBundle.message("INSP.import.unused");
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.cleanup";
+    }
 }

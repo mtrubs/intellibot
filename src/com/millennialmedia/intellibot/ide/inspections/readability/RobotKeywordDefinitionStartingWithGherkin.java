@@ -46,4 +46,10 @@ public class RobotKeywordDefinitionStartingWithGherkin extends SimpleRobotInspec
     public String getMessage() {
         return RobotBundle.message("INSP.define.keyword.gherkin.start");
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.readability";
+    }
 }

@@ -63,4 +63,10 @@ public class RobotGherkinInspection extends SimpleRobotInspection implements Sim
     private boolean valid(String text) {
         return NORMAL.contains(text) || (this.allowUppercase && UPPER.contains(text));
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.readability";
+    }
 }
