@@ -39,13 +39,13 @@ public class PatternUtil {
             text = text.substring(0, text.length() - 1);
         }
         text = text.trim();
-        if (text.startsWith("${") || text.startsWith("@{")) {
+        if (text.startsWith("${") || text.startsWith("@{") || text.startsWith("%{")) {
             text = text.substring(2);
         }
         if (text.endsWith("}")) {
             text = text.substring(0, text.length() - 1);
         }
-        return "[\\$\\@]\\{" + Pattern.quote(text) + "((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?";
+        return "[\\$\\@\\%]\\{" + Pattern.quote(text) + "((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?";
     }
 
     public static boolean isVariableSettingKeyword(String keyword) {

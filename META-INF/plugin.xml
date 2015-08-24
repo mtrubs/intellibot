@@ -179,6 +179,12 @@
         <!-- Inspections: complexity -->
         <!-- TODO: inspection: warn: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: warn: scenarios longer than X lines; trying to do too much -->
+        <localInspection language="Robot" shortName="RobotNestedVariable" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.variable.nested" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariable"/>
+        <localInspection language="Robot" shortName="RobotNestedVariableDefinition" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.variableDefinition.nested" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariableDefinition"/>
         <!-- TODO: nested variables: warn: variables within variables can lead to hard ot maintain code -->
         <!-- TODO: nested variables: warn: variables within variable definitions can lead to hard ot maintain code -->
         <!-- Inspections: deprecated -->

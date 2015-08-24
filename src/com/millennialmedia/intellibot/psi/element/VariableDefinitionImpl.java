@@ -1,6 +1,7 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
@@ -43,5 +44,12 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
     @Override
     public PsiElement reference() {
         return this;
+    }
+
+    @Override
+    public boolean isNested() {
+        String text = getPresentableText();
+        return StringUtil.getOccurrenceCount(text, "}") > 1 &&
+                (StringUtil.getOccurrenceCount(text, "${") + StringUtil.getOccurrenceCount(text, "@{") + StringUtil.getOccurrenceCount(text, "%{") > 1);
     }
 }

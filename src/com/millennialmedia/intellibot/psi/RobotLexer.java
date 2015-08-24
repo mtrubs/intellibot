@@ -324,7 +324,9 @@ public class RobotLexer extends LexerBase {
     }
 
     private boolean isVariableStart(int position) {
-        return (charAtEquals(position, '$') || charAtEquals(position, '@')) && charAtEquals(position + 1, '{');
+        return (charAtEquals(position, '$') ||
+                charAtEquals(position, '@') ||
+                charAtEquals(position, '%')) && charAtEquals(position + 1, '{');
     }
 
     private boolean isVariableEnd(int position) {

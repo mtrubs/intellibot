@@ -21,16 +21,12 @@ public class RobotKeywordDefinitionStartingWithGherkin extends SimpleRobotInspec
     @NotNull
     @Override
     public String getDisplayName() {
-        return RobotBundle.message("INSP.NAME.gherkin.format");
+        return RobotBundle.message("INSP.NAME.define.keyword.gherkin.start");
     }
 
     @Override
     public boolean skip(PsiElement element) {
-        if (element instanceof KeywordDefinition) {
-            return valid(((KeywordDefinition) element).getPresentableText());
-        } else {
-            return true;
-        }
+        return !(element instanceof KeywordDefinition) || valid(((KeywordDefinition) element).getPresentableText());
     }
 
     private boolean valid(String text) {

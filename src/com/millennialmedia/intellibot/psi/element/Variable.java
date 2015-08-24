@@ -5,4 +5,6 @@ package com.millennialmedia.intellibot.psi.element;
  * @since 2015-07-21
  */
 public interface Variable extends RobotStatement {
+
+    boolean isNested();
 }

@@ -33,6 +33,10 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
             if (reference != null && reference.resolve() != null) {
                 return true;
             }
+            if (((Variable) element).isNested()) {
+                // TODO: nested variables
+                return true;
+            }
 
             // TODO: what is needed below this point...
             PsiElement container = element.getParent();
