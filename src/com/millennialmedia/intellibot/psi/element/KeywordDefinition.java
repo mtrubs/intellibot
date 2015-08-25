@@ -1,6 +1,5 @@
 package com.millennialmedia.intellibot.psi.element;
 
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,9 +8,7 @@ import java.util.List;
 /**
  * @author Stephen Abrams
  */
-public interface KeywordDefinition extends PsiElement {
-
-    String getPresentableText();
+public interface KeywordDefinition extends RobotStatement {
 
     @NotNull
     List<KeywordInvokable> getInvokedKeywords();
@@ -23,4 +20,7 @@ public interface KeywordDefinition extends PsiElement {
      */
     @NotNull
     Collection<DefinedVariable> getDeclaredVariables();
+
+    @NotNull
+    Collection<Variable> getUsedVariables();
 }

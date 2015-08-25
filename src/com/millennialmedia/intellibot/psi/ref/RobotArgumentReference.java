@@ -1,13 +1,10 @@
 package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
-import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.element.Argument;
 import com.millennialmedia.intellibot.psi.element.Import;
 import com.millennialmedia.intellibot.psi.element.KeywordStatement;
-import com.millennialmedia.intellibot.psi.element.VariableDefinition;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
@@ -47,10 +44,7 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
                 //result = resolveVariable();
             }
         } else if (parent instanceof KeywordStatement) {
-            PsiElement reference = resolveKeyword();
-            result = reference == null ? resolveVariable() : reference;
-        } else if (parent instanceof VariableDefinition) {
-            result = resolveVariable();
+            result = resolveKeyword();
         }
         debug.complete();
         return result;
@@ -69,18 +63,6 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
         String keyword = element.getPresentableText();
         // all files we import are based off the file we are currently in
         return ResolverUtils.resolveKeywordFromFile(keyword, element.getContainingFile());
-    }
-
-    private PsiElement resolveVariable() {
-        String text = getElement().getPresentableText();
-        PsiElement parent = getElement().getParent();
-        PsiElement results = ResolverUtils.resolveVariableFromStatement(text, parent,
-                RobotOptionsProvider.getInstance(getElement().getProject()).allowGlobalVariables());
-        if (results != null) {
-            return results;
-        }
-        PsiFile file = getElement().getContainingFile();
-        return ResolverUtils.resolveVariableFromFile(text, file);
     }
 
     @Nullable

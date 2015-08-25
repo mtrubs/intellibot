@@ -1,0 +1,37 @@
+"*** Settings ***", RobotTokenTypes.HEADING, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"*** Variables ***", RobotTokenTypes.HEADING, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"*** Test Cases ***", RobotTokenTypes.HEADING, 2
+"\n", RobotTokenTypes.WHITESPACE, 2
+"\n", RobotTokenTypes.WHITESPACE, 2
+"*** Keywords ***", RobotTokenTypes.HEADING, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"Clean Database", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"This works", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"I will be happy", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"This works", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"log", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"a", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"I will be happy", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"log", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"b", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.null, 3

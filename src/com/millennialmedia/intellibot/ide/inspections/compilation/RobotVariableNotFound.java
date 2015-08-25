@@ -4,11 +4,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.RobotBundle;
 import com.millennialmedia.intellibot.ide.inspections.SimpleRobotInspection;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.Argument;
-import com.millennialmedia.intellibot.psi.element.BracketSetting;
 import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import com.millennialmedia.intellibot.psi.element.KeywordStatement;
+import com.millennialmedia.intellibot.psi.element.Variable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,15 +28,21 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
 
     @Override
     public boolean skip(PsiElement element) {
-        if (element.getNode().getElementType() != RobotTokenTypes.ARGUMENT) {
-            return true;
-        }
-        PsiElement parent = element.getParent();
-        if (parent instanceof Argument) {
-            PsiElement container = parent.getParent();
-            if (container instanceof BracketSetting) {
-                // these contain variable declarations
+        if (element instanceof Variable) {
+            PsiReference reference = element.getReference();
+            if (reference != null && reference.resolve() != null) {
                 return true;
+            }
+            if (((Variable) element).isNested()) {
+                // TODO: nested variables
+                return true;
+            }
+
+            // TODO: what is needed below this point...
+            PsiElement container = element.getParent();
+            element = container;
+            if (container instanceof Argument) {
+                container = container.getParent();
             }
             if (container instanceof KeywordStatement) {
                 KeywordInvokable invokable = ((KeywordStatement) container).getInvokable();
@@ -56,19 +61,12 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
                 // if there is only one argument then we might want to see where it was created
                 if (((KeywordStatement) container).getGlobalVariable() != null) {
                     List<Argument> arguments = ((KeywordStatement) container).getArguments();
-                    if (arguments.size() > 1 && parent == arguments.get(0)) {
+                    if (arguments.size() > 1 && element == arguments.get(0)) {
                         return true;
                     }
                 }
             }
-            String text = element.getText();
-            // stick to just ${variables}
-            if ((text.startsWith("${") || text.startsWith("@{")) && text.endsWith("}")) {
-                PsiReference reference = parent.getReference();
-                return reference != null && reference.resolve() != null;
-            } else {
-                return true;
-            }
+            return false;
         } else {
             return true;
         }
@@ -77,5 +75,11 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
     @Override
     public String getMessage() {
         return RobotBundle.message("INSP.variable.undefined");
+    }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.compilation";
     }
 }

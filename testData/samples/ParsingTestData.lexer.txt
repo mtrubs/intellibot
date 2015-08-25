@@ -1,0 +1,286 @@
+"*** Settings ***", RobotTokenTypes.HEADING, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"# fun things going on here", RobotTokenTypes.COMMENT, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Documentation", RobotTokenTypes.SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Test the account dashboard", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 5
+"...", RobotTokenTypes.WHITESPACE, 5
+"\n", RobotTokenTypes.WHITESPACE, 5
+"...", RobotTokenTypes.WHITESPACE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"and this goes to the next line", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Documentation", RobotTokenTypes.SETTING, 5
+"\n", RobotTokenTypes.WHITESPACE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"...", RobotTokenTypes.WHITESPACE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"all new line", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Resource", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"kyle/web/db_advertiser_actions.robot", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Resource", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"kyle/web/db_campaign_actions.robot", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Resource", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"kyle/web/db_staff_actions.robot", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Resource", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"kyle/web/ui_login_page.robot", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Resource", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"kyle/web/ui_manage_accounts_page.robot", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Resource", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"kyle_db_cleanup/kyle_cleanup.robot", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Library", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Selenium2Library", RobotTokenTypes.ARGUMENT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"timeout=", RobotTokenTypes.ARGUMENT, 5
+"${ENV['selenium']['timeout']}", RobotTokenTypes.VARIABLE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"implicit_wait=", RobotTokenTypes.ARGUMENT, 5
+"${ENV['selenium']['implicit_wait']}", RobotTokenTypes.VARIABLE, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Library", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"db.orm.Orm", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Library", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"OperatingSystem", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Library", RobotTokenTypes.IMPORT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Collections", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Force Tags", RobotTokenTypes.SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Kyle", RobotTokenTypes.ARGUMENT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Advertiser", RobotTokenTypes.ARGUMENT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Dashboard", RobotTokenTypes.ARGUMENT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Component", RobotTokenTypes.ARGUMENT, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"#Other Tag", RobotTokenTypes.COMMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 1
+"Suite Teardown", RobotTokenTypes.SETTING, 10
+"  ", RobotTokenTypes.WHITESPACE, 10
+"This works", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 1
+"\n", RobotTokenTypes.WHITESPACE, 1
+"*** Variables ***", RobotTokenTypes.HEADING, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"${Total_Requests}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"97,000", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"${kw_timeout}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"20 sec", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"${kw_retry_interval}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"0.5 sec", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"@{some_letters}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"A", RobotTokenTypes.ARGUMENT, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"B", RobotTokenTypes.ARGUMENT, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"C", RobotTokenTypes.ARGUMENT, 9
+"\n", RobotTokenTypes.WHITESPACE, 4
+"\n", RobotTokenTypes.WHITESPACE, 4
+"*** Test Cases ***", RobotTokenTypes.HEADING, 2
+"\n", RobotTokenTypes.WHITESPACE, 2
+"\n", RobotTokenTypes.WHITESPACE, 2
+"Scenario: An admin can see the conversion trend", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Tags]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Was Flickering", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Setup]", RobotTokenTypes.BRACKET_SETTING, 10
+"  ", RobotTokenTypes.WHITESPACE, 10
+"Prepare advertiser "Robot_Company"", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Given", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"Advertiser has performance data", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"And", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"I have an Account Manager", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"MANAGER", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"When", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"I login to Tapmatch as Staff", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${ACCOUNT_MANAGER.user.name}", RobotTokenTypes.VARIABLE, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${ACCOUNT_MANAGER.user.password}", RobotTokenTypes.VARIABLE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Then", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"The 7-day average should be", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"$0.09", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Teardown]", RobotTokenTypes.BRACKET_SETTING, 10
+"  ", RobotTokenTypes.WHITESPACE, 10
+"Run Keywords", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"Close All Browsers", RobotTokenTypes.ARGUMENT, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"Clean Database", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 2
+"Scenario: This is also a keyword definition", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Documentation]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"adding another", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"# just for fun", RobotTokenTypes.COMMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"...", RobotTokenTypes.WHITESPACE, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"keyword will be classified correctly", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Given", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"this sometimes works", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Then", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"I will be happy", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"And", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"I will be happy", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"12", RobotTokenTypes.ARGUMENT, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"123", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 2
+"*** Keywords ***", RobotTokenTypes.HEADING, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.WHITESPACE, 3
+"Clean Database", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Documentation]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"Cleans the database", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Arguments]", RobotTokenTypes.BRACKET_SETTING, 7
+"  ", RobotTokenTypes.WHITESPACE, 7
+"${defined}", RobotTokenTypes.VARIABLE_DEFINITION, 7
+"=", RobotTokenTypes.ARGUMENT, 7
+"${Total_Requests}", RobotTokenTypes.VARIABLE, 7
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${var1} =", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"This works", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"1", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Clean", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"Kyle", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${var2}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"${var3} =", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"  ", RobotTokenTypes.WHITESPACE, 9
+"This should work", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"2", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"${defined}", RobotTokenTypes.VARIABLE, 6
+" Clean", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"Ike", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 6
+"#    Clean  Other Stuff", RobotTokenTypes.COMMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Close All Browsers", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"This ", RobotTokenTypes.KEYWORD_DEFINITION, 3
+"${rate}", RobotTokenTypes.VARIABLE_DEFINITION, 3
+" works", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"its a new ", RobotTokenTypes.KEYWORD, 6
+"${rate}", RobotTokenTypes.VARIABLE, 6
+" keyword", RobotTokenTypes.KEYWORD, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"run keyword if", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${a}", RobotTokenTypes.VARIABLE, 6
+"=", RobotTokenTypes.ARGUMENT, 6
+"${b}", RobotTokenTypes.VARIABLE, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"equal", RobotTokenTypes.ARGUMENT, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"not equal", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Return]", RobotTokenTypes.BRACKET_SETTING, 5
+"  ", RobotTokenTypes.WHITESPACE, 5
+"${Total_Requests}", RobotTokenTypes.VARIABLE, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"I will be happy", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"there is a smile on my face", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"...", RobotTokenTypes.ARGUMENT, 6
+"\n", RobotTokenTypes.WHITESPACE, 3
+"\n", RobotTokenTypes.null, 3

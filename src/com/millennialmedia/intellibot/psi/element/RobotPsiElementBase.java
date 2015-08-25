@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable;
-import com.millennialmedia.intellibot.psi.RobotElementType;
+import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,22 +13,17 @@ import javax.swing.*;
 /**
  * @author Stephen Abrams
  */
-public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implements PerformanceEntity {
+public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implements PerformanceEntity, RobotStatement {
 
-    private static final String EMPTY = "";
-
-    private final RobotElementType elementType;
-
-    public RobotPsiElementBase(@NotNull final ASTNode node, RobotElementType elementType) {
+    public RobotPsiElementBase(@NotNull final ASTNode node) {
         super(node);
-        this.elementType = elementType;
     }
 
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             public String getPresentableText() {
-                return RobotPsiElementBase.this.getInternalText();
+                return RobotPsiElementBase.this.getPresentableText();
             }
 
             public String getLocationString() {
@@ -41,21 +36,15 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
         };
     }
 
-    protected String getTextData() {
-        ItemPresentation presentation = getPresentation();
-        if (presentation != null) {
-            return presentation.getPresentableText();
-        }
-        return null;
+    @NotNull
+    @Override
+    public String getPresentableText() {
+        return toPresentableText(getNode());
     }
 
-    private String getInternalText() {
-        ASTNode node = getNode();
-        ASTNode firstText = node.findChildByType(this.elementType);
-        if (firstText != null) {
-            return firstText.getText();
-        }
-        return EMPTY;
+    @NotNull
+    private static String toPresentableText(ASTNode node) {
+        return PatternUtil.getPresentableText(node.getText());
     }
     
     @NotNull
@@ -66,6 +55,6 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
 
     @Override
     public String getDebugText() {
-        return getTextData();
+        return getPresentableText();
     }
 }

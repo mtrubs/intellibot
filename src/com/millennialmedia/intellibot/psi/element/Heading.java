@@ -1,6 +1,5 @@
 package com.millennialmedia.intellibot.psi.element;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +8,7 @@ import java.util.Collection;
 /**
  * @author Stephen Abrams
  */
-public interface Heading extends PsiElement {
+public interface Heading extends RobotStatement {
 
     boolean isSettings();
 
@@ -24,7 +23,7 @@ public interface Heading extends PsiElement {
     Collection<DefinedKeyword> getDefinedKeywords();
 
     @NotNull
-    Collection<PsiFile> getFilesFromInvokedKeywords();
+    Collection<PsiFile> getFilesFromInvokedKeywordsAndVariables();
 
     @NotNull
     Collection<DefinedVariable> getDefinedVariables();

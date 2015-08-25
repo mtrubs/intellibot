@@ -21,21 +21,18 @@ public class RobotKeywordDefinitionStartingWithGherkin extends SimpleRobotInspec
     @NotNull
     @Override
     public String getDisplayName() {
-        return RobotBundle.message("INSP.NAME.gherkin.format");
+        return RobotBundle.message("INSP.NAME.define.keyword.gherkin.start");
     }
 
     @Override
     public boolean skip(PsiElement element) {
-        return element.getNode().getElementType() != RobotTokenTypes.KEYWORD_DEFINITION ||
-                element instanceof KeywordDefinition || // this is to skip the whole keyword as opposed to just the text
-                valid(element.getText());
+        return !(element instanceof KeywordDefinition) || valid(((KeywordDefinition) element).getPresentableText());
     }
 
     private boolean valid(String text) {
-        text = text.trim();
         Collection<String> gherkin = RobotKeywordProvider.getInstance().getSyntaxOfType(RobotTokenTypes.GHERKIN);
-        int firstSpace = text.trim().indexOf(" ");
-        
+        int firstSpace = text.indexOf(" ");
+
         String word;
         if (firstSpace < 0) {
             word = text;
@@ -48,5 +45,11 @@ public class RobotKeywordDefinitionStartingWithGherkin extends SimpleRobotInspec
     @Override
     public String getMessage() {
         return RobotBundle.message("INSP.define.keyword.gherkin.start");
+    }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.readability";
     }
 }

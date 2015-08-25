@@ -33,17 +33,17 @@ public class RecommendationWord {
 
         RecommendationWord that = (RecommendationWord) o;
 
-        if (!lookup.equals(that.lookup)) return false;
+        if (!this.lookup.equals(that.lookup)) return false;
         //noinspection RedundantIfStatement
-        if (!presentation.equals(that.presentation)) return false;
+        if (!this.presentation.equals(that.presentation)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = presentation.hashCode();
-        result = 31 * result + lookup.hashCode();
+        int result = this.presentation.hashCode();
+        result = 31 * result + this.lookup.hashCode();
         return result;
     }
 }

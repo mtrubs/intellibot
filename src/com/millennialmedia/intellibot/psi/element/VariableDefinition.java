@@ -1,9 +1,10 @@
 package com.millennialmedia.intellibot.psi.element;
 
-import com.intellij.psi.PsiElement;
-
 /**
  * @author mrubino
  */
-public interface VariableDefinition extends PsiElement {
+public interface VariableDefinition extends RobotStatement {
+
+    // TODO: this should go away once we identify the nesting correctly
+    boolean isNested();
 }

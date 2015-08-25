@@ -1,11 +1,9 @@
 package com.millennialmedia.intellibot.psi.element;
 
-import com.intellij.psi.PsiElement;
-
 /**
  * @author mrubino
  */
-public interface BracketSetting extends PsiElement {
+public interface BracketSetting extends RobotStatement {
 
     /**
      * Determines if the current element is and '[Arguments]' element.

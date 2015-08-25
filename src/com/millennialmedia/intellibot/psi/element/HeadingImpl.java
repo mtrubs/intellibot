@@ -7,7 +7,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
@@ -26,6 +25,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private static final String ROBOT_BUILT_IN = "BuiltIn";
 
     private Collection<KeywordInvokable> invokedKeywords;
+    private Collection<Variable> usedVariables;
     private Collection<DefinedKeyword> definedKeywords;
     private Collection<KeywordDefinition> testCases;
     private Collection<KeywordFile> keywordFiles;
@@ -33,33 +33,34 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<DefinedVariable> declaredVariables;
 
     public HeadingImpl(@NotNull final ASTNode node) {
-        super(node, RobotTokenTypes.HEADING);
+        super(node);
     }
 
     @Override
     public boolean isSettings() {
         // TODO: better OO
-        String text = getTextData();
-        return text != null && text.startsWith("*** Setting");
+        String text = getPresentableText();
+        return text.startsWith("*** Setting");
     }
 
     public boolean containsVariables() {
-        String text = getText();
-        return text != null && text.startsWith("*** Variable");
+        // TODO: better OO
+        String text = getPresentableText();
+        return text.startsWith("*** Variable");
     }
 
     @Override
     public boolean containsTestCases() {
         // TODO: better OO
-        String text = getTextData();
-        return text != null && text.startsWith("*** Test Case");
+        String text = getPresentableText();
+        return text.startsWith("*** Test Case");
     }
 
     @Override
     public boolean containsKeywordDefinitions() {
         // TODO: better OO
-        String text = getTextData();
-        return text != null && (text.startsWith("*** Keyword") || text.startsWith("*** User Keyword"));
+        String text = getPresentableText();
+        return text.startsWith("*** Keyword") || text.startsWith("*** User Keyword");
     }
 
     private boolean containsImports() {
@@ -78,6 +79,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.definedKeywords = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
+        this.usedVariables = null;
         this.referencedFiles = null;
         this.testCases = null;
         this.declaredVariables = null;
@@ -88,6 +90,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.definedKeywords = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
+        this.usedVariables = null;
         this.referencedFiles = null;
         this.testCases = null;
         this.declaredVariables = null;
@@ -184,7 +187,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     @Override
-    public Collection<PsiFile> getFilesFromInvokedKeywords() {
+    public Collection<PsiFile> getFilesFromInvokedKeywordsAndVariables() {
         Collection<PsiFile> results = this.referencedFiles;
         if (results == null) {
             PerformanceCollector debug = new PerformanceCollector(this, "files from invoked keywords");
@@ -207,6 +210,15 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 }
             }
             addReferencedArguments(results, keyword);
+        }
+        for (Variable variable : getUsedVariables()) {
+            PsiReference reference = variable.getReference();
+            if (reference != null) {
+                PsiElement resolved = reference.resolve();
+                if (resolved != null) {
+                    results.add(resolved.getContainingFile());
+                }
+            }
         }
         return results;
     }
@@ -237,23 +249,24 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     private Collection<KeywordInvokable> collectInvokedKeywords() {
-        List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
-        for (PsiElement child : getChildren()) {
-            if (child instanceof KeywordStatement) {
-                for (PsiElement statement : child.getChildren()) {
-                    if (statement instanceof KeywordInvokable) {
-                        results.add((KeywordInvokable) statement);
-                    }
-                }
-            }
-        }
-        for (KeywordDefinition testCase : getTestCases()) {
-            results.addAll(testCase.getInvokedKeywords());
-        }
-        for (DefinedKeyword definedKeyword : getDefinedKeywords()) {
-            results.addAll(definedKeyword.getInvokedKeywords());
+        return PsiTreeUtil.findChildrenOfType(this, KeywordInvokable.class);
+    }
+
+    @NotNull
+    private Collection<Variable> getUsedVariables() {
+        Collection<Variable> results = this.usedVariables;
+        if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "used variables");
+            results = collectUsedVariables();
+            this.usedVariables = results;
+            debug.complete();
         }
         return results;
+    }
+
+    @NotNull
+    private Collection<Variable> collectUsedVariables() {
+        return PsiTreeUtil.findChildrenOfType(this, Variable.class);
     }
 
     @NotNull

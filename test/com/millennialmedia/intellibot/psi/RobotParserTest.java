@@ -4,6 +4,7 @@ import com.intellij.testFramework.ParsingTestCase;
 import com.millennialmedia.intellibot.ResourceLoader;
 import org.junit.Test;
 
+@SuppressWarnings("JUnit4AnnotatedMethodInJUnit3TestCase")
 public class RobotParserTest extends ParsingTestCase {
 
     public RobotParserTest() {
@@ -21,7 +22,17 @@ public class RobotParserTest extends ParsingTestCase {
     }
 
     @Test
+    public void testVariables() {
+        doTest(true);
+    }
+
+    @Test
     public void testEmptyHeaders() {
+        doTest(true);
+    }
+
+    @Test
+    public void testDemo() {
         doTest(true);
     }
 

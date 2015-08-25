@@ -28,6 +28,7 @@
     <change-notes><![CDATA[
       <h2>0.6.7</h2>
       <ul>
+        <li>better recognize variables in general</li>
         <li>add support for assignment of multiple variables as a result of keyword call (thanks to eezltn)</li>
         <li>resolve variable references in variable definition statements (thanks to eezltn)</li>
         <li>resolve references to list variables (thanks to eezltn)</li>
@@ -145,28 +146,30 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.KeywordInvokableManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Argument"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
+        <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Variable"
+                                 implementationClass="com.millennialmedia.intellibot.psi.manip.VariableManipulator"/>
         
         <!-- Inspections: compilation -->
         <localInspection language="Robot" shortName="RobotKeywordNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.keyword.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.keyword.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotKeywordNotFound"/>
         <localInspection language="Robot" shortName="RobotVariableNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.variable.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.variable.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotVariableNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.import.undefined" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.import.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
         <!-- TODO: inspection: warn: resource import is not a robot file -->
         <!-- Inspections: cleanup -->
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.import.unused" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.import.unused" groupPath="Robot" groupKey="INSP.GROUP.cleanup" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.cleanup.RobotImportNotUsed"/>
         <!-- Inspections: readability -->
         <localInspection language="Robot" shortName="RobotGherkinInspection" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.gherkin.format" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.gherkin.format" groupPath="Robot" groupKey="INSP.GROUP.readability" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.readability.RobotGherkinInspection"/>
         <localInspection language="Robot" shortName="RobotKeywordDefinitionStartingWithGherkin" bundle="com.millennialmedia.intellibot.RobotBundle"
-                         key="INSP.NAME.define.keyword.gherkin.start" groupKey="INSP.GROUP.robot" enabledByDefault="true"
+                         key="INSP.NAME.define.keyword.gherkin.start" groupPath="Robot" groupKey="INSP.GROUP.readability" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.readability.RobotKeywordDefinitionStartingWithGherkin"/>
         <!-- TODO: inspection: warn: use of I in keyword; decreased readability -->
         <!-- TODO: inspection: warn: keyword starting with upper case; decreased readability -->
@@ -176,6 +179,12 @@
         <!-- Inspections: complexity -->
         <!-- TODO: inspection: warn: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: warn: scenarios longer than X lines; trying to do too much -->
+        <localInspection language="Robot" shortName="RobotNestedVariable" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.variable.nested" groupPath="Robot" groupKey="INSP.GROUP.complexity" enabledByDefault="true"
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariable"/>
+        <localInspection language="Robot" shortName="RobotNestedVariableDefinition" bundle="com.millennialmedia.intellibot.RobotBundle"
+                         key="INSP.NAME.variableDefinition.nested" groupPath="Robot" groupKey="INSP.GROUP.complexity" enabledByDefault="true"
+                         level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariableDefinition"/>
         <!-- Inspections: deprecated -->
         <!-- TODO: inspection: warn: deprecated settings; '*** user keywords ***', timeout, etc -->
         

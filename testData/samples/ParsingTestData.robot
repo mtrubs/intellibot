@@ -51,17 +51,19 @@ Scenario: This is also a keyword definition
 
 Clean Database
   [Documentation]  Cleans the database
-    Clean  Kyle
+  [Arguments]  ${defined}=${Total_Requests}
     ${var1} =  This works  1
+    Clean  Kyle
     ${var2}  ${var3} =  This should work  2
-    Clean  Ike
+    ${defined} Clean  Ike
 #    Clean  Other Stuff
     Close All Browsers
     
 
 This ${rate} works
-    its a new keyword
+    its a new ${rate} keyword
     run keyword if  ${a}=${b}  equal  not equal
+  [Return]  ${Total_Requests}
 
 I will be happy
     there is a smile on my face  ...

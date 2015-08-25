@@ -2,7 +2,6 @@ package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
@@ -23,7 +22,7 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
     private KeywordInvokable invokable;
 
     public KeywordStatementImpl(@NotNull ASTNode node) {
-        super(node, RobotTokenTypes.KEYWORD_STATEMENT);
+        super(node);
     }
 
     @Nullable

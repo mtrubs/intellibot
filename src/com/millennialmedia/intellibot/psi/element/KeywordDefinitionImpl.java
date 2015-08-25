@@ -1,17 +1,16 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.millennialmedia.intellibot.psi.RobotTokenTypes;
-import com.millennialmedia.intellibot.psi.dto.VariableDto;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,15 +27,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private Pattern pattern;
     private List<KeywordInvokable> invokedKeywords;
     private Collection<DefinedVariable> definedInlineVariables;
+    private Collection<Variable> usedVariables;
     private Collection<DefinedVariable> definedArguments;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
-        super(node, RobotTokenTypes.KEYWORD_DEFINITION);
-    }
-
-    @Override
-    public String getPresentableText() {
-        return getTextData();
+        super(node);
     }
 
     @NotNull
@@ -55,18 +50,9 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private List<KeywordInvokable> collectInvokedKeywords() {
         List<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
         for (PsiElement statement : getChildren()) {
-            if (statement instanceof KeywordStatement) {
-                for (PsiElement subStatement : statement.getChildren()) {
-                    if (subStatement instanceof KeywordInvokable) {
-                        results.add((KeywordInvokable) subStatement);
-                    }
-                }
-            } else if (statement instanceof BracketSetting) {
-                for (PsiElement subStatement : statement.getChildren()) {
-                    if (subStatement instanceof KeywordInvokable) {
-                        results.add((KeywordInvokable) subStatement);
-                    }
-                }
+            if (statement instanceof KeywordStatement || statement instanceof BracketSetting) {
+                //noinspection unchecked
+                results.addAll(PsiTreeUtil.collectElementsOfType(statement, KeywordInvokable.class));
             }
         }
         return results;
@@ -95,19 +81,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     private Collection<DefinedVariable> collectInlineVariables() {
-        String text = this.getPresentableText();
-        if (text == null) {
-            return Collections.emptySet();
-        }
         Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
-        int index;
-        while ((index = text.indexOf("${")) > 0) {
-            int close = text.indexOf("}", index);
-            if (close < index) {
-                break;
+        for (PsiElement child : getChildren()) {
+            if (child instanceof DefinedVariable) {
+                results.add((DefinedVariable) child);
             }
-            results.add(new VariableDto(this, text.substring(index, close + 1)));
-            text = text.substring(close);
         }
         return results;
     }
@@ -133,9 +111,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
                 if (bracket.isArguments()) {
                     for (PsiElement argument : bracket.getChildren()) {
                         if (argument instanceof Argument) {
-                            String text = ((Argument) argument).getPresentableText();
-                            if (text != null) {
-                                results.add(new VariableDto(argument, text));
+                            for (PsiElement definition : argument.getChildren()) {
+                                if (definition instanceof DefinedVariable) {
+                                    results.add((DefinedVariable) definition);
+                                }
                             }
                         }
                     }
@@ -145,11 +124,31 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
+    @NotNull
+    @Override
+    public Collection<Variable> getUsedVariables() {
+        Collection<Variable> results = this.usedVariables;
+        if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "inline variables");
+            results = collectUsedVariables();
+            this.usedVariables = results;
+            debug.complete();
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<Variable> collectUsedVariables() {
+        //noinspection unchecked
+        return PsiTreeUtil.collectElementsOfType(this, Variable.class);
+    }
+
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
         this.definedArguments = null;
         this.definedInlineVariables = null;
+        this.usedVariables = null;
         this.pattern = null;
         this.invokedKeywords = null;
     }
@@ -160,18 +159,14 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
             return false;
         }
         String myText = getPresentableText();
-        if (myText == null) {
-            return false;
-        } else {
-            Pattern namePattern = this.pattern;
-            if (namePattern == null) {
-                String myNamespace = getNamespace(getContainingFile());
-                namePattern = Pattern.compile(buildPattern(myNamespace, myText.trim()), Pattern.CASE_INSENSITIVE);
-                this.pattern = namePattern;
-            }
-
-            return namePattern.matcher(text.trim()).matches();
+        Pattern namePattern = this.pattern;
+        if (namePattern == null) {
+            String myNamespace = getNamespace(getContainingFile());
+            namePattern = Pattern.compile(buildPattern(myNamespace, myText.trim()), Pattern.CASE_INSENSITIVE);
+            this.pattern = namePattern;
         }
+
+        return namePattern.matcher(text.trim()).matches();
     }
 
     @Override
@@ -180,7 +175,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     }
 
     private String getNamespace(@NotNull PsiFile file) {
-        String name = file.getVirtualFile().getName();
+        VirtualFile virtualFile = file.getVirtualFile();
+        if (virtualFile == null) {
+            return null;
+        }
+        String name = virtualFile.getName();
         // remove the extension
         int index = name.lastIndexOf(DOT);
         if (index > 0) {

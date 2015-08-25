@@ -20,12 +20,12 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
     private final RobotKeywordProvider myKeywordProvider;
 
     public RobotHighlighter(RobotKeywordProvider keywordProvider) {
-        myKeywordProvider = keywordProvider;
+        this.myKeywordProvider = keywordProvider;
     }
 
     @NotNull
     public Lexer getHighlightingLexer() {
-        return new RobotLexer(myKeywordProvider);
+        return new RobotLexer(this.myKeywordProvider);
     }
 
     public static final TextAttributesKey HEADING = TextAttributesKey.createTextAttributesKey(

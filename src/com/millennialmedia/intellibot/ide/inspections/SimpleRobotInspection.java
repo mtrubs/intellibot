@@ -18,8 +18,11 @@ public abstract class SimpleRobotInspection extends LocalInspectionTool implemen
     @NotNull
     @Override
     public String getGroupDisplayName() {
-        return RobotBundle.message("INSP.GROUP.robot");
+        return RobotBundle.message(getGroupNameKey());
     }
+
+    @NotNull
+    protected abstract String getGroupNameKey();
 
     @NotNull
     @Override

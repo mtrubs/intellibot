@@ -87,7 +87,6 @@ public class RobotCompletionContributor extends CompletionContributor {
     }
 
     public RobotCompletionContributor() {
-
         // This is the rule for adding Headings (*** Settings ***, *** Test Cases ***)
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
@@ -99,9 +98,22 @@ public class RobotCompletionContributor extends CompletionContributor {
                         addSyntaxLookup(RobotTokenTypes.HEADING, results, NEW_LINE);
                     }
                 });
-
         // This is the rule for adding Bracket Settings ([Tags], [Setup])
-        // TODO: MTR: some brackets are only for Test Cases, some only Keywords, some both
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters,
+                                                  ProcessingContext context,
+                                                  @NotNull CompletionResultSet results) {
+                        // TODO: MTR: some brackets are only for Test Cases, some only Keywords, some both
+                        PsiElement heading = getHeading(parameters.getOriginalPosition());
+                        if (isInTestCases(heading) || isInKeywords(heading)) {
+                            addSyntaxLookup(RobotTokenTypes.BRACKET_SETTING, results, SUPER_SPACE);
+                        }
+                    }
+                });
+        // This is the rule for adding settings and imports (Library, Test Setup)
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
                 new CompletionProvider<CompletionParameters>() {
@@ -110,30 +122,13 @@ public class RobotCompletionContributor extends CompletionContributor {
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
-                        if (isInTestCases(heading) || isInKeywords(heading)) {
-                            addSyntaxLookup(RobotTokenTypes.BRACKET_SETTING, results, SUPER_SPACE);
-                        }
-                    }
-                });
-
-        // This is the rule for adding settings and imports (Library, Test Setup)
-        // TODO: MTR: Settings and Imports should only be in *** Settings ***
-        extend(CompletionType.BASIC,
-                psiElement().inFile(psiElement(RobotFile.class)),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
-                                                  @NotNull CompletionResultSet results) {
-                        if (isInSettings(getHeading(parameters.getOriginalPosition()))) {
+                        if (isInSettings(heading)) {
                             addSyntaxLookup(RobotTokenTypes.SETTING, results, SUPER_SPACE);
                             addSyntaxLookup(RobotTokenTypes.IMPORT, results, SUPER_SPACE);
                         }
                     }
                 });
-
         // This is the rule for adding Gherkin (When, Then)
-        // TODO: MTR: only in Test Cases
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
                 new CompletionProvider<CompletionParameters>() {
@@ -141,14 +136,13 @@ public class RobotCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
-                        if (isInTestCases(getHeading(parameters.getOriginalPosition()))) {
+                        PsiElement heading = getHeading(parameters.getOriginalPosition());
+                        if (isInTestCases(heading)) {
                             addSyntaxLookup(RobotTokenTypes.GHERKIN, results, TailType.SPACE);
                         }
                     }
                 });
-
         // This is the rule for adding imported keywords and library methods
-        // TODO: MTR: only in test cases and keyword definitions
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
                 new CompletionProvider<CompletionParameters>() {
@@ -156,12 +150,13 @@ public class RobotCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
-                        addRobotKeywords(result, parameters.getOriginalFile());
+                        PsiElement heading = getHeading(parameters.getOriginalPosition());
+                        if (isInTestCases(heading) || isInKeywords(heading)) {
+                            addRobotKeywords(result, parameters.getOriginalFile());
+                        }
                     }
                 });
-
         // This is the rule for adding included variable definitions
-        // TODO: MTR: only in test cases and keyword definitions
         // TODO: MTR: include variables defined in the current statement
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
@@ -170,7 +165,10 @@ public class RobotCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
-                        addRobotVariables(result, parameters.getOriginalFile());
+                        PsiElement heading = getHeading(parameters.getOriginalPosition());
+                        if (isInTestCases(heading) || isInKeywords(heading)) {
+                            addRobotVariables(result, parameters.getOriginalFile());
+                        }
                     }
                 });
     }
@@ -188,19 +186,12 @@ public class RobotCompletionContributor extends CompletionContributor {
         RobotFile robotFile = (RobotFile) file;
 
         boolean capitalize = RobotOptionsProvider.getInstance(robotFile.getProject()).capitalizeKeywords();
-        int idx = 0;
-        addKeywordsToResult(robotFile.getDefinedKeywords(),
-                result,
-                idx++,
-                capitalize);
+        addKeywordsToResult(robotFile.getDefinedKeywords(), result, capitalize);
 
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
         for (KeywordFile f : importedFiles) {
-            addKeywordsToResult(f.getDefinedKeywords(),
-                    result,
-                    idx++,
-                    capitalize);
+            addKeywordsToResult(f.getDefinedKeywords(), result, capitalize);
         }
     }
 
@@ -209,68 +200,61 @@ public class RobotCompletionContributor extends CompletionContributor {
             return;
         }
         RobotFile robotFile = (RobotFile) file;
-
-        int idx = 0;
-        addVariablesToResult(robotFile.getDefinedVariables(),
-                result,
-                idx++);
+        addVariablesToResult(robotFile.getDefinedVariables(), result);
 
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
         for (KeywordFile f : importedFiles) {
-            addVariablesToResult(f.getDefinedVariables(),
-                    result,
-                    idx++);
+            addVariablesToResult(f.getDefinedVariables(), result);
         }
     }
 
     private static void addVariablesToResult(final Collection<DefinedVariable> variables,
-                                             final CompletionResultSet result,
-                                             int priority) {
+                                             final CompletionResultSet result) {
         for (DefinedVariable variable : variables) {
             PsiElement reference = variable.reference();
             if (reference != null) {
                 String text = reference.getText();
+                String lookupString = text.split("\\s+")[0];
                 LookupElement element = TailTypeDecorator.withTail(
-                        LookupElementBuilder.create(text.split("\\s+")[0])
+                        LookupElementBuilder.create(lookupString)
                                 .withLookupString(text)
-                                .withLookupString(text.toLowerCase())
-                                .withPresentableText(text)
-                                .withCaseSensitivity(true),
+                                .withPresentableText(lookupString)
+                                .withCaseSensitivity(false),
                         TailType.NONE);
-                result.addElement(PrioritizedLookupElement.withPriority(element, priority));
+                result.addElement(element);
             }
         }
     }
 
     private static void addKeywordsToResult(final Collection<DefinedKeyword> keywords,
                                             final CompletionResultSet result,
-                                            int priority,
                                             boolean capitalize) {
         for (DefinedKeyword keyword : keywords) {
             String text = keyword.getKeywordName();
+            String lookupString = capitalize ? WordUtils.capitalize(text) : text;
             LookupElement element = TailTypeDecorator.withTail(
-                    LookupElementBuilder.create(capitalize ? WordUtils.capitalize(text) : text)
+                    LookupElementBuilder.create(lookupString)
                             .withLookupString(text)
-                            .withLookupString(text.toLowerCase())
-                            .withPresentableText(capitalize ? WordUtils.capitalize(text) : text)
-                            .withCaseSensitivity(true),
+                            .withPresentableText(lookupString)
+                            .withCaseSensitivity(false),
                     keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
-            result.addElement(PrioritizedLookupElement.withPriority(element, priority));
+            result.addElement(element);
         }
     }
 
     private static void addSyntaxLookup(@NotNull RobotElementType type, @NotNull CompletionResultSet results, @NotNull TailType tail) {
         Collection<RecommendationWord> words = RobotKeywordProvider.getInstance().getRecommendationsForType(type);
         for (RecommendationWord word : words) {
-            LookupElement lookup = TailTypeDecorator.withTail(
-                    LookupElementBuilder.create(word.getPresentation())
-                            .withLookupString(word.getLookup())
-                            .withLookupString(word.getLookup().toLowerCase())
-                            .withPresentableText(word.getPresentation())
-                            .withCaseSensitivity(true),
+            String text = word.getLookup();
+            String lookupString = word.getPresentation();
+            LookupElement element = TailTypeDecorator.withTail(
+                    LookupElementBuilder.create(lookupString)
+                            .withLookupString(text)
+                            .withPresentableText(lookupString)
+                            .withCaseSensitivity(false),
                     tail);
-            results.addElement(lookup);
+            results.addElement(element);
         }
     }
 }

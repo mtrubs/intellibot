@@ -47,4 +47,10 @@ public class RobotImportNotFound extends SimpleRobotInspection {
     public String getMessage() {
         return RobotBundle.message("INSP.import.undefined");
     }
+
+    @NotNull
+    @Override
+    protected String getGroupNameKey() {
+        return "INSP.GROUP.compilation";
+    }
 }
