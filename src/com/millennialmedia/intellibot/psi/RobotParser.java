@@ -77,8 +77,6 @@ public class RobotParser implements PsiParser {
     }
 
     private static void parseKeywordDefinition(PsiBuilder builder) {
-        //assert RobotTokenTypes.KEYWORD_DEFINITION == builder.getTokenType();
-
         PsiBuilder.Marker keywordMarker = null;
         while (true) {
             IElementType type = builder.getTokenType();

@@ -27,7 +27,6 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordInvokable> invokedKeywords;
     private Collection<Variable> usedVariables;
     private Collection<DefinedKeyword> definedKeywords;
-    private Collection<KeywordDefinition> testCases;
     private Collection<KeywordFile> keywordFiles;
     private Collection<PsiFile> referencedFiles;
     private Collection<DefinedVariable> declaredVariables;
@@ -43,7 +42,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         return text.startsWith("*** Setting");
     }
 
-    public boolean containsVariables() {
+    private boolean containsVariables() {
         // TODO: better OO
         String text = getPresentableText();
         return text.startsWith("*** Variable");
@@ -81,7 +80,6 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.invokedKeywords = null;
         this.usedVariables = null;
         this.referencedFiles = null;
-        this.testCases = null;
         this.declaredVariables = null;
     }
 
@@ -92,7 +90,6 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.invokedKeywords = null;
         this.usedVariables = null;
         this.referencedFiles = null;
-        this.testCases = null;
         this.declaredVariables = null;
     }
 
@@ -110,7 +107,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     }
 
     @NotNull
-    Collection<DefinedVariable> collectVariables() {
+    private Collection<DefinedVariable> collectVariables() {
         if (containsVariables()) {
             List<DefinedVariable> results = new ArrayList<DefinedVariable>();
             for (PsiElement child : getChildren()) {
@@ -130,32 +127,6 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         } else {
             return Collections.emptySet();
         }
-    }
-
-    @NotNull
-    private Collection<KeywordDefinition> getTestCases() {
-        Collection<KeywordDefinition> results = this.testCases;
-        if (results == null) {
-            PerformanceCollector debug = new PerformanceCollector(this, "test cases");
-            results = collectTestCases();
-            this.testCases = results;
-            debug.complete();
-        }
-        return results;
-    }
-
-    @NotNull
-    private Collection<KeywordDefinition> collectTestCases() {
-        if (!containsTestCases()) {
-            return Collections.emptySet();
-        }
-        List<KeywordDefinition> results = new ArrayList<KeywordDefinition>();
-        for (PsiElement child : getChildren()) {
-            if (child instanceof KeywordDefinition) {
-                results.add(((KeywordDefinition) child));
-            }
-        }
-        return results;
     }
 
     @NotNull

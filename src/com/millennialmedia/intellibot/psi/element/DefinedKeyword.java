@@ -1,9 +1,6 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 /**
  * @author mrubino
@@ -21,10 +18,4 @@ public interface DefinedKeyword {
     boolean matches(String text);
 
     PsiElement reference();
-
-    @NotNull
-    Collection<KeywordInvokable> getInvokedKeywords();
-
-    @NotNull
-    Collection<Variable> getUsedVariables();
 }

@@ -27,7 +27,6 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private Pattern pattern;
     private List<KeywordInvokable> invokedKeywords;
     private Collection<DefinedVariable> definedInlineVariables;
-    private Collection<Variable> usedVariables;
     private Collection<DefinedVariable> definedArguments;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
@@ -68,7 +67,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     }
 
     @NotNull
-    public Collection<DefinedVariable> getInlineVariables() {
+    private Collection<DefinedVariable> getInlineVariables() {
         Collection<DefinedVariable> results = this.definedInlineVariables;
         if (results == null) {
             PerformanceCollector debug = new PerformanceCollector(this, "inline variables");
@@ -124,31 +123,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
-    @NotNull
-    @Override
-    public Collection<Variable> getUsedVariables() {
-        Collection<Variable> results = this.usedVariables;
-        if (results == null) {
-            PerformanceCollector debug = new PerformanceCollector(this, "inline variables");
-            results = collectUsedVariables();
-            this.usedVariables = results;
-            debug.complete();
-        }
-        return results;
-    }
-
-    @NotNull
-    private Collection<Variable> collectUsedVariables() {
-        //noinspection unchecked
-        return PsiTreeUtil.collectElementsOfType(this, Variable.class);
-    }
-
     @Override
     public void subtreeChanged() {
         super.subtreeChanged();
         this.definedArguments = null;
         this.definedInlineVariables = null;
-        this.usedVariables = null;
         this.pattern = null;
         this.invokedKeywords = null;
     }

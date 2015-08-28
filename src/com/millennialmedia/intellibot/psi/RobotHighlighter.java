@@ -40,12 +40,12 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey BRACKET_SETTING = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.BRACKET_SETTING.toString(),
-            DefaultLanguageHighlighterColors.LABEL
+            DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
     );
 
     public static final TextAttributesKey IMPORT = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.IMPORT.toString(),
-            DefaultLanguageHighlighterColors.IDENTIFIER
+            DefaultLanguageHighlighterColors.DOC_COMMENT_TAG_VALUE
     );
 
     public static final TextAttributesKey KEYWORD_DEFINITION = TextAttributesKey.createTextAttributesKey(
@@ -60,17 +60,17 @@ public class RobotHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey ARGUMENT = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.ARGUMENT.toString(),
-            DefaultLanguageHighlighterColors.INSTANCE_FIELD
+            DefaultLanguageHighlighterColors.STATIC_FIELD
     );
 
     public static final TextAttributesKey VARIABLE_DEFINITION = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.VARIABLE_DEFINITION.toString(),
-            DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+            DefaultLanguageHighlighterColors.MARKUP_ATTRIBUTE
     );
 
     public static final TextAttributesKey VARIABLE = TextAttributesKey.createTextAttributesKey(
             RobotTokenTypes.VARIABLE.toString(),
-            DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+            DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP
     );
 
     public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(

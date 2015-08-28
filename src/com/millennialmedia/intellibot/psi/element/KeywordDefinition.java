@@ -20,7 +20,4 @@ public interface KeywordDefinition extends RobotStatement {
      */
     @NotNull
     Collection<DefinedVariable> getDeclaredVariables();
-
-    @NotNull
-    Collection<Variable> getUsedVariables();
 }
