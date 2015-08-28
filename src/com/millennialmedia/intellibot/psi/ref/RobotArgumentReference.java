@@ -40,8 +40,6 @@ public class RobotArgumentReference extends PsiReferenceBase<Argument> {
                 } else if (importElement.isLibrary() || importElement.isVariables()) {
                     result = resolveLibrary();
                 }
-                //} else {
-                //result = resolveVariable();
             }
         } else if (parent instanceof KeywordStatement) {
             result = resolveKeyword();

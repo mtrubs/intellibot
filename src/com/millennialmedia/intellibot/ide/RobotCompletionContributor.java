@@ -106,7 +106,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
-                        // TODO: MTR: some brackets are only for Test Cases, some only Keywords, some both
+                        // TODO: some brackets are only for Test Cases, some only Keywords, some both
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
                         if (isInTestCases(heading) || isInKeywords(heading)) {
                             addSyntaxLookup(RobotTokenTypes.BRACKET_SETTING, results, SUPER_SPACE);
@@ -157,7 +157,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                     }
                 });
         // This is the rule for adding included variable definitions
-        // TODO: MTR: include variables defined in the current statement
+        // TODO: include variables defined in the current statement
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
                 new CompletionProvider<CompletionParameters>() {

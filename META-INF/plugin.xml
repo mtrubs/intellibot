@@ -148,8 +148,9 @@
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.ArgumentManipulator"/>
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.Variable"
                                  implementationClass="com.millennialmedia.intellibot.psi.manip.VariableManipulator"/>
-        
-        <!-- Inspections: compilation -->
+
+        <!-- Inspections -->
+        <!-- Inspections: Compilation -->
         <localInspection language="Robot" shortName="RobotKeywordNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.keyword.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation" enabledByDefault="true"
                          level="ERROR" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotKeywordNotFound"/>
@@ -160,11 +161,11 @@
                          key="INSP.NAME.import.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
         <!-- TODO: inspection: warn: resource import is not a robot file -->
-        <!-- Inspections: cleanup -->
+        <!-- Inspections: Cleanup -->
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.unused" groupPath="Robot" groupKey="INSP.GROUP.cleanup" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.cleanup.RobotImportNotUsed"/>
-        <!-- Inspections: readability -->
+        <!-- Inspections: Readability -->
         <localInspection language="Robot" shortName="RobotGherkinInspection" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.gherkin.format" groupPath="Robot" groupKey="INSP.GROUP.readability" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.readability.RobotGherkinInspection"/>
@@ -176,7 +177,7 @@
         <!-- TODO: inspection: warn: scenario step does not start with gherkin; decreased readability -->
         <!-- TODO: inspection: warn: scenario step is not a keyword (ie variable); decreased readability -->
         <!-- TODO: inspection: warn: scenario step contains arguments; decreased readability -->
-        <!-- Inspections: complexity -->
+        <!-- Inspections: Complexity -->
         <!-- TODO: inspection: warn: keyword definitions that contain gherkin; trying to do too much -->
         <!-- TODO: inspection: warn: scenarios longer than X lines; trying to do too much -->
         <localInspection language="Robot" shortName="RobotNestedVariable" bundle="com.millennialmedia.intellibot.RobotBundle"
@@ -185,7 +186,7 @@
         <localInspection language="Robot" shortName="RobotNestedVariableDefinition" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.variableDefinition.nested" groupPath="Robot" groupKey="INSP.GROUP.complexity" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariableDefinition"/>
-        <!-- Inspections: deprecated -->
+        <!-- Inspections: Deprecated -->
         <!-- TODO: inspection: warn: deprecated settings; '*** user keywords ***', timeout, etc -->
         
     </extensions>

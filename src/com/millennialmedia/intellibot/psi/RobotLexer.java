@@ -510,11 +510,7 @@ public class RobotLexer extends LexerBase {
                 count--;
             }
             this.position++;
-
         }
-//        if (isVariableEnd(this.position)) {
-//            this.position++;
-//        }
     }
 
     private void skipNonWhitespace() {

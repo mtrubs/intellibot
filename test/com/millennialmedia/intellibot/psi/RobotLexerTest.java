@@ -676,13 +676,9 @@ public class RobotLexerTest extends TestCase {
         IElementType actualToken = lexer.getTokenType();
         String message = "\"" + actualData + "\", RobotTokenTypes." + actualToken + ", " + actualState;
 
-        //try {
         Assert.assertEquals("Data: " + message, data, actualData);
         Assert.assertEquals("Token: " + message, token, actualToken);
         Assert.assertEquals("State: " + message, state, actualState);
-        //} catch (ComparisonFailure e) {
-        //    System.out.println(message);
-        //}
         int currentState = lexer.getState();
         if (currentState > this.maxState) {
             this.maxState = currentState;
