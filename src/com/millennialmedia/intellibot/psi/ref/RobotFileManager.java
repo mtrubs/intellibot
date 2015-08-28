@@ -181,7 +181,11 @@ public class RobotFileManager {
         if (file == null) {
             return false;
         }
-        String filePath = new StringBuilder(file.getVirtualFile().getCanonicalPath()).reverse().toString();
+        String virtualFilePath = file.getVirtualFile().getCanonicalPath();
+        if (virtualFilePath == null) {
+            return false;
+        }
+        String filePath = new StringBuilder(virtualFilePath).reverse().toString();
         return filePath.startsWith(path);
     }
 

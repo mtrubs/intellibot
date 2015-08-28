@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RobotFindUsagesProvider implements FindUsagesProvider {
 
+    private static final String EMPTY = "";
+
     @Override
     public WordsScanner getWordsScanner() {
         return new DefaultWordsScanner(new RobotLexer(RobotKeywordProvider.getInstance()), TokenSet.EMPTY, TokenSet.EMPTY, TokenSet.EMPTY);
@@ -40,7 +42,11 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull PsiElement element) {
-        return element instanceof PsiNamedElement ? ((PsiNamedElement) element).getName() : "";
+        String name = null;
+        if (element instanceof PsiNamedElement) {
+            name = ((PsiNamedElement) element).getName();
+        }
+        return name == null ? EMPTY : name;
     }
 
     @NotNull

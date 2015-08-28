@@ -17,7 +17,7 @@ public class PerformanceCollector {
     private static final long MINIMUM = 500;
 
     private String context;
-    PerformanceEntity entity;
+    private PerformanceEntity entity;
     private long start;
 
     public PerformanceCollector(@NotNull PerformanceEntity entity, @NotNull String context) {

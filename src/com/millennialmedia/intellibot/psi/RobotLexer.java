@@ -19,7 +19,7 @@ public class RobotLexer extends LexerBase {
     private final RobotKeywordProvider keywordProvider;
 
     private Stack<Integer> level = new Stack<Integer>();
-    protected static final int NONE = 0;
+    private static final int NONE = 0;
     protected static final int SETTINGS_HEADING = 1;
     protected static final int TEST_CASES_HEADING = 2;
     protected static final int KEYWORDS_HEADING = 3;
