@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6.7</version>
+    <version>0.6.8</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -26,6 +26,10 @@
       ]]></description>
 
     <change-notes><![CDATA[
+      <h2>0.6.8</h2>
+      <ul>
+        <li>address subclasses in imported python files (vs classes)</li>
+      </ul>
       <h2>0.6.7</h2>
       <ul>
         <li>better recognize variables in general</li>
@@ -160,7 +164,8 @@
         <localInspection language="Robot" shortName="RobotImportNotFound" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation" enabledByDefault="true"
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.compilation.RobotImportNotFound"/>
-        <!-- TODO: inspection: warn: resource import is not a robot file -->
+        <!-- TODO: inspection: error?: resource import is not a robot file -->
+        <!-- TODO: inspection: warn: import python file vs class -->
         <!-- Inspections: Cleanup -->
         <localInspection language="Robot" shortName="RobotImportNotUsed" bundle="com.millennialmedia.intellibot.RobotBundle"
                          key="INSP.NAME.import.unused" groupPath="Robot" groupKey="INSP.GROUP.cleanup" enabledByDefault="true"

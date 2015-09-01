@@ -1,7 +1,18 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.util.Processor;
+import com.jetbrains.python.psi.PyClass;
+import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.psi.PyParameter;
+import com.jetbrains.python.psi.PyTargetExpression;
+import com.millennialmedia.intellibot.psi.dto.KeywordDto;
+import com.millennialmedia.intellibot.psi.dto.VariableDto;
+import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.element.DefinedVariable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 /**
  * @author mrubino
@@ -33,5 +44,43 @@ public abstract class RobotPythonWrapper {
         } else {
             return function;
         }
+    }
+
+    protected static void addDefinedVariables(@NotNull PyClass pythonClass, @NotNull final Collection<DefinedVariable> results) {
+        pythonClass.visitClassAttributes(new Processor<PyTargetExpression>() {
+            @Override
+            public boolean process(PyTargetExpression expression) {
+                String keyword = expression.getName();
+                if (keyword != null) {
+                    results.add(new VariableDto(expression, keyword));
+                }
+                return true;
+            }
+        }, true);
+    }
+
+    protected static void addDefinedKeywords(@NotNull PyClass pythonClass, @NotNull final String namespace, @NotNull final Collection<DefinedKeyword> results) {
+        pythonClass.visitMethods(new Processor<PyFunction>() {
+
+            @Override
+            public boolean process(PyFunction function) {
+                String keyword = functionToKeyword(function.getName());
+                if (keyword != null) {
+                    results.add(new KeywordDto(function, namespace, keyword, hasArguments(function.getParameterList().getParameters())));
+                }
+                return true;
+            }
+        }, true);
+        pythonClass.visitClassAttributes(new Processor<PyTargetExpression>() {
+
+            @Override
+            public boolean process(PyTargetExpression expression) {
+                String keyword = functionToKeyword(expression.getName());
+                if (keyword != null) {
+                    results.add(new KeywordDto(expression, namespace, keyword, false));
+                }
+                return true;
+            }
+        }, true);
     }
 }
