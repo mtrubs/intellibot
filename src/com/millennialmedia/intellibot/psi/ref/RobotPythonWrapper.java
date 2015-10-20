@@ -47,40 +47,52 @@ public abstract class RobotPythonWrapper {
     }
 
     protected static void addDefinedVariables(@NotNull PyClass pythonClass, @NotNull final Collection<DefinedVariable> results) {
-        pythonClass.visitClassAttributes(new Processor<PyTargetExpression>() {
-            @Override
-            public boolean process(PyTargetExpression expression) {
-                String keyword = expression.getName();
-                if (keyword != null) {
-                    results.add(new VariableDto(expression, keyword));
-                }
-                return true;
-            }
-        }, true);
+        pythonClass.visitClassAttributes(
+                new Processor<PyTargetExpression>() {
+                    @Override
+                    public boolean process(PyTargetExpression expression) {
+                        String keyword = expression.getName();
+                        if (keyword != null) {
+                            results.add(new VariableDto(expression, keyword));
+                        }
+                        return true;
+                    }
+                },
+                true,
+                null
+        );
     }
 
     protected static void addDefinedKeywords(@NotNull PyClass pythonClass, @NotNull final String namespace, @NotNull final Collection<DefinedKeyword> results) {
-        pythonClass.visitMethods(new Processor<PyFunction>() {
+        pythonClass.visitMethods(
+                new Processor<PyFunction>() {
 
-            @Override
-            public boolean process(PyFunction function) {
-                String keyword = functionToKeyword(function.getName());
-                if (keyword != null) {
-                    results.add(new KeywordDto(function, namespace, keyword, hasArguments(function.getParameterList().getParameters())));
-                }
-                return true;
-            }
-        }, true);
-        pythonClass.visitClassAttributes(new Processor<PyTargetExpression>() {
+                    @Override
+                    public boolean process(PyFunction function) {
+                        String keyword = functionToKeyword(function.getName());
+                        if (keyword != null) {
+                            results.add(new KeywordDto(function, namespace, keyword, hasArguments(function.getParameterList().getParameters())));
+                        }
+                        return true;
+                    }
+                },
+                true,
+                null
+        );
+        pythonClass.visitClassAttributes(
+                new Processor<PyTargetExpression>() {
 
-            @Override
-            public boolean process(PyTargetExpression expression) {
-                String keyword = functionToKeyword(expression.getName());
-                if (keyword != null) {
-                    results.add(new KeywordDto(expression, namespace, keyword, false));
-                }
-                return true;
-            }
-        }, true);
+                    @Override
+                    public boolean process(PyTargetExpression expression) {
+                        String keyword = functionToKeyword(expression.getName());
+                        if (keyword != null) {
+                            results.add(new KeywordDto(expression, namespace, keyword, false));
+                        }
+                        return true;
+                    }
+                },
+                true,
+                null
+        );
     }
 }
