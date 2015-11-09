@@ -31,6 +31,7 @@
       <ul>
         <li>address subclasses in imported python files (vs classes)</li>
         <li>correct some exceptions; pycharm vs intellij</li>
+        <li>updates for IntelliJ 15 and PyCharm 5 compatibility issues</li>
       </ul>
       <h2>0.6.7</h2>
       <ul>
@@ -109,7 +110,7 @@
       ]]>
     </change-notes>
 
-    <idea-version since-build="107.105"/>
+    <idea-version since-build="143.381"/>
 
     <application-components>
         <!-- Add your application components here -->
