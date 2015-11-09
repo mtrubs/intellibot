@@ -81,7 +81,7 @@ public class PythonResolver {
                 debug(project, "python support enabled by 'pythonid'");
                 return true;
             }
-            debug(project, "no python support found, '' is not present/enabled.");
+            debug(project, "no python support found, 'pythonid' is not present/enabled.");
             if (PlatformUtils.isIntelliJ()) {
                 Notifications.Bus.notify(new Notification("intellibot.python",
                         RobotBundle.message("plugin.python.missing.title"),
