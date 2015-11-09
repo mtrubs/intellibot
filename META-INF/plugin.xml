@@ -7,8 +7,6 @@
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true">com.intellij.modules.python</depends>
     <depends optional="true">Pythonid</depends>
-    <!--suppress PluginXmlValidity -->
-    <depends optional="true">PythonCore</depends>
 
     <description><![CDATA[
       <h1>IntelliBot, adding intelligence to Robot</h1>
