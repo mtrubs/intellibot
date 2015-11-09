@@ -108,6 +108,7 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
         this.variable = null;
     }
 
+    @NotNull
     @Override
     public String getDebugText() {
         KeywordInvokable invokable = getInvokable();

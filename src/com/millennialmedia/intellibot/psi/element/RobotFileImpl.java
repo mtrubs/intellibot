@@ -134,6 +134,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         return getVirtualFile().getName();
     }
 
+    @NotNull
     @Override
     public String getDebugText() {
         return ".";

@@ -46,13 +46,14 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
     private static String toPresentableText(ASTNode node) {
         return PatternUtil.getPresentableText(node.getText());
     }
-    
+
     @NotNull
     @Override
     public String getDebugFileName() {
         return getContainingFile().getVirtualFile().getName();
     }
 
+    @NotNull
     @Override
     public String getDebugText() {
         return getPresentableText();

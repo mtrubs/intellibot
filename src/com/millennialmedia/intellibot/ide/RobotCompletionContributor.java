@@ -215,7 +215,9 @@ public class RobotCompletionContributor extends CompletionContributor {
             PsiElement reference = variable.reference();
             if (reference != null) {
                 String text = reference.getText();
-                String lookupString = text.split("\\s+")[0];
+                // we only want the first word of the variable
+                String[] words = text.split("\\s+");
+                String lookupString = words.length > 0 ? words[0] : text;
                 LookupElement element = TailTypeDecorator.withTail(
                         LookupElementBuilder.create(lookupString)
                                 .withLookupString(text)
