@@ -1,12 +1,13 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ComponentConfig;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PlatformUtils;
 import com.jetbrains.python.psi.PyClass;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 
 /**
  * @author mrubino
@@ -62,12 +62,7 @@ public class PythonResolver {
         return classes.iterator().next();
     }
 
-    private static final Collection<String> PYTHON_PLUGINS = new HashSet<String>();
-
-    static {
-        PYTHON_PLUGINS.add("Pythonid");
-        PYTHON_PLUGINS.add("PythonCore");
-    }
+    private static final String PYTHON_PLUGIN = "Pythonid";
 
     private static synchronized boolean hasPython(Project project) {
         if (hasPython == null) {
@@ -79,25 +74,22 @@ public class PythonResolver {
     private static boolean detectPython(Project project) {
         if (PlatformUtils.isPyCharm()) {
             return true;
-        } else if (project instanceof ProjectImpl) {
-            Collection<String> plugins = new HashSet<String>();
-            for (ComponentConfig component : ((ProjectImpl) project).getComponentConfigurations()) {
-                String pluginId = component.getPluginId().getIdString();
-                plugins.add(pluginId);
-                if (PYTHON_PLUGINS.contains(pluginId)) {
-                    debug(project, "python support enabled by: " + pluginId);
-                    return true;
-                }
+        } else {
+            PluginId pythonPluginId = PluginId.getId(PYTHON_PLUGIN);
+            IdeaPluginDescriptor pythonPlugin = PluginManager.getPlugin(pythonPluginId);
+            if (pythonPlugin != null && pythonPlugin.isEnabled()) {
+                debug(project, "python support enabled by 'pythonid'");
+                return true;
             }
-            debug(project, "no python support found: " + plugins.toString());
+            debug(project, "no python support found, 'pythonid' is not present/enabled.");
             if (PlatformUtils.isIntelliJ()) {
                 Notifications.Bus.notify(new Notification("intellibot.python",
                         RobotBundle.message("plugin.python.missing.title"),
                         RobotBundle.message("plugin.python.missing"),
                         NotificationType.WARNING));
             }
+            return false;
         }
-        return false;
     }
 
     private static void debug(Project project, String message) {

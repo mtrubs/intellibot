@@ -1,5 +1,7 @@
 package com.millennialmedia.intellibot.psi.ref;
 
+import com.intellij.openapi.project.Project;
+import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.psi.PyTargetExpression;
@@ -9,6 +11,8 @@ import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
+import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -19,7 +23,9 @@ import java.util.HashSet;
  * @author mrubino
  * @since 2014-06-17
  */
-public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
+public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, PerformanceEntity {
+
+    private static final String EMPTY = "";
 
     private final String library;
     private final PyFile pythonFile;
@@ -34,6 +40,7 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
     @NotNull
     @Override
     public Collection<DefinedKeyword> getDefinedKeywords() {
+        PerformanceCollector debug = new PerformanceCollector(this, "get defined keywords");
         Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
         for (PyFunction function : this.pythonFile.getTopLevelFunctions()) {
             String keyword = functionToKeyword(function.getName());
@@ -47,12 +54,18 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
                 results.add(new KeywordDto(expression, this.library, keyword, false));
             }
         }
+        for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {
+            String namespace = subClass.getQualifiedName() == null ? EMPTY : subClass.getQualifiedName();
+            addDefinedKeywords(subClass, namespace, results);
+        }
+        debug.complete();
         return results;
     }
 
     @NotNull
     @Override
     public Collection<DefinedVariable> getDefinedVariables() {
+        PerformanceCollector debug = new PerformanceCollector(this, "get defined variables");
         final Collection<DefinedVariable> results = new HashSet<DefinedVariable>();
         for (PyTargetExpression expression : this.pythonFile.getTopLevelAttributes()) {
             String keyword = expression.getName();
@@ -60,6 +73,10 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
                 results.add(new VariableDto(expression, keyword));
             }
         }
+        for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {
+            addDefinedVariables(subClass, results);
+        }
+        debug.complete();
         return results;
     }
 
@@ -87,5 +104,28 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile {
     @Override
     public int hashCode() {
         return this.pythonFile.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.library;
+    }
+
+    @NotNull
+    @Override
+    public String getDebugFileName() {
+        return toString();
+    }
+
+    @NotNull
+    @Override
+    public String getDebugText() {
+        return this.pythonFile.getContainingFile().getVirtualFile().getName();
+    }
+
+    @NotNull
+    @Override
+    public Project getProject() {
+        return this.pythonFile.getProject();
     }
 }
