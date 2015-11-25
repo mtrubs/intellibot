@@ -9,7 +9,8 @@ ${var2}  another variable
 
 *** Test Cases ***
 Addition
-  [Tags]  Calculator    Given calculator has been cleared
+  [Tags]  Calculator
+    Given calculator has been cleared
     When user types "1 + 1"
     And user pushes equals
     Then result is "2"

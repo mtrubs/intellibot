@@ -31,7 +31,7 @@ public class RobotColorsPage implements ColorSettingsPage {
             "\n" +
             "*** Test Cases ***\n" +
             "Addition\n" +
-            "  [Tags]  Calculator" +
+            "  [Tags]  Calculator\n" +
             "    Given calculator has been cleared\n" +
             "    When user types \"1 + 1\"\n" +
             "    And user pushes equals\n" +
