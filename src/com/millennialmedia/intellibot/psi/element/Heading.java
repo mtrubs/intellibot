@@ -23,6 +23,9 @@ public interface Heading extends RobotStatement {
     Collection<DefinedKeyword> getDefinedKeywords();
 
     @NotNull
+    Collection<DefinedKeyword> getTestCases();
+
+    @NotNull
     Collection<PsiFile> getFilesFromInvokedKeywordsAndVariables();
 
     @NotNull

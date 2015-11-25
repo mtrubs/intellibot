@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6.8</version>
+    <version>0.6.9</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -25,6 +25,10 @@
       ]]></description>
 
     <change-notes><![CDATA[
+      <h2>0.6.9</h2>
+      <ul>
+        <li>added structure view</li>
+      </ul>
       <h2>0.6.8</h2>
       <ul>
         <li>address subclasses in imported python files (vs classes)</li>
@@ -145,6 +149,8 @@
                              implementationClass="com.millennialmedia.intellibot.ide.RobotFoldingBuilder"/>
         <lang.parserDefinition language="Robot"
                                implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
+
+        <lang.psiStructureViewFactory language="Robot" implementationClass="com.millennialmedia.intellibot.ide.structureview.RobotStructureViewFactory"/>
 
         <!-- Manipulators -->
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.KeywordInvokable"

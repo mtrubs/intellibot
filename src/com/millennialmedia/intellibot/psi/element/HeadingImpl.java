@@ -27,6 +27,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordInvokable> invokedKeywords;
     private Collection<Variable> usedVariables;
     private Collection<DefinedKeyword> definedKeywords;
+    private Collection<DefinedKeyword> testCases;
     private Collection<KeywordFile> keywordFiles;
     private Collection<PsiFile> referencedFiles;
     private Collection<DefinedVariable> declaredVariables;
@@ -76,6 +77,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
             }
         }
         this.definedKeywords = null;
+        this.testCases = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
         this.usedVariables = null;
@@ -86,6 +88,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     @Override
     public void importsChanged() {
         this.definedKeywords = null;
+        this.testCases = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
         this.usedVariables = null;
@@ -145,6 +148,33 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     @NotNull
     private Collection<DefinedKeyword> collectDefinedKeywords() {
         if (!containsKeywordDefinitions()) {
+            return Collections.emptySet();
+        }
+        List<DefinedKeyword> results = new ArrayList<DefinedKeyword>();
+        for (PsiElement child : getChildren()) {
+            if (child instanceof DefinedKeyword) {
+                results.add(((DefinedKeyword) child));
+            }
+        }
+        return results;
+    }
+
+    @NotNull
+    @Override
+    public Collection<DefinedKeyword> getTestCases() {
+        Collection<DefinedKeyword> results = this.testCases;
+        if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "defined test cases");
+            results = collectTestCases();
+            this.testCases = results;
+            debug.complete();
+        }
+        return results;
+    }
+
+    @NotNull
+    private Collection<DefinedKeyword> collectTestCases() {
+        if (!containsTestCases()) {
             return Collections.emptySet();
         }
         List<DefinedKeyword> results = new ArrayList<DefinedKeyword>();
