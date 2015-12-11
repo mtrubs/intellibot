@@ -62,7 +62,8 @@ public class PythonResolver {
         return classes.iterator().next();
     }
 
-    private static final String PYTHON_PLUGIN = "Pythonid";
+    private static final String PYTHON_PLUGIN_U = "Pythonid";
+    private static final String PYTHON_PLUGIN_CE = "PythonCore";
 
     private static synchronized boolean hasPython(Project project) {
         if (hasPython == null) {
@@ -75,13 +76,14 @@ public class PythonResolver {
         if (PlatformUtils.isPyCharm()) {
             return true;
         } else {
-            PluginId pythonPluginId = PluginId.getId(PYTHON_PLUGIN);
+            String pluginId = PlatformUtils.isCommunityEdition() ? PYTHON_PLUGIN_CE : PYTHON_PLUGIN_U;
+            PluginId pythonPluginId = PluginId.getId(pluginId);
             IdeaPluginDescriptor pythonPlugin = PluginManager.getPlugin(pythonPluginId);
             if (pythonPlugin != null && pythonPlugin.isEnabled()) {
-                debug(project, "python support enabled by 'pythonid'");
+                debug(project, String.format("python support enabled by '%s'", pluginId));
                 return true;
             }
-            debug(project, "no python support found, 'pythonid' is not present/enabled.");
+            debug(project, String.format("no python support found, '%s' is not present/enabled.", pluginId));
             if (PlatformUtils.isIntelliJ()) {
                 Notifications.Bus.notify(new Notification("intellibot.python",
                         RobotBundle.message("plugin.python.missing.title"),
