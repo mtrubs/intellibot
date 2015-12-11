@@ -30,8 +30,11 @@
 "[Tags]", RobotTokenTypes.BRACKET_SETTING, 5
 "  ", RobotTokenTypes.WHITESPACE, 5
 "Calculator", RobotTokenTypes.ARGUMENT, 5
-"    ", RobotTokenTypes.WHITESPACE, 5
-"Given calculator has been cleared", RobotTokenTypes.ARGUMENT, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Given", RobotTokenTypes.GHERKIN, 11
+" ", RobotTokenTypes.WHITESPACE, 8
+"calculator has been cleared", RobotTokenTypes.KEYWORD, 6
 "\n", RobotTokenTypes.WHITESPACE, 8
 "    ", RobotTokenTypes.WHITESPACE, 8
 "When", RobotTokenTypes.GHERKIN, 11
