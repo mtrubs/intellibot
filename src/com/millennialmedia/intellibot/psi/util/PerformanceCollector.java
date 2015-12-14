@@ -1,9 +1,6 @@
 package com.millennialmedia.intellibot.psi.util;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.notification.*;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +21,8 @@ public class PerformanceCollector {
         this.entity = entity;
         this.context = context;
         this.start = System.currentTimeMillis();
-        Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
+        NotificationsConfiguration.getNotificationsConfiguration().register(
+                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     public void complete() {
