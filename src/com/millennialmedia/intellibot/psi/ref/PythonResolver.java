@@ -55,15 +55,21 @@ public class PythonResolver {
         }
         String shortName = getShortName(name);
         Collection<PyClass> classes = safeFind(shortName, project);
+        PyClass matchedByName = null;
         if (classes != null) {
             for (PyClass pyClass : classes) {
                 String qName = pyClass.getQualifiedName();
                 if (qName != null && qName.equals(name)) {
                     return pyClass;
                 }
+                // save last match on full name should qualified name never match
+                String className = pyClass.getName();
+                if (className != null && className.equals(name)) {
+                    matchedByName = pyClass;
+                }
             }
         }
-        return null;
+        return matchedByName;
     }
 
     @NotNull
