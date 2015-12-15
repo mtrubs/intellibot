@@ -1,7 +1,6 @@
 package com.millennialmedia.intellibot.ide.structureview;
 
 
-import com.intellij.icons.AllIcons;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.navigation.ColoredItemPresentation;
 import com.intellij.navigation.ItemPresentation;
@@ -26,53 +25,19 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
     private static final StructureViewTreeElement[] EMPTY = {};
 
     private PsiElement element;
-    private ElementIcon elementIcon;
-
-    private enum ElementIcon {
-        File {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return element.getIcon(0);
-            }
-        },
-        Keyword {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return AllIcons.Nodes.Method;
-            }
-        },
-        TestCase {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return AllIcons.RunConfigurations.Junit;
-            }
-        },
-        Variable {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return AllIcons.Nodes.Variable;
-            }
-        };
-
-        @Nullable
-        protected abstract Icon getIcon(PsiElement element);
-    }
+    private RobotViewElementType type;
 
     protected RobotStructureViewElement(PsiElement element) {
-        this(element, ElementIcon.File);
+        this(element, RobotViewElementType.File);
     }
 
-    private RobotStructureViewElement(PsiElement element, ElementIcon elementIcon) {
+    private RobotStructureViewElement(PsiElement element, RobotViewElementType type) {
         this.element = element;
-        this.elementIcon = elementIcon;
+        this.type = type;
     }
 
-    protected StructureViewTreeElement createChild(PsiElement element, ElementIcon elementIcon) {
-        return new RobotStructureViewElement(element, elementIcon);
+    protected StructureViewTreeElement createChild(PsiElement element, RobotViewElementType type) {
+        return new RobotStructureViewElement(element, type);
     }
 
     @Override
@@ -122,19 +87,20 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
             Heading[] headings = PsiTreeUtil.getChildrenOfType(this.element, Heading.class);
             if (headings != null) {
                 for (Heading heading : headings) {
+                    children.add(createChild(heading, RobotViewElementType.Heading));
                     for (DefinedKeyword keyword : heading.getDefinedKeywords()) {
                         if (keyword instanceof KeywordDefinition) {
-                            children.add(createChild((KeywordDefinition) keyword, ElementIcon.Keyword));
+                            children.add(createChild((KeywordDefinition) keyword, RobotViewElementType.Keyword));
                         }
                     }
                     for (DefinedKeyword keyword : heading.getTestCases()) {
                         if (keyword instanceof KeywordDefinition) {
-                            children.add(createChild((KeywordDefinition) keyword, ElementIcon.TestCase));
+                            children.add(createChild((KeywordDefinition) keyword, RobotViewElementType.TestCase));
                         }
                     }
                     for (DefinedVariable variable : heading.getDefinedVariables()) {
                         if (variable instanceof VariableDefinition) {
-                            children.add(createChild((VariableDefinition) variable, ElementIcon.Variable));
+                            children.add(createChild((VariableDefinition) variable, RobotViewElementType.Variable));
                         }
                     }
                 }
@@ -156,9 +122,14 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
         }
     }
 
+    @NotNull
+    public RobotViewElementType getType() {
+        return this.type;
+    }
+
     @Nullable
     private Icon getDisplayIcon() {
-        return this.elementIcon.getIcon(this.element);
+        return this.type.getIcon(this.element);
     }
 
     @NotNull

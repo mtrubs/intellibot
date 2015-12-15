@@ -19,11 +19,19 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RobotStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
 
+    private static final Filter[] FILTERS = new Filter[]{
+            new RobotTypeFilter("SHOW_TEST_CASES", RobotViewElementType.TestCase),
+            new RobotTypeFilter("SHOW_KEYWORDS", RobotViewElementType.Keyword),
+            new RobotTypeFilter("SHOW_VARIABLES", RobotViewElementType.Variable),
+            new RobotTypeFilter("SHOW_HEADINGS", RobotViewElementType.Heading)
+    };
+
     public RobotStructureViewModel(@NotNull PsiFile psiFile, @Nullable Editor editor) {
         this(psiFile, editor, new RobotStructureViewElement(psiFile));
-        withSorters(Sorter.ALPHA_SORTER);
-        // TODO: implement?
-        //withSuitableClasses(DefinedVariable.class, DefinedKeyword.class);
+        withSorters(
+                Sorter.ALPHA_SORTER,
+                RobotTypeSorter.getInstance()
+        );
     }
 
     public RobotStructureViewModel(@NotNull PsiFile psiFile, @Nullable Editor editor, @NotNull StructureViewTreeElement element) {
@@ -50,12 +58,7 @@ public class RobotStructureViewModel extends StructureViewModelBase implements S
     @NotNull
     @Override
     public Filter[] getFilters() {
-        // TODO: implement?
-//        return new Filter[] {
-//                new PyInheritedMembersFilter(),
-//                new PyFieldsFilter(),
-//        };
-        return new Filter[]{};
+        return FILTERS;
     }
 
     @Override
