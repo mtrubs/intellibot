@@ -2,10 +2,7 @@ package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.notification.*;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -15,6 +12,7 @@ import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.stubs.PyClassNameIndex;
 import com.millennialmedia.intellibot.RobotBundle;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -28,7 +26,8 @@ public class PythonResolver {
     private static Boolean hasPython;
 
     private PythonResolver() {
-        Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
+        NotificationsConfiguration.getNotificationsConfiguration().register(
+                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     public static PyClass castClass(PsiElement element) {
@@ -54,12 +53,29 @@ public class PythonResolver {
         if (!hasPython(project)) {
             return null;
         }
-        Collection<PyClass> classes = safeFind(name, project);
-        if (classes == null || classes.isEmpty()) {
-            return safeFindClass(name, project);
+        String shortName = getShortName(name);
+        Collection<PyClass> classes = safeFind(shortName, project);
+        PyClass matchedByName = null;
+        if (classes != null) {
+            for (PyClass pyClass : classes) {
+                String qName = pyClass.getQualifiedName();
+                if (qName != null && qName.equals(name)) {
+                    return pyClass;
+                }
+                // save last match on full name should qualified name never match
+                String className = pyClass.getName();
+                if (className != null && className.equals(name)) {
+                    matchedByName = pyClass;
+                }
+            }
         }
-        // TODO: what if there is more than one class found?
-        return classes.iterator().next();
+        return matchedByName;
+    }
+
+    @NotNull
+    private static String getShortName(@NotNull String name) {
+        int pos = name.lastIndexOf(".");
+        return pos > 0 ? name.substring(pos + 1) : name;
     }
 
     private static final String PYTHON_PLUGIN_U = "Pythonid";
@@ -98,20 +114,6 @@ public class PythonResolver {
         if (RobotOptionsProvider.getInstance(project).isDebug()) {
             message = String.format("[PythonResolver][plugins] %s", message);
             Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
-        }
-    }
-
-    private static PyClass safeFindClass(String name, Project project) {
-        try {
-            return PyClassNameIndex.findClass(name, project);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            // seems to happen if python plugin dependency is not right in this project
-            return null;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            // seems to happen if python plugin dependency is not right in this project
-            return null;
         }
     }
 

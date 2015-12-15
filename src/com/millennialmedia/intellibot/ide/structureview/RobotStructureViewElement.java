@@ -1,11 +1,11 @@
 package com.millennialmedia.intellibot.ide.structureview;
 
 
-import com.intellij.icons.AllIcons;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.navigation.ColoredItemPresentation;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.millennialmedia.intellibot.psi.element.*;
@@ -25,54 +25,20 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
     private static final String UNKNOWN = "Unknown";
     private static final StructureViewTreeElement[] EMPTY = {};
 
-    private PsiElement element;
-    private ElementIcon elementIcon;
-
-    private enum ElementIcon {
-        File {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return element.getIcon(0);
-            }
-        },
-        Keyword {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return AllIcons.Nodes.Method;
-            }
-        },
-        TestCase {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return AllIcons.RunConfigurations.Junit;
-            }
-        },
-        Variable {
-            @Nullable
-            @Override
-            protected Icon getIcon(PsiElement element) {
-                return AllIcons.Nodes.Variable;
-            }
-        };
-
-        @Nullable
-        protected abstract Icon getIcon(PsiElement element);
-    }
+    private final PsiElement element;
+    private final RobotViewElementType type;
 
     protected RobotStructureViewElement(PsiElement element) {
-        this(element, ElementIcon.File);
+        this(element, RobotViewElementType.File);
     }
 
-    private RobotStructureViewElement(PsiElement element, ElementIcon elementIcon) {
+    private RobotStructureViewElement(PsiElement element, RobotViewElementType type) {
         this.element = element;
-        this.elementIcon = elementIcon;
+        this.type = type;
     }
 
-    protected StructureViewTreeElement createChild(PsiElement element, ElementIcon elementIcon) {
-        return new RobotStructureViewElement(element, elementIcon);
+    protected StructureViewTreeElement createChild(PsiElement element, RobotViewElementType type) {
+        return new RobotStructureViewElement(element, type);
     }
 
     @Override
@@ -82,22 +48,21 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
 
     @Override
     public void navigate(boolean requestFocus) {
-        // TODO: implement
-        //this.element.navigate(requestFocus);
+        if (this.element instanceof Navigatable) {
+            ((Navigatable) this.element).navigate(requestFocus);
+        }
     }
 
     @Override
     public boolean canNavigate() {
-        // TODO: implement
-        return false;
-        //return this.element.canNavigate();
+        return this.type != RobotViewElementType.File &&
+                this.element instanceof Navigatable && ((Navigatable) this.element).canNavigate();
     }
 
     @Override
     public boolean canNavigateToSource() {
-        // TODO: implement
-        //return this.element.canNavigateToSource();
-        return false;
+        return this.type != RobotViewElementType.File &&
+                this.element instanceof Navigatable && ((Navigatable) this.element).canNavigateToSource();
     }
 
     @Override
@@ -122,19 +87,20 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
             Heading[] headings = PsiTreeUtil.getChildrenOfType(this.element, Heading.class);
             if (headings != null) {
                 for (Heading heading : headings) {
+                    children.add(createChild(heading, RobotViewElementType.Heading));
                     for (DefinedKeyword keyword : heading.getDefinedKeywords()) {
                         if (keyword instanceof KeywordDefinition) {
-                            children.add(createChild((KeywordDefinition) keyword, ElementIcon.Keyword));
+                            children.add(createChild((KeywordDefinition) keyword, RobotViewElementType.Keyword));
                         }
                     }
                     for (DefinedKeyword keyword : heading.getTestCases()) {
                         if (keyword instanceof KeywordDefinition) {
-                            children.add(createChild((KeywordDefinition) keyword, ElementIcon.TestCase));
+                            children.add(createChild((KeywordDefinition) keyword, RobotViewElementType.TestCase));
                         }
                     }
                     for (DefinedVariable variable : heading.getDefinedVariables()) {
                         if (variable instanceof VariableDefinition) {
-                            children.add(createChild((VariableDefinition) variable, ElementIcon.Variable));
+                            children.add(createChild((VariableDefinition) variable, RobotViewElementType.Variable));
                         }
                     }
                 }
@@ -156,9 +122,14 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
         }
     }
 
+    @NotNull
+    public RobotViewElementType getType() {
+        return this.type;
+    }
+
     @Nullable
     private Icon getDisplayIcon() {
-        return this.elementIcon.getIcon(this.element);
+        return this.type.getIcon(this.element);
     }
 
     @NotNull

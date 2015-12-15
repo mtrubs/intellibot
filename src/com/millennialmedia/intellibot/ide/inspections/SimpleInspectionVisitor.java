@@ -1,6 +1,5 @@
 package com.millennialmedia.intellibot.ide.inspections;
 
-import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -12,12 +11,10 @@ import com.intellij.psi.PsiElementVisitor;
 public class SimpleInspectionVisitor extends PsiElementVisitor {
 
     private final ProblemsHolder holder;
-    private final LocalInspectionToolSession session;
     private final SimpleInspection context;
 
-    public SimpleInspectionVisitor(ProblemsHolder holder, LocalInspectionToolSession session, SimpleInspection context) {
+    public SimpleInspectionVisitor(ProblemsHolder holder, SimpleInspection context) {
         this.holder = holder;
-        this.session = session;
         this.context = context;
     }
 

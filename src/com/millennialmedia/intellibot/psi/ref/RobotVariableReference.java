@@ -14,11 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class RobotVariableReference extends PsiReferenceBase<Variable> {
 
     public RobotVariableReference(@NotNull Variable element) {
-        this(element, false);
-    }
-
-    private RobotVariableReference(Variable element, boolean soft) {
-        super(element, soft);
+        super(element, false);
     }
 
     @Nullable

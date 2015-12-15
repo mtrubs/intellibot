@@ -2,7 +2,6 @@ package com.millennialmedia.intellibot.ide.config;
 
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -25,13 +24,6 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
     }
 
     private State state = new State();
-
-    @NotNull
-    private final Project myProject;
-
-    public RobotOptionsProvider(@NotNull Project project) {
-        this.myProject = project;
-    }
 
     public static RobotOptionsProvider getInstance(Project project) {
         return ServiceManager.getService(project, RobotOptionsProvider.class);

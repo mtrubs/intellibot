@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
  */
 public class VariableDto implements DefinedVariable {
 
-    private PsiElement reference;
-    private String name;
+    private final PsiElement reference;
+    private final String name;
     private Pattern pattern;
 
     public VariableDto(@NotNull PsiElement reference, @NotNull String name) {

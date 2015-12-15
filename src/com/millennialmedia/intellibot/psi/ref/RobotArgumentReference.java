@@ -16,11 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class RobotArgumentReference extends PsiReferenceBase<Argument> {
 
     public RobotArgumentReference(@NotNull Argument element) {
-        this(element, false);
-    }
-
-    private RobotArgumentReference(Argument element, boolean soft) {
-        super(element, soft);
+        super(element, false);
     }
 
     @Nullable

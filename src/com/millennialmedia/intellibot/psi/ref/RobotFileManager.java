@@ -1,9 +1,6 @@
 package com.millennialmedia.intellibot.psi.ref;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -56,7 +53,8 @@ public class RobotFileManager {
     }
 
     private RobotFileManager() {
-        Notifications.Bus.register("intellibot.debug", NotificationDisplayType.NONE);
+        NotificationsConfiguration.getNotificationsConfiguration().register(
+                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     @Nullable

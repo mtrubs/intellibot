@@ -13,7 +13,7 @@ public class RobotParser implements PsiParser {
 
     @NotNull
     @Override
-    public ASTNode parse(IElementType root, PsiBuilder builder) {
+    public ASTNode parse(@NotNull IElementType root, @NotNull PsiBuilder builder) {
 
         final PsiBuilder.Marker marker = builder.mark();
         parseFileTopLevel(builder);
@@ -22,7 +22,7 @@ public class RobotParser implements PsiParser {
 
     }
 
-    private static void parseFileTopLevel(PsiBuilder builder) {
+    private static void parseFileTopLevel(@NotNull PsiBuilder builder) {
         while (!builder.eof()) {
             IElementType tokenType = builder.getTokenType();
             if (RobotTokenTypes.HEADING == tokenType) {
@@ -33,7 +33,7 @@ public class RobotParser implements PsiParser {
         }
     }
 
-    private static void parseHeading(PsiBuilder builder) {
+    private static void parseHeading(@NotNull PsiBuilder builder) {
         assert RobotTokenTypes.HEADING == builder.getTokenType();
         PsiBuilder.Marker headingMarker = null;
         while (true) {
@@ -76,7 +76,7 @@ public class RobotParser implements PsiParser {
         }
     }
 
-    private static void parseKeywordDefinition(PsiBuilder builder) {
+    private static void parseKeywordDefinition(@NotNull PsiBuilder builder) {
         PsiBuilder.Marker keywordMarker = null;
         while (true) {
             IElementType type = builder.getTokenType();
@@ -119,7 +119,7 @@ public class RobotParser implements PsiParser {
         }
     }
 
-    private static void parseKeywordStatement(PsiBuilder builder, IElementType rootType, boolean skipGherkin) {
+    private static void parseKeywordStatement(@NotNull PsiBuilder builder, @NotNull IElementType rootType, boolean skipGherkin) {
         PsiBuilder.Marker keywordStatementMarker = builder.mark();
         boolean seenGherkin = skipGherkin;
         boolean seenKeyword = false;
@@ -167,23 +167,23 @@ public class RobotParser implements PsiParser {
         keywordStatementMarker.done(rootType);
     }
 
-    private static void parseKeyword(PsiBuilder builder) {
+    private static void parseKeyword(@NotNull PsiBuilder builder) {
         parseWith(builder, RobotTokenTypes.KEYWORD);
     }
 
-    private static void parseBracketSetting(PsiBuilder builder) {
+    private static void parseBracketSetting(@NotNull PsiBuilder builder) {
         parseWithArguments(builder, RobotTokenTypes.BRACKET_SETTING);
     }
 
-    private static void parseImport(PsiBuilder builder) {
+    private static void parseImport(@NotNull PsiBuilder builder) {
         parseWithArguments(builder, RobotTokenTypes.IMPORT);
     }
 
-    private static void parseVariableDefinition(PsiBuilder builder) {
+    private static void parseVariableDefinition(@NotNull PsiBuilder builder) {
         parseWithArguments(builder, RobotTokenTypes.VARIABLE_DEFINITION);
     }
 
-    private static void parseVariableDefinitionWithDefaults(PsiBuilder builder) {
+    private static void parseVariableDefinitionWithDefaults(@NotNull PsiBuilder builder) {
         IElementType type = builder.getTokenType();
         assert RobotTokenTypes.VARIABLE_DEFINITION == type;
         PsiBuilder.Marker argMarker = builder.mark();
@@ -205,11 +205,11 @@ public class RobotParser implements PsiParser {
         argMarker.done(RobotTokenTypes.ARGUMENT);
     }
 
-    private static void parseSetting(PsiBuilder builder) {
+    private static void parseSetting(@NotNull PsiBuilder builder) {
         parseWithArguments(builder, RobotTokenTypes.SETTING);
     }
 
-    private static void parseWithArguments(PsiBuilder builder, IElementType markType) {
+    private static void parseWithArguments(@NotNull PsiBuilder builder, @NotNull IElementType markType) {
         IElementType type = builder.getTokenType();
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
@@ -231,10 +231,10 @@ public class RobotParser implements PsiParser {
         importMarker.done(markType);
     }
 
-    private static void parseWith(PsiBuilder builder, IElementType type) {
+    private static void parseWith(@NotNull PsiBuilder builder, @NotNull IElementType type) {
         PsiBuilder.Marker arg = builder.mark();
         IElementType current = builder.getTokenType();
-        while (!builder.eof() && (type == current || RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current)) {
+        while (!builder.eof() && current != null && (type == current || RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current)) {
             boolean end = builder.rawLookup(1) == RobotTokenTypes.WHITESPACE;
             if (RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current) {
                 parseSimple(builder, current);
@@ -249,7 +249,7 @@ public class RobotParser implements PsiParser {
         arg.done(type);
     }
 
-    private static void parseSimple(PsiBuilder builder, IElementType type) {
+    private static void parseSimple(@NotNull PsiBuilder builder, @NotNull IElementType type) {
         assert builder.getTokenType() == type;
         PsiBuilder.Marker argumentMarker = builder.mark();
         builder.advanceLexer();
