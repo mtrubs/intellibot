@@ -13,9 +13,9 @@ public class PerformanceCollector {
     private static final String MILLISECONDS = "ms";
     private static final long MINIMUM = 500;
 
-    private String context;
-    private PerformanceEntity entity;
-    private long start;
+    private final String context;
+    private final PerformanceEntity entity;
+    private final long start;
 
     public PerformanceCollector(@NotNull PerformanceEntity entity, @NotNull String context) {
         this.entity = entity;

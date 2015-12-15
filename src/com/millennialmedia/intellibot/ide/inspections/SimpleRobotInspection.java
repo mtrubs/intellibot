@@ -40,6 +40,6 @@ public abstract class SimpleRobotInspection extends LocalInspectionTool implemen
     public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                           boolean isOnTheFly,
                                           @NotNull LocalInspectionToolSession session) {
-        return new SimpleInspectionVisitor(holder, session, this);
+        return new SimpleInspectionVisitor(holder, this);
     }
 }

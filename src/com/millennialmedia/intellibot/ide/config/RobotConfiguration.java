@@ -24,7 +24,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox allowGlobalVariables;
     private JCheckBox capitalizeKeywords;
 
-    public RobotConfiguration(Project project, RobotOptionsProvider provider) {
+    public RobotConfiguration(@NotNull Project project, @NotNull RobotOptionsProvider provider) {
         this.provider = provider;
     }
 

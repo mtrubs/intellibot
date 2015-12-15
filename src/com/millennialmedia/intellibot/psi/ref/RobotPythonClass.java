@@ -21,7 +21,7 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile,
 
     private final String library;
     private final PyClass pythonClass;
-    private ImportType importType;
+    private final ImportType importType;
 
     public RobotPythonClass(@NotNull String library, @NotNull PyClass pythonClass, @NotNull ImportType importType) {
         this.library = library;

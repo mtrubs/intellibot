@@ -25,8 +25,8 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
     private static final String UNKNOWN = "Unknown";
     private static final StructureViewTreeElement[] EMPTY = {};
 
-    private PsiElement element;
-    private RobotViewElementType type;
+    private final PsiElement element;
+    private final RobotViewElementType type;
 
     protected RobotStructureViewElement(PsiElement element) {
         this(element, RobotViewElementType.File);

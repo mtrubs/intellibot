@@ -14,11 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class RobotKeywordReference extends PsiReferenceBase<KeywordInvokable> {
 
     public RobotKeywordReference(@NotNull KeywordInvokable element) {
-        this(element, false);
-    }
-
-    private RobotKeywordReference(KeywordInvokable element, boolean soft) {
-        super(element, soft);
+        super(element, false);
     }
 
     @Nullable

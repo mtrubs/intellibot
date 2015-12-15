@@ -17,12 +17,12 @@ public class KeywordDto implements DefinedKeyword {
 
     private static final String DOT = ".";
 
-    private PsiElement reference;
-    private String name;
-    private boolean args;
-    private Pattern namePattern;
+    private final PsiElement reference;
+    private final String name;
+    private final boolean args;
+    private final Pattern namePattern;
 
-    public KeywordDto(PsiElement reference, @NotNull String namespace, @NotNull String name, boolean args) {
+    public KeywordDto(@NotNull PsiElement reference, @NotNull String namespace, @NotNull String name, boolean args) {
         this.reference = reference;
         this.name = PatternUtil.functionToKeyword(name).trim();
         this.namePattern = Pattern.compile(buildPattern(namespace, this.name), Pattern.CASE_INSENSITIVE);
