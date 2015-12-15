@@ -5,6 +5,7 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.navigation.ColoredItemPresentation;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.millennialmedia.intellibot.psi.element.*;
@@ -47,22 +48,21 @@ public class RobotStructureViewElement implements StructureViewTreeElement {
 
     @Override
     public void navigate(boolean requestFocus) {
-        // TODO: implement
-        //this.element.navigate(requestFocus);
+        if (this.element instanceof Navigatable) {
+            ((Navigatable) this.element).navigate(requestFocus);
+        }
     }
 
     @Override
     public boolean canNavigate() {
-        // TODO: implement
-        return false;
-        //return this.element.canNavigate();
+        return this.type != RobotViewElementType.File &&
+                this.element instanceof Navigatable && ((Navigatable) this.element).canNavigate();
     }
 
     @Override
     public boolean canNavigateToSource() {
-        // TODO: implement
-        //return this.element.canNavigateToSource();
-        return false;
+        return this.type != RobotViewElementType.File &&
+                this.element instanceof Navigatable && ((Navigatable) this.element).canNavigateToSource();
     }
 
     @Override
