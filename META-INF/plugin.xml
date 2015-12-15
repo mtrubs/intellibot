@@ -30,6 +30,7 @@
       <h2>0.6.9</h2>
       <ul>
         <li>added structure view</li>
+        <li>corrected some community edition issues regarding python support</li>
       </ul>
       <h2>0.6.8</h2>
       <ul>
@@ -132,7 +133,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         
-        <projectConfigurable instance="com.millennialmedia.intellibot.ide.config.RobotConfiguration"/>
+        <projectConfigurable groupId="language" instance="com.millennialmedia.intellibot.ide.config.RobotConfiguration"/>
         <projectService serviceImplementation="com.millennialmedia.intellibot.ide.config.RobotOptionsProvider"/>
 
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
@@ -143,7 +144,7 @@
                                 implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
         <!--<lang.findUsagesProvider language="Robot"-->
         <!--implementationClass="com.millennialmedia.intellibot.ide.RobotFindUsagesProvider"/>-->
-        <lang.syntaxHighlighterFactory key="Robot"
+        <lang.syntaxHighlighterFactory language="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
                         implementationClass="com.millennialmedia.intellibot.ide.RobotCommenter"/>

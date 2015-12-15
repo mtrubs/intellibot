@@ -3,7 +3,6 @@ package com.millennialmedia.intellibot.ide.config;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +23,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox allowGlobalVariables;
     private JCheckBox capitalizeKeywords;
 
-    public RobotConfiguration(@NotNull Project project, @NotNull RobotOptionsProvider provider) {
+    public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
     }
 
