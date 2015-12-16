@@ -2,7 +2,7 @@
 
 This is a work in progress (the product of a 24 hour hack match), though at this point I have devoted far more time than that.
 Related feature request to JetBrains: [IDEA-97678](http://youtrack.jetbrains.com/issue/IDEA-97678).
-Here is a growing list of [features](https://github.com/millennialmedia/intellibot/wiki/Python-Interpreter).
+Here is a growing list of [features](https://github.com/millennialmedia/intellibot/wiki/Features).
 
 ### Installation & Usage
 
