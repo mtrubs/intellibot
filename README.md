@@ -5,15 +5,20 @@ Related feature request to JetBrains: [IDEA-97678](http://youtrack.jetbrains.com
 For Robot Framework files ending with ".robot", this currently supports:
 
 1. Syntax highlighting
-   ![Syntax Highlighting](/examples/demo_complete.png)
+
+   ![Syntax Highlighting](/readme/demo_complete.png)
 2. Code folding
-3. Auto-completion (Same File, Robot Resource files, Python Library files)
+3. Auto-completion (Same File, Robot Resource files, Python Library files, Keywords, Variables)
+
    ![Auto-complete](/readme/jump_to_source.png)
 4. Click into imported Resources, Libraries and their defined keywords
+
    ![Click into imported files](/readme/jump_to_source.png)
 5. Undefined keywords and code inspections
+
    ![Undefined Keywords](/readme/undefined_keyword.png)
 5. File Structure
+
    ![File Structure](/readme/structure.png)
 
 ### Installation & Usage
