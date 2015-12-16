@@ -11,20 +11,16 @@
     <depends optional="true">PythonCore</depends>
 
     <description><![CDATA[
-      <h1>IntelliBot, adding intelligence to Robot</h1>
-      <p>The IntelliBot plugin for IntelliJ/Pycharm adds features to the <a href="http://robotframework.org/">Robot Framework</a>. This includes:</p>
-      <p>In order to ensure that you have full python support, check out <a href="https://github.com/millennialmedia/intellibot/wiki/Python-Interpreter">this wiki page</a> for setup.</p>
-      <ul>
-        <li>Syntax Highlighting</li>
-        <li>Code Completion</li>
-        <li>Jump to Source</li>
-        <li>Undefined Keywords</li>
-        <li>Undefined Resources</li>
-        <li>Undefined Variables</li>
-        <li>Python support</li>
-        <li>Code Inspections</li>
-      </ul>
+      <h1>IntelliBot, Robot Framework Support</h1>
+      <p>The IntelliBot plugin for IntelliJ/Pycharm adds smart editing features to support the <a href="http://robotframework.org/">Robot Framework</a>.</p>
+      <p>Make sure to <a href="https://github.com/millennialmedia/intellibot/wiki/Python-Interpreter">setup your IDE correctly</a> to gain Python support.</p>
       <p>Find us in <a href="https://github.com/millennialmedia/intellibot">Github</a>.</p>
+      <ul>
+        <li><a href="https://github.com/millennialmedia/intellibot/wiki/Features">Feature Set</a></li>
+        <li><a href="https://github.com/millennialmedia/intellibot/wiki">Wiki</a></li>
+        <li><a href="https://github.com/millennialmedia/intellibot/issues">Issue tracker</a></li>
+        <li><a href="https://github.com/millennialmedia/intellibot/wiki/Change-Notes">Complete Change Notes</a>
+      </ul>
       ]]></description>
 
     <change-notes><![CDATA[
@@ -32,86 +28,6 @@
       <ul>
         <li>added structure view</li>
         <li>corrected some community edition issues regarding python support</li>
-      </ul>
-      <h2>0.6.8</h2>
-      <ul>
-        <li>address subclasses in imported python files (vs classes)</li>
-        <li>correct some exceptions; pycharm vs intellij</li>
-        <li>updates for IntelliJ 15 and PyCharm 5 compatibility issues</li>
-      </ul>
-      <h2>0.6.7</h2>
-      <ul>
-        <li>better recognize variables in general</li>
-        <li>add support for assignment of multiple variables as a result of keyword call (thanks to eezltn)</li>
-        <li>resolve variable references in variable definition statements (thanks to eezltn)</li>
-        <li>resolve references to list variables (thanks to eezltn)</li>
-        <li>support list variable access with syntax @{NAME}[i] (thanks to eezltn)</li>
-        <li>add support for variables defined in other files (thanks to MikeBeardman)</li>
-        <li>add support for variable auto-completion (excluding statement level variables) (thanks to MikeBeardman)</li>
-      </ul>
-      <h2>0.6.6</h2>
-      <ul>
-        <li>fix java version issue</li>
-      </ul>
-      <h2>0.6.5</h2>
-      <ul>
-        <li>fix resolving of relative imports (thanks to Kidlike)</li>
-        <li>add option to capitalize keywords (thanks to puhnastik)</li>
-      </ul>
-      <h2>0.6.4</h2>
-      <ul>
-        <li>add transitive import support</li>
-        <li>add support for python community version</li>
-        <li>add config page for debug logging</li>
-      </ul>
-      <h2>0.6</h2>
-      <ul>
-        <li>performance improvements</li>
-        <li>enable import not used (resource) by default</li>
-        <li>better handle import file finding</li>
-        <li>some variable handling and inspections</li>
-      </ul>
-      <h2>0.5</h2>
-      <ul>
-        <li>better keyword resolution</li>
-        <li>Minor parser fixes</li>
-      </ul>
-      <h2>0.4</h2>
-      <ul>
-        <li>Added support for ellipsis</li>
-        <li>Updated file icon</li>
-        <li>Added better handling of super space on auto-complete keywords</li>
-        <li>Add better detection around inline variables</li>
-        <li>Added better detection of variable declarations (still not great IDE support)</li>
-        <li>Added some inspections (Gherkin, Import Not Found, Keyword Not Found)</li>
-        <li>Minor parser fixes</li>
-      </ul>
-      <h2>0.3</h2>
-      <ul>
-        <li>Cleaned up some of the recommended syntax</li>
-        <li>Cleaned up where the recommended syntax appears (not perfect but better)</li>
-        <li>Enabled code completion for pycharm python libraries</li>
-        <li>Minor parser fixes</li>
-      </ul>
-      <h2>0.2.4</h2>
-      <ul>
-        <li>added python support for pycharm</li>
-        <li>added code completion for python functions</li>
-      </ul>
-      <h2>2014-01-08</h2>
-      <ul>
-        <li>Added support for Python Libraries; import and jump-to-source</li>
-      </ul>
-      <h2>2013-12-24</h2>
-      <ul>
-        <li>Added support for Variables and User Keywords</li>
-        <li>Local and remote jump-to-source work</li>
-        <li>Local and remote code completion</li>
-        <li>Have address some stack overflow bugs</li>
-      </ul>
-      <h2>2013-11-18</h2>
-      <ul>
-        <li>Initial Release after Hack-a-thon</li>
       </ul>
       ]]>
     </change-notes>
