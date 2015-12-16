@@ -4,6 +4,8 @@ This is a work in progress (the product of a 24 hour hack match), though at this
 Related feature request to JetBrains: [IDEA-97678](http://youtrack.jetbrains.com/issue/IDEA-97678).
 **Here is a growing list of [features](https://github.com/millennialmedia/intellibot/wiki/Features).**
 
+![Sample](/wiki/features/demo_complete.png)
+
 ### Installation & Usage
 
 Note that this plugin should work in either IntelliJ or PyCharm, but that PyCharm is far less used (and thus tested) personally.
