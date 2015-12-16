@@ -10,7 +10,7 @@ For Robot Framework files ending with ".robot", this currently supports:
 2. Code folding
 3. Auto-completion (Same File, Robot Resource files, Python Library files, Keywords, Variables)
 
-   ![Auto-complete](/readme/jump_to_source.png)
+   ![Auto-complete](/readme/keyword_recommendation.png)
 4. Click into imported Resources, Libraries and their defined keywords
 
    ![Click into imported files](/readme/jump_to_source.png)
