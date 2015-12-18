@@ -26,7 +26,7 @@ public class RobotTypeSorter implements Sorter {
         return new Comparator() {
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof RobotStructureViewElement && o2 instanceof RobotStructureViewElement) {
-                    return Integer.compare(
+                    return RobotTypeSorter.compare(
                             ((RobotStructureViewElement) o1).getType().ordinal(),
                             ((RobotStructureViewElement) o2).getType().ordinal()
                     );
@@ -35,6 +35,11 @@ public class RobotTypeSorter implements Sorter {
                 return 0;
             }
         };
+    }
+
+    // Integer.compare
+    private static int compare(int x, int y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
     }
 
     @Override
