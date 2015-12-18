@@ -1,13 +1,14 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6.9</version>
+    <version>0.6.9.143.381</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true">com.intellij.modules.python</depends>
     <!--suppress PluginXmlValidity -->
     <depends optional="true">Pythonid</depends>
+    <!--suppress PluginXmlValidity -->
     <depends optional="true">PythonCore</depends>
 
     <description><![CDATA[
