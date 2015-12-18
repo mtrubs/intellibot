@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.6.9</version>
+    <version>0.6.9.107.105</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -32,7 +32,7 @@
       ]]>
     </change-notes>
 
-    <idea-version since-build="143.381"/>
+    <idea-version since-build="107.105"/>
 
     <application-components>
         <!-- Add your application components here -->
@@ -61,7 +61,7 @@
                                 implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
         <!--<lang.findUsagesProvider language="Robot"-->
         <!--implementationClass="com.millennialmedia.intellibot.ide.RobotFindUsagesProvider"/>-->
-        <lang.syntaxHighlighterFactory language="Robot"
+        <lang.syntaxHighlighterFactory key="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
                         implementationClass="com.millennialmedia.intellibot.ide.RobotCommenter"/>
