@@ -8,6 +8,7 @@
     <depends optional="true">com.intellij.modules.python</depends>
     <!--suppress PluginXmlValidity -->
     <depends optional="true">Pythonid</depends>
+    <!--suppress PluginXmlValidity -->
     <depends optional="true">PythonCore</depends>
 
     <description><![CDATA[
