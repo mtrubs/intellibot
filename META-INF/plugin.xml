@@ -6,8 +6,10 @@
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true">com.intellij.modules.python</depends>
+    <!-- Ultimate -->
     <!--suppress PluginXmlValidity -->
     <depends optional="true">Pythonid</depends>
+    <!-- Community Edition -->
     <!--suppress PluginXmlValidity -->
     <depends optional="true">PythonCore</depends>
 
@@ -50,7 +52,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        
+
         <projectConfigurable groupId="language" instance="com.millennialmedia.intellibot.ide.config.RobotConfiguration"/>
         <projectService serviceImplementation="com.millennialmedia.intellibot.ide.config.RobotOptionsProvider"/>
 
@@ -60,8 +62,22 @@
         <!-- IDE Hooks -->
         <completion.contributor language="Robot"
                                 implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
-        <!--<lang.findUsagesProvider language="Robot"-->
-        <!--implementationClass="com.millennialmedia.intellibot.ide.RobotFindUsagesProvider"/>-->
+        <lang.findUsagesProvider language="Robot"
+                                 implementationClass="com.millennialmedia.intellibot.ide.usage.RobotFindUsagesProvider"/>
+
+        <!--
+        <lang.findUsagesProvider language="Python" implementationClass="com.jetbrains.python.findUsages.PythonFindUsagesProvider"/>
+        <elementDescriptionProvider implementation="com.jetbrains.python.findUsages.PyElementDescriptionProvider"/>
+        <elementDescriptionProvider implementation="com.jetbrains.python.magicLiteral.PyMagicLiteralElementDescriptionProvider"/>
+        <fileStructureGroupRuleProvider implementation="com.jetbrains.python.findUsages.PyFunctionGroupingRuleProvider" id="py-function"/>
+        <usageTypeProvider implementation="com.jetbrains.python.findUsages.PyUsageTypeProvider"/>
+        <usageTargetProvider implementation="com.jetbrains.python.magicLiteral.PyMagicLiteralUsageTargetProvider"/>
+        <importFilteringRule implementation="com.jetbrains.python.findUsages.PyImportFilteringRule"/>
+        <findUsagesHandlerFactory implementation="com.jetbrains.python.findUsages.PyFindUsagesHandlerFactory" id="Python"
+                                  order="last, before default"/>
+        <findUsagesHandlerFactory implementation="com.jetbrains.python.magicLiteral.PyMagicLiteralFindUsagesHandlerFactory"/>
+        -->
+
         <lang.syntaxHighlighterFactory language="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
@@ -71,7 +87,7 @@
         <lang.parserDefinition language="Robot"
                                implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
 
-        <lang.psiStructureViewFactory language="Robot" implementationClass="com.millennialmedia.intellibot.ide.structureview.RobotStructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Robot" implementationClass="com.millennialmedia.intellibot.ide.structure.RobotStructureViewFactory"/>
 
         <!-- Manipulators -->
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.KeywordInvokable"
@@ -121,6 +137,6 @@
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariableDefinition"/>
         <!-- Inspections: Deprecated -->
         <!-- TODO: inspection: warn: deprecated settings; '*** user keywords ***', timeout, etc -->
-        
+
     </extensions>
 </idea-plugin>

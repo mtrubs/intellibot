@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.ide.structureview;
+package com.millennialmedia.intellibot.ide.structure;
 
 import com.intellij.ide.util.treeView.smartTree.ActionPresentation;
 import com.intellij.ide.util.treeView.smartTree.ActionPresentationData;
