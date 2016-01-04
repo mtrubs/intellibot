@@ -14,15 +14,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RobotFindUsagesProvider implements FindUsagesProvider {
 
-    // python implementation
-    // https://github.com/JetBrains/intellij-community/blob/210e0ed138627926e10094bb9c76026319cec178/python/src/com/jetbrains/python/findUsages/PythonFindUsagesProvider.java
-    // http://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/find_usages.html
-
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        // TODO: when searching for a python keyword, it finds the usages in python files, not the declaration and not other robot file usages
-        // TODO: any sort of case changes seem to matter
         return new RobotWordScanner();
     }
 

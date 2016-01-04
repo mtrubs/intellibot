@@ -64,19 +64,7 @@
                                 implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
         <lang.findUsagesProvider language="Robot"
                                  implementationClass="com.millennialmedia.intellibot.ide.usage.RobotFindUsagesProvider"/>
-
-        <!--
-        <lang.findUsagesProvider language="Python" implementationClass="com.jetbrains.python.findUsages.PythonFindUsagesProvider"/>
-        <elementDescriptionProvider implementation="com.jetbrains.python.findUsages.PyElementDescriptionProvider"/>
-        <elementDescriptionProvider implementation="com.jetbrains.python.magicLiteral.PyMagicLiteralElementDescriptionProvider"/>
-        <fileStructureGroupRuleProvider implementation="com.jetbrains.python.findUsages.PyFunctionGroupingRuleProvider" id="py-function"/>
-        <usageTypeProvider implementation="com.jetbrains.python.findUsages.PyUsageTypeProvider"/>
-        <usageTargetProvider implementation="com.jetbrains.python.magicLiteral.PyMagicLiteralUsageTargetProvider"/>
-        <importFilteringRule implementation="com.jetbrains.python.findUsages.PyImportFilteringRule"/>
-        <findUsagesHandlerFactory implementation="com.jetbrains.python.findUsages.PyFindUsagesHandlerFactory" id="Python"
-                                  order="last, before default"/>
-        <findUsagesHandlerFactory implementation="com.jetbrains.python.magicLiteral.PyMagicLiteralFindUsagesHandlerFactory"/>
-        -->
+        <referencesSearch implementation="com.millennialmedia.intellibot.ide.search.RobotPythonReferenceSearch"/>
 
         <lang.syntaxHighlighterFactory language="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
