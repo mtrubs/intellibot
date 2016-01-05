@@ -236,8 +236,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         }
     }
 
+    @Override
     @NotNull
-    private Collection<KeywordInvokable> getInvokedKeywords() {
+    public Collection<KeywordInvokable> getInvokedKeywords() {
         Collection<KeywordInvokable> results = this.invokedKeywords;
         if (results == null) {
             PerformanceCollector debug = new PerformanceCollector(this, "invoked keywords");

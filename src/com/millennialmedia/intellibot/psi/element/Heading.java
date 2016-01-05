@@ -32,4 +32,6 @@ public interface Heading extends RobotStatement {
     Collection<DefinedVariable> getDefinedVariables();
 
     void importsChanged();
+
+    Collection<KeywordInvokable> getInvokedKeywords();
 }

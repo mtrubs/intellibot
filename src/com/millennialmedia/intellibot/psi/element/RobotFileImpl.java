@@ -105,6 +105,16 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         }
     }
 
+    @Override
+    @NotNull
+    public Collection<KeywordInvokable> getInvokedKeywords() {
+        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+        for (Heading heading : getHeadings()) {
+            results.addAll(heading.getInvokedKeywords());
+        }
+        return results;
+    }
+
     @NotNull
     private Collection<Heading> getHeadings() {
         Collection<Heading> results = this.headings;

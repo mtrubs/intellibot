@@ -35,4 +35,7 @@ public interface RobotFile extends PsiFile {
     Collection<DefinedVariable> getDefinedVariables();
     
     void importsChanged();
+
+    @NotNull
+    Collection<KeywordInvokable> getInvokedKeywords();
 }
