@@ -49,9 +49,11 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
                 params.getOptimizer().searchWord(keyword, searchScope, UsageSearchContext.ANY, false, element);
             }
         } else if (element instanceof RobotStatement) {
-            if (element instanceof KeywordDefinition) {
+            if (element instanceof KeywordDefinition && ((KeywordDefinition) element).hasInlineVariables()) {
                 PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) element, "ReferenceSearch");
                 // TODO: this needs to be cached somehow
+                // TODO: we are missing the declaration highlight of keyword definitions with inline variables; this happens
+                // TODO: because the text of the element does not match the text of the first child ("I have ${var} now" vs "I have ")
                 Project project = params.getProject();
                 Collection<VirtualFile> files = FileTypeIndex.getFiles(RobotFeatureFileType.getInstance(),
                         GlobalSearchScope.projectScope(project));

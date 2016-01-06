@@ -66,6 +66,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return results;
     }
 
+    @Override
+    public boolean hasInlineVariables() {
+        return getInlineVariables().size() > 0;
+    }
+
     @NotNull
     private Collection<DefinedVariable> getInlineVariables() {
         Collection<DefinedVariable> results = this.definedInlineVariables;
@@ -80,9 +85,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     private Collection<DefinedVariable> collectInlineVariables() {
+        String text = getPresentableText();
         Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
         for (PsiElement child : getChildren()) {
-            if (child instanceof DefinedVariable) {
+            if (child instanceof DefinedVariable && text.contains(child.getText())) {
                 results.add((DefinedVariable) child);
             }
         }

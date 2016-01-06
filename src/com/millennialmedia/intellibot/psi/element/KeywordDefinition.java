@@ -21,4 +21,11 @@ public interface KeywordDefinition extends RobotStatement, PsiNamedElement {
      */
     @NotNull
     Collection<DefinedVariable> getDeclaredVariables();
+
+    /**
+     * Determines if this keyword definition has inline variables defined within its name.
+     *
+     * @return true if there are inline variables defined, false otherwise.
+     */
+    boolean hasInlineVariables();
 }
