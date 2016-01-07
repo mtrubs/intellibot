@@ -61,6 +61,7 @@ public class RobotParserDefinition implements ParserDefinition {
     @Override
     public PsiElement createElement(ASTNode node) {
         if (node.getElementType() == RobotTokenTypes.KEYWORD_DEFINITION) return new KeywordDefinitionImpl(node);
+        if (node.getElementType() == RobotTokenTypes.KEYWORD_DEFINITION_ID) return new KeywordDefinitionIdImpl(node);
         if (node.getElementType() == RobotTokenTypes.KEYWORD_STATEMENT) return new KeywordStatementImpl(node);
         if (node.getElementType() == RobotTokenTypes.KEYWORD) return new KeywordInvokableImpl(node);
         if (node.getElementType() == RobotTokenTypes.VARIABLE_DEFINITION) return new VariableDefinitionImpl(node);

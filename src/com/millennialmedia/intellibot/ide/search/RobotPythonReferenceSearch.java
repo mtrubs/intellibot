@@ -41,47 +41,68 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
 
         PsiElement element = params.getElementToSearch();
         if (element instanceof PsiNameIdentifierOwner) {
-            PsiElement identifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-            if (identifier != null) {
-                String text = identifier.getText();
-                params.getOptimizer().searchWord(text, searchScope, UsageSearchContext.ANY, false, element);
-                String keyword = PatternUtil.functionToKeyword(text);
-                params.getOptimizer().searchWord(keyword, searchScope, UsageSearchContext.ANY, false, element);
+            if (element instanceof KeywordDefinition) {
+                if (((KeywordDefinition) element).hasInlineVariables()) {
+                    processKeywordWithInline(element, processor, params.getProject());
+                } else {
+                    processRobotStatement((KeywordDefinition) element, params, searchScope);
+                }
+            } else {
+                processPython((PsiNameIdentifierOwner) element, params, searchScope);
             }
         } else if (element instanceof RobotStatement) {
-            if (element instanceof KeywordDefinition && ((KeywordDefinition) element).hasInlineVariables()) {
-                PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) element, "ReferenceSearch");
-                // TODO: this needs to be cached somehow
-                // TODO: we are missing the declaration highlight of keyword definitions with inline variables; this happens
-                // TODO: because the text of the element does not match the text of the first child ("I have ${var} now" vs "I have ")
-                Project project = params.getProject();
-                Collection<VirtualFile> files = FileTypeIndex.getFiles(RobotFeatureFileType.getInstance(),
-                        GlobalSearchScope.projectScope(project));
-                boolean process = true;
-                for (VirtualFile file : files) {
-                    final PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
-                    if (psiFile instanceof RobotFile) {
-                        Collection<KeywordInvokable> keywords = ((RobotFile) psiFile).getInvokedKeywords();
-                        for (KeywordInvokable keyword : keywords) {
-                            PsiReference reference = keyword.getReference();
-                            if (reference != null && reference.isReferenceTo(element)) {
-                                process = processor.process(reference);
-                            }
-                            // abort if we do not want to process more
-                            if (!process) {
-                                break;
-                            }
-                        }
+            processRobotStatement((RobotStatement) element, params, searchScope);
+        }
+    }
+
+    private void processPython(@NotNull PsiNameIdentifierOwner element,
+                               @NotNull ReferencesSearch.SearchParameters params,
+                               @NotNull SearchScope searchScope) {
+        PsiElement identifier = element.getNameIdentifier();
+        if (identifier != null) {
+            String text = identifier.getText();
+            params.getOptimizer().searchWord(text, searchScope, UsageSearchContext.ANY, false, element);
+            String keyword = PatternUtil.functionToKeyword(text);
+            params.getOptimizer().searchWord(keyword, searchScope, UsageSearchContext.ANY, false, element);
+        }
+    }
+
+    private void processRobotStatement(@NotNull RobotStatement element,
+                                       @NotNull ReferencesSearch.SearchParameters params,
+                                       @NotNull SearchScope searchScope) {
+        String text = element.getPresentableText();
+        params.getOptimizer().searchWord(text, searchScope, UsageSearchContext.ANY, false, element);
+    }
+
+    private void processKeywordWithInline(@NotNull PsiElement element,
+                                          @NotNull Processor<PsiReference> processor,
+                                          @NotNull Project project) {
+        // TODO: this needs to be cached somehow
+        // try adding a cache to the Keyword definition for its references; then remove them on change and clear that on change of reference?
+        PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) element, "ReferenceSearch");
+        Collection<VirtualFile> files = FileTypeIndex.getFiles(RobotFeatureFileType.getInstance(),
+                GlobalSearchScope.projectScope(project));
+        boolean process = true;
+        for (VirtualFile file : files) {
+            final PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+            if (psiFile instanceof RobotFile) {
+                Collection<KeywordInvokable> keywords = ((RobotFile) psiFile).getInvokedKeywords();
+                for (KeywordInvokable keyword : keywords) {
+                    PsiReference reference = keyword.getReference();
+                    if (reference != null && reference.isReferenceTo(element)) {
+                        process = processor.process(reference);
                     }
                     // abort if we do not want to process more
                     if (!process) {
                         break;
                     }
                 }
-                debug.complete();
             }
-            String text = ((RobotStatement) element).getPresentableText();
-            params.getOptimizer().searchWord(text, searchScope, UsageSearchContext.ANY, false, element);
+            // abort if we do not want to process more
+            if (!process) {
+                break;
+            }
         }
+        debug.complete();
     }
 }

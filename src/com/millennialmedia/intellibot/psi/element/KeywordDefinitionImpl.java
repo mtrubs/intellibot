@@ -4,10 +4,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +20,7 @@ import java.util.regex.Pattern;
 /**
  * @author Stephen Abrams
  */
-public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition, DefinedKeyword, PerformanceEntity {
+public class KeywordDefinitionImpl extends RobotPsiElementBase implements KeywordDefinition, DefinedKeyword, PerformanceEntity, PsiNameIdentifierOwner {
 
     private static final Pattern PATTERN = Pattern.compile("(.*?)(\\$\\{.*?\\})(.*)");
     private static final String ANY = ".*?";
@@ -85,11 +87,14 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     private Collection<DefinedVariable> collectInlineVariables() {
-        String text = getPresentableText();
         Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
         for (PsiElement child : getChildren()) {
-            if (child instanceof DefinedVariable && text.contains(child.getText())) {
-                results.add((DefinedVariable) child);
+            if (child instanceof KeywordDefinitionId) {
+                for (PsiElement grandChild : child.getChildren()) {
+                    if (grandChild instanceof DefinedVariable) {
+                        results.add((DefinedVariable) grandChild);
+                    }
+                }
             }
         }
         return results;
@@ -205,5 +210,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     @Override
     public boolean hasArguments() {
         return !getArguments().isEmpty();
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return PsiTreeUtil.findChildOfType(this, KeywordDefinitionId.class);
     }
 }
