@@ -4,10 +4,7 @@ import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.search.UsageSearchContext;
+import com.intellij.psi.search.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
 import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
@@ -21,6 +18,7 @@ import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author mrubino
@@ -43,7 +41,7 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
         if (element instanceof PsiNameIdentifierOwner) {
             if (element instanceof KeywordDefinition) {
                 if (((KeywordDefinition) element).hasInlineVariables()) {
-                    processKeywordWithInline(element, processor, params.getProject());
+                    processKeywordWithInline(element, searchScope, processor, params.getProject());
                 } else {
                     processRobotStatement((KeywordDefinition) element, params, searchScope);
                 }
@@ -75,13 +73,30 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
     }
 
     private void processKeywordWithInline(@NotNull PsiElement element,
+                                          @NotNull SearchScope searchScope,
                                           @NotNull Processor<PsiReference> processor,
                                           @NotNull Project project) {
+        Collection<VirtualFile> files;
+
+        if (searchScope instanceof LocalSearchScope) {
+            files = new HashSet<VirtualFile>();
+            for (PsiElement scopeElement : ((LocalSearchScope) searchScope).getScope()) {
+                files.add(scopeElement.getContainingFile().getVirtualFile());
+            }
+        } else {
+            files = FileTypeIndex.getFiles(RobotFeatureFileType.getInstance(),
+                    GlobalSearchScope.projectScope(project));
+        }
+        processKeywordWithInline(element, processor, project, files);
+    }
+
+    private void processKeywordWithInline(@NotNull PsiElement element,
+                                          @NotNull Processor<PsiReference> processor,
+                                          @NotNull Project project,
+                                          @NotNull Collection<VirtualFile> files) {
         // TODO: this needs to be cached somehow
         // try adding a cache to the Keyword definition for its references; then remove them on change and clear that on change of reference?
         PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) element, "ReferenceSearch");
-        Collection<VirtualFile> files = FileTypeIndex.getFiles(RobotFeatureFileType.getInstance(),
-                GlobalSearchScope.projectScope(project));
         boolean process = true;
         for (VirtualFile file : files) {
             final PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
