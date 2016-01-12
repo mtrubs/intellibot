@@ -40,10 +40,11 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
         PsiElement element = params.getElementToSearch();
         if (element instanceof PsiNameIdentifierOwner) {
             if (element instanceof KeywordDefinition) {
-                if (((KeywordDefinition) element).hasInlineVariables()) {
-                    processKeywordWithInline(element, searchScope, processor, params.getProject());
+                KeywordDefinition definition = (KeywordDefinition) element;
+                if (definition.hasInlineVariables()) {
+                    processKeywordWithInline(definition, searchScope, processor, params.getProject());
                 } else {
-                    processRobotStatement((KeywordDefinition) element, params, searchScope);
+                    processRobotStatement(definition, params, searchScope);
                 }
             } else {
                 processPython((PsiNameIdentifierOwner) element, params, searchScope);
@@ -72,7 +73,7 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
         params.getOptimizer().searchWord(text, searchScope, UsageSearchContext.ANY, false, element);
     }
 
-    private void processKeywordWithInline(@NotNull PsiElement element,
+    private void processKeywordWithInline(@NotNull KeywordDefinition element,
                                           @NotNull SearchScope searchScope,
                                           @NotNull Processor<PsiReference> processor,
                                           @NotNull Project project) {
@@ -90,7 +91,7 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
         processKeywordWithInline(element, processor, project, files);
     }
 
-    private void processKeywordWithInline(@NotNull PsiElement element,
+    private void processKeywordWithInline(@NotNull KeywordDefinition element,
                                           @NotNull Processor<PsiReference> processor,
                                           @NotNull Project project,
                                           @NotNull Collection<VirtualFile> files) {
@@ -101,7 +102,7 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
         for (VirtualFile file : files) {
             final PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
             if (psiFile instanceof RobotFile) {
-                Collection<KeywordInvokable> keywords = ((RobotFile) psiFile).getInvokedKeywords();
+                Collection<KeywordInvokable> keywords = ((RobotFile) psiFile).getKeywordReferences(element);
                 for (KeywordInvokable keyword : keywords) {
                     PsiReference reference = keyword.getReference();
                     if (reference != null && reference.isReferenceTo(element)) {

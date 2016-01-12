@@ -11,6 +11,7 @@ import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,12 +106,12 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         }
     }
 
-    @Override
     @NotNull
-    public Collection<KeywordInvokable> getInvokedKeywords() {
-        Collection<KeywordInvokable> results = new HashSet<KeywordInvokable>();
+    @Override
+    public Collection<KeywordInvokable> getKeywordReferences(@Nullable KeywordDefinition definition) {
+        Collection<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
         for (Heading heading : getHeadings()) {
-            results.addAll(heading.getInvokedKeywords());
+            results.addAll(heading.getKeywordReferences(definition));
         }
         return results;
     }

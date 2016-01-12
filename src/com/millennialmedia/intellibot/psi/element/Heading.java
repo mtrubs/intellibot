@@ -2,6 +2,7 @@ package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -33,5 +34,9 @@ public interface Heading extends RobotStatement {
 
     void importsChanged();
 
+    @NotNull
     Collection<KeywordInvokable> getInvokedKeywords();
+
+    @NotNull
+    Collection<KeywordInvokable> getKeywordReferences(@Nullable KeywordDefinition definition);
 }
