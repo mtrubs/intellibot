@@ -33,15 +33,19 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
     @Override
     public void processQuery(@NotNull ReferencesSearch.SearchParameters params, @NotNull Processor<PsiReference> processor) {
         SearchScope searchScope = params.getEffectiveSearchScope();
+        boolean localScope = false;
         if (searchScope instanceof GlobalSearchScope) {
             searchScope = GlobalSearchScope.getScopeRestrictedByFileTypes((GlobalSearchScope) searchScope, RobotFeatureFileType.getInstance());
+        } else if (searchScope instanceof LocalSearchScope) {
+            localScope = true;
         }
 
         PsiElement element = params.getElementToSearch();
         if (element instanceof PsiNameIdentifierOwner) {
             if (element instanceof KeywordDefinition) {
                 KeywordDefinition definition = (KeywordDefinition) element;
-                if (definition.hasInlineVariables()) {
+                boolean enableInlineSearch = true;
+                if (definition.hasInlineVariables() && (localScope || enableInlineSearch)) {
                     processKeywordWithInline(definition, searchScope, processor, params.getProject());
                 } else {
                     processRobotStatement(definition, params, searchScope);
@@ -95,8 +99,6 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
                                           @NotNull Processor<PsiReference> processor,
                                           @NotNull Project project,
                                           @NotNull Collection<VirtualFile> files) {
-        // TODO: this needs to be cached somehow
-        // try adding a cache to the Keyword definition for its references; then remove them on change and clear that on change of reference?
         PerformanceCollector debug = new PerformanceCollector((PerformanceEntity) element, "ReferenceSearch");
         boolean process = true;
         for (VirtualFile file : files) {

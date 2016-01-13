@@ -4,8 +4,8 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.millennialmedia.intellibot.psi.element.Argument;
-import com.millennialmedia.intellibot.psi.element.Import;
+import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,38 +21,40 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     }
 
     @Override
-    public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-        if (psiElement instanceof Argument && psiElement.getParent() instanceof Import) {
-            // if the import is the same as the
-            return psiElement == psiElement.getParent().getFirstChild();
+    public boolean canFindUsagesFor(@NotNull PsiElement element) {
+        if (element instanceof Argument && element.getParent() instanceof Import) {
+            // if the Argument is the first child of Import, then it is hte file reference
+            // everything else will be covered by Variables
+            return element == element.getParent().getFirstChild();
         }
-        return psiElement instanceof PsiNamedElement;
+        return element instanceof PsiNamedElement;
     }
 
     @Nullable
     @Override
-    public String getHelpId(@NotNull PsiElement psiElement) {
-        // TODO: determines how to group the search results
+    public String getHelpId(@NotNull PsiElement element) {
         return null;
     }
 
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        // TODO: is show for the definition element
-        return "Definition";
+        return RobotBundle.message("usage.declaration");
     }
 
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull PsiElement element) {
-        // TODO: is what is shown in the search results
-//        if (element instanceof RobotStatement) {
-//            return ((RobotStatement) element).getPresentableText();
-//        } else {
-//            return "";
-//        }
-        return "dummy";
+        if (element instanceof KeywordDefinition) {
+            return "Keyword";
+        } else if (element instanceof VariableDefinition) {
+            return "Variable";
+        } else if (element instanceof RobotFile) {
+            return "Import";
+        } else if (element instanceof Argument) {
+            return "TODO";
+        }
+        return "";
     }
 
     @NotNull
