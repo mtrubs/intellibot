@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
 import com.millennialmedia.intellibot.psi.element.KeywordDefinition;
 import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
@@ -44,7 +45,8 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
         if (element instanceof PsiNameIdentifierOwner) {
             if (element instanceof KeywordDefinition) {
                 KeywordDefinition definition = (KeywordDefinition) element;
-                boolean enableInlineSearch = true;
+                // this should really be part of the search options
+                boolean enableInlineSearch = RobotOptionsProvider.getInstance(params.getProject()).inlineVariableSearch();
                 if (definition.hasInlineVariables() && (localScope || enableInlineSearch)) {
                     processKeywordWithInline(definition, searchScope, processor, params.getProject());
                 } else {

@@ -45,14 +45,15 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull PsiElement element) {
+        // this is what appears in the find usages dialog
         if (element instanceof KeywordDefinition) {
-            return "Keyword";
+            return "keyword";
         } else if (element instanceof VariableDefinition) {
-            return "Variable";
+            return "variable";
         } else if (element instanceof RobotFile) {
-            return "Import";
+            return "import";
         } else if (element instanceof Argument) {
-            return "TODO";
+            return "argument";
         }
         return "";
     }
