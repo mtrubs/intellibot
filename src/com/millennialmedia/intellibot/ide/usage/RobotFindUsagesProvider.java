@@ -47,13 +47,13 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     public String getDescriptiveName(@NotNull PsiElement element) {
         // this is what appears in the find usages dialog
         if (element instanceof KeywordDefinition) {
-            return "keyword";
+            return RobotBundle.message("usage.descriptive.keyword");
         } else if (element instanceof VariableDefinition) {
-            return "variable";
+            return RobotBundle.message("usage.descriptive.variable");
         } else if (element instanceof RobotFile) {
-            return "import";
+            return RobotBundle.message("usage.descriptive.import");
         } else if (element instanceof Argument) {
-            return "argument";
+            return RobotBundle.message("usage.descriptive.argument");
         }
         return "";
     }
