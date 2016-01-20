@@ -1,4 +1,4 @@
-package com.millennialmedia.intellibot.ide.structureview;
+package com.millennialmedia.intellibot.ide.structure;
 
 
 import com.intellij.ide.structureView.StructureViewTreeElement;

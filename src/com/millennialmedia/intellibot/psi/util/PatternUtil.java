@@ -52,7 +52,8 @@ public class PatternUtil {
         return VARIABLE_SETTERS.contains(functionToKeyword(keyword));
     }
 
-    public static String functionToKeyword(String function) {
+    @Nullable
+    public static String functionToKeyword(@Nullable String function) {
         return function == null ? null : function.replaceAll(UNDERSCORE, SPACE).trim();
     }
 

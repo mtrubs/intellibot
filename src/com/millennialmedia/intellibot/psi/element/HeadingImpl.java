@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.MultiMap;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
@@ -25,6 +26,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private static final String ROBOT_BUILT_IN = "BuiltIn";
 
     private Collection<KeywordInvokable> invokedKeywords;
+    private MultiMap<String, KeywordInvokable> invokableReferences;
     private Collection<Variable> usedVariables;
     private Collection<DefinedKeyword> definedKeywords;
     private Collection<DefinedKeyword> testCases;
@@ -80,6 +82,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.testCases = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
+        this.invokableReferences = null;
         this.usedVariables = null;
         this.referencedFiles = null;
         this.declaredVariables = null;
@@ -91,6 +94,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.testCases = null;
         this.keywordFiles = null;
         this.invokedKeywords = null;
+        this.invokableReferences = null;
         this.usedVariables = null;
         this.referencedFiles = null;
         this.declaredVariables = null;
@@ -236,8 +240,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         }
     }
 
+    @Override
     @NotNull
-    private Collection<KeywordInvokable> getInvokedKeywords() {
+    public Collection<KeywordInvokable> getInvokedKeywords() {
         Collection<KeywordInvokable> results = this.invokedKeywords;
         if (results == null) {
             PerformanceCollector debug = new PerformanceCollector(this, "invoked keywords");
@@ -251,6 +256,43 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     @NotNull
     private Collection<KeywordInvokable> collectInvokedKeywords() {
         return PsiTreeUtil.findChildrenOfType(this, KeywordInvokable.class);
+    }
+
+    @NotNull
+    @Override
+    public Collection<KeywordInvokable> getKeywordReferences(@Nullable KeywordDefinition definition) {
+        MultiMap<String, KeywordInvokable> references = getKeywordReferences();
+        return definition == null ? Collections.<KeywordInvokable>emptySet() : references.get(definition.getPresentableText());
+    }
+
+    @NotNull
+    private MultiMap<String, KeywordInvokable> getKeywordReferences() {
+        MultiMap<String, KeywordInvokable> results = this.invokableReferences;
+        if (results == null) {
+            PerformanceCollector debug = new PerformanceCollector(this, "keyword references");
+            results = collectKeywordReferences();
+            this.invokableReferences = results;
+            debug.complete();
+        }
+        return results;
+    }
+
+    @NotNull
+    private MultiMap<String, KeywordInvokable> collectKeywordReferences() {
+        MultiMap<String, KeywordInvokable> results = new MultiMap<String, KeywordInvokable>();
+        for (KeywordInvokable invokable : getInvokedKeywords()) {
+            PsiReference reference = invokable.getReference();
+            if (reference != null) {
+                PsiElement element = reference.resolve();
+                if (element instanceof KeywordDefinition) {
+                    results.putValue(
+                            ((KeywordDefinition) element).getPresentableText(),
+                            invokable
+                    );
+                }
+            }
+        }
+        return results;
     }
 
     @NotNull

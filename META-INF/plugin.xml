@@ -1,13 +1,15 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.7.143.381</version>
+    <version>0.8.143.381</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true">com.intellij.modules.python</depends>
+    <!-- Ultimate -->
     <!--suppress PluginXmlValidity -->
     <depends optional="true">Pythonid</depends>
+    <!-- Community Edition -->
     <!--suppress PluginXmlValidity -->
     <depends optional="true">PythonCore</depends>
 
@@ -25,10 +27,11 @@
       ]]></description>
 
     <change-notes><![CDATA[
-      <h2>0.6.9</h2>
+      <h2>0.6.8</h2>
       <ul>
-        <li>added structure view</li>
-        <li>corrected some community edition issues regarding python support</li>
+        <li>add find usages</li>
+        <li>this works with inline variables locally</li>
+        <li>it works globally as well but there is a performance issue when searching across a large project</li>
       </ul>
       ]]>
     </change-notes>
@@ -50,7 +53,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        
+
         <projectConfigurable groupId="language" instance="com.millennialmedia.intellibot.ide.config.RobotConfiguration"/>
         <projectService serviceImplementation="com.millennialmedia.intellibot.ide.config.RobotOptionsProvider"/>
 
@@ -60,8 +63,10 @@
         <!-- IDE Hooks -->
         <completion.contributor language="Robot"
                                 implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
-        <!--<lang.findUsagesProvider language="Robot"-->
-        <!--implementationClass="com.millennialmedia.intellibot.ide.RobotFindUsagesProvider"/>-->
+        <lang.findUsagesProvider language="Robot"
+                                 implementationClass="com.millennialmedia.intellibot.ide.usage.RobotFindUsagesProvider"/>
+        <referencesSearch implementation="com.millennialmedia.intellibot.ide.search.RobotPythonReferenceSearch"/>
+
         <lang.syntaxHighlighterFactory language="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
@@ -70,8 +75,7 @@
                              implementationClass="com.millennialmedia.intellibot.ide.RobotFoldingBuilder"/>
         <lang.parserDefinition language="Robot"
                                implementationClass="com.millennialmedia.intellibot.psi.RobotParserDefinition"/>
-
-        <lang.psiStructureViewFactory language="Robot" implementationClass="com.millennialmedia.intellibot.ide.structureview.RobotStructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Robot" implementationClass="com.millennialmedia.intellibot.ide.structure.RobotStructureViewFactory"/>
 
         <!-- Manipulators -->
         <lang.elementManipulator forClass="com.millennialmedia.intellibot.psi.element.KeywordInvokable"
@@ -121,6 +125,6 @@
                          level="WARNING" implementationClass="com.millennialmedia.intellibot.ide.inspections.complexity.RobotNestedVariableDefinition"/>
         <!-- Inspections: Deprecated -->
         <!-- TODO: inspection: warn: deprecated settings; '*** user keywords ***', timeout, etc -->
-        
+
     </extensions>
 </idea-plugin>
