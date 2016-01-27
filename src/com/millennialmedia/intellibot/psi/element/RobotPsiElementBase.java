@@ -4,6 +4,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +19,11 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
 
     public RobotPsiElementBase(@NotNull final ASTNode node) {
         super(node);
+    }
+
+    @NotNull
+    private static String toPresentableText(ASTNode node) {
+        return PatternUtil.getPresentableText(node.getText());
     }
 
     @Override
@@ -43,11 +50,6 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
     }
 
     @NotNull
-    private static String toPresentableText(ASTNode node) {
-        return PatternUtil.getPresentableText(node.getText());
-    }
-
-    @NotNull
     @Override
     public String getDebugFileName() {
         return getContainingFile().getVirtualFile().getName();
@@ -57,5 +59,15 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
     @Override
     public String getDebugText() {
         return getPresentableText();
+    }
+
+    @NotNull
+    public String getName() {
+        return getPresentableText();
+    }
+
+    public PsiElement setName(@NotNull String var1) throws IncorrectOperationException {
+        // TODO
+        return this;
     }
 }
