@@ -11,6 +11,7 @@ public interface RobotTokenTypes {
     RobotElementType BRACKET_SETTING = new RobotElementType("BRACKET_SETTING");
     RobotElementType IMPORT = new RobotElementType("IMPORT");
     RobotElementType KEYWORD_DEFINITION = new RobotElementType("KEYWORD_DEFINITION");
+    RobotElementType KEYWORD_DEFINITION_ID = new RobotElementType("KEYWORD_DEFINITION_ID");
     RobotElementType KEYWORD = new RobotElementType("KEYWORD");
     RobotElementType ARGUMENT = new RobotElementType("ARGUMENT");
     RobotElementType VARIABLE_DEFINITION = new RobotElementType("VARIABLE_DEFINITION");

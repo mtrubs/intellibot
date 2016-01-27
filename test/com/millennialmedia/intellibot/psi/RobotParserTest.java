@@ -27,6 +27,11 @@ public class RobotParserTest extends ParsingTestCase {
     }
 
     @Test
+    public void testTrimmedVariables() {
+        doTest(true);
+    }
+
+    @Test
     public void testEmptyHeaders() {
         doTest(true);
     }
