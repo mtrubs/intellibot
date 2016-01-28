@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.MultiMap;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
+import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
@@ -16,6 +17,7 @@ import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -377,5 +379,11 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
             return reference.resolve();
         }
         return null;
+    }
+
+    @Override
+    @NotNull
+    public Icon getIcon(int flags) {
+        return RobotIcons.HEADING;
     }
 }

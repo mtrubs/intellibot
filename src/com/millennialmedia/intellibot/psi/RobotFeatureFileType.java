@@ -1,7 +1,7 @@
 package com.millennialmedia.intellibot.psi;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.util.IconLoader;
+import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,15 +12,14 @@ import javax.swing.*;
  */
 public class RobotFeatureFileType extends LanguageFileType {
 
-    private static final Icon ROBOT_ICON = IconLoader.findIcon("/images/robot_icon.png");
     private static final RobotFeatureFileType INSTANCE = new RobotFeatureFileType();
-
-    public static RobotFeatureFileType getInstance() {
-        return INSTANCE;
-    }
 
     private RobotFeatureFileType() {
         super(RobotLanguage.INSTANCE);
+    }
+
+    public static RobotFeatureFileType getInstance() {
+        return INSTANCE;
     }
 
     @NotNull
@@ -40,6 +39,6 @@ public class RobotFeatureFileType extends LanguageFileType {
 
     @Nullable
     public Icon getIcon() {
-        return ROBOT_ICON;
+        return RobotIcons.FILE;
     }
 }
