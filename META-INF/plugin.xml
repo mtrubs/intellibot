@@ -65,6 +65,8 @@
                                 implementationClass="com.millennialmedia.intellibot.ide.RobotCompletionContributor"/>
         <lang.findUsagesProvider language="Robot"
                                  implementationClass="com.millennialmedia.intellibot.ide.usage.RobotFindUsagesProvider"/>
+        <fileStructureGroupRuleProvider
+                implementation="com.millennialmedia.intellibot.ide.usage.RobotKeywordGroupingRuleProvider"/>
         <referencesSearch implementation="com.millennialmedia.intellibot.ide.search.RobotPythonReferenceSearch"/>
 
         <lang.syntaxHighlighterFactory language="Robot"

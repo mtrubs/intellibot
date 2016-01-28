@@ -1,8 +1,8 @@
 package com.millennialmedia.intellibot.ide.structure;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.RobotBundle;
+import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ enum RobotViewElementType {
         @Nullable
         @Override
         protected Icon getIcon(@Nullable PsiElement element) {
-            return AllIcons.Nodes.Tag;
+            return RobotIcons.HEADING;
         }
 
         @NotNull
@@ -43,7 +43,7 @@ enum RobotViewElementType {
         @Nullable
         @Override
         protected Icon getIcon(@Nullable PsiElement element) {
-            return AllIcons.RunConfigurations.Junit;
+            return RobotIcons.TEST_CASE;
         }
 
         @NotNull
@@ -56,7 +56,7 @@ enum RobotViewElementType {
         @Nullable
         @Override
         protected Icon getIcon(@Nullable PsiElement element) {
-            return AllIcons.Nodes.Method;
+            return RobotIcons.KEYWORD_DEFINITION;
         }
 
         @NotNull
@@ -69,7 +69,7 @@ enum RobotViewElementType {
         @Nullable
         @Override
         protected Icon getIcon(@Nullable PsiElement element) {
-            return AllIcons.Nodes.Variable;
+            return RobotIcons.VARIABLE_DEFINITION;
         }
 
         @NotNull
