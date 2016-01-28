@@ -50,12 +50,12 @@ public class RobotParser implements PsiParser {
                     continue;
                 } else if (RobotTokenTypes.IMPORT == type) {
                     parseImport(builder);
-                } else if (RobotTokenTypes.VARIABLE_DEFINITION == type && builder.rawLookup(1) == RobotTokenTypes.WHITESPACE) {
+                } else if (RobotTokenTypes.VARIABLE_DEFINITION == type && isNextToken(builder, RobotTokenTypes.WHITESPACE)) {
                     parseVariableDefinition(builder);
                 } else if (RobotTokenTypes.SETTING == type) {
                     parseSetting(builder);
                 } else if (RobotTokenTypes.KEYWORD_DEFINITION == type ||
-                        RobotTokenTypes.VARIABLE_DEFINITION == type && builder.rawLookup(1) == RobotTokenTypes.KEYWORD_DEFINITION) {
+                        RobotTokenTypes.VARIABLE_DEFINITION == type && isNextToken(builder, RobotTokenTypes.KEYWORD_DEFINITION)) {
                     parseKeywordDefinition(builder);
                 } else if (RobotTokenTypes.KEYWORD == type) {
                     parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, false);
@@ -74,7 +74,7 @@ public class RobotParser implements PsiParser {
         while (true) {
             IElementType type = builder.getTokenType();
             if (RobotTokenTypes.KEYWORD_DEFINITION == type ||
-                    RobotTokenTypes.VARIABLE_DEFINITION == type && builder.rawLookup(1) == RobotTokenTypes.KEYWORD_DEFINITION) {
+                    RobotTokenTypes.VARIABLE_DEFINITION == type && isNextToken(builder, RobotTokenTypes.KEYWORD_DEFINITION)) {
                 if (builder.rawLookup(-1) != RobotTokenTypes.VARIABLE_DEFINITION) {
                     done(keywordIdMarker, RobotTokenTypes.KEYWORD_DEFINITION_ID);
                     done(keywordMarker, RobotTokenTypes.KEYWORD_DEFINITION);
@@ -136,7 +136,7 @@ public class RobotParser implements PsiParser {
                     builder.advanceLexer();
                 }
             } else if (type == RobotTokenTypes.KEYWORD ||
-                    (type == RobotTokenTypes.VARIABLE && builder.rawLookup(1) == RobotTokenTypes.KEYWORD)) {
+                    (type == RobotTokenTypes.VARIABLE && isNextToken(builder, RobotTokenTypes.KEYWORD))) {
                 if (seenKeyword) {
                     break;
                 } else {
@@ -152,7 +152,7 @@ public class RobotParser implements PsiParser {
                 } else {
                     seenKeyword = true;
                     boolean isPartOfKeywordDefinition = builder.rawLookup(-1) == RobotTokenTypes.KEYWORD_DEFINITION ||
-                            builder.rawLookup(1) == RobotTokenTypes.KEYWORD_DEFINITION;
+                            isNextToken(builder, RobotTokenTypes.KEYWORD_DEFINITION);
                     builder.advanceLexer();
                     inline = isPartOfKeywordDefinition;
                     if (!isPartOfKeywordDefinition && builder.getTokenType() == RobotTokenTypes.KEYWORD) {
@@ -168,6 +168,21 @@ public class RobotParser implements PsiParser {
 
         keywordStatementMarker.done(rootType);
         return inline ? null : keywordStatementMarker;
+    }
+
+    /**
+     * Checks to see if the next token in the builder is the given token.  In the case that the given token
+     * is whitespace then we also allow for EOF.
+     *
+     * @param builder the spi builder that we are parsing.
+     * @param type    the element type to check for.
+     * @return true if the next element type matches the given or the given is whitespace and we are at EOF.
+     */
+    private static boolean isNextToken(@NotNull PsiBuilder builder, IElementType type) {
+        boolean allowEof = type == RobotTokenTypes.WHITESPACE;
+        IElementType next = builder.rawLookup(1);
+        return next == type ||
+                allowEof && next == null;
     }
 
     private static void parseKeyword(@NotNull PsiBuilder builder) {
@@ -238,7 +253,7 @@ public class RobotParser implements PsiParser {
         PsiBuilder.Marker arg = builder.mark();
         IElementType current = builder.getTokenType();
         while (!builder.eof() && current != null && (type == current || RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current)) {
-            boolean end = builder.rawLookup(1) == RobotTokenTypes.WHITESPACE;
+            boolean end = isNextToken(builder, RobotTokenTypes.WHITESPACE);
             if (RobotTokenTypes.VARIABLE == current || RobotTokenTypes.VARIABLE_DEFINITION == current) {
                 parseSimple(builder, current);
             } else {
