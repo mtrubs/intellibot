@@ -62,7 +62,7 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     @Override
     public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
         // TODO: if variable definition get value set to variable
-        return "mtr";
+        return "";
 //        if (element instanceof SimpleProperty) {
 //            return ((SimpleProperty) element).getKey() + ":" + ((SimpleProperty) element).getValue();
 //        } else {
