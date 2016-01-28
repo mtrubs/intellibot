@@ -3,10 +3,12 @@ package com.millennialmedia.intellibot.psi.element;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.regex.Pattern;
 
 /**
@@ -51,5 +53,11 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
         String text = getPresentableText();
         return StringUtil.getOccurrenceCount(text, "}") > 1 &&
                 (StringUtil.getOccurrenceCount(text, "${") + StringUtil.getOccurrenceCount(text, "@{") + StringUtil.getOccurrenceCount(text, "%{") > 1);
+    }
+
+    @Override
+    @NotNull
+    public Icon getIcon(int flags) {
+        return RobotIcons.VARIABLE_DEFINITION;
     }
 }

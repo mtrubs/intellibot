@@ -6,11 +6,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -216,5 +218,16 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     @Override
     public PsiElement getNameIdentifier() {
         return PsiTreeUtil.findChildOfType(this, KeywordDefinitionId.class);
+    }
+
+    @Override
+    @NotNull
+    public Icon getIcon(int flags) {
+        Heading heading = PsiTreeUtil.getParentOfType(this, Heading.class);
+        if (heading != null && heading.containsTestCases()) {
+            return RobotIcons.TEST_CASE;
+        } else {
+            return RobotIcons.KEYWORD_DEFINITION;
+        }
     }
 }
