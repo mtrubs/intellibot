@@ -23,6 +23,8 @@ import java.util.Collections;
  */
 public class PythonResolver {
 
+    private static final String PYTHON_PLUGIN_U = "Pythonid";
+    private static final String PYTHON_PLUGIN_CE = "PythonCore";
     private static Boolean hasPython;
 
     private PythonResolver() {
@@ -30,7 +32,8 @@ public class PythonResolver {
                 "intellibot.debug", NotificationDisplayType.NONE);
     }
 
-    public static PyClass castClass(PsiElement element) {
+    @Nullable
+    public static PyClass castClass(@Nullable PsiElement element) {
         if (element != null && hasPython(element.getProject())) {
             if (element instanceof PyClass) {
                 return (PyClass) element;
@@ -39,7 +42,8 @@ public class PythonResolver {
         return null;
     }
 
-    public static PyFile castFile(PsiElement element) {
+    @Nullable
+    public static PyFile castFile(@Nullable PsiElement element) {
         if (element != null && hasPython(element.getProject())) {
             if (element instanceof PyFile) {
                 return (PyFile) element;
@@ -77,9 +81,6 @@ public class PythonResolver {
         int pos = name.lastIndexOf(".");
         return pos > 0 ? name.substring(pos + 1) : name;
     }
-
-    private static final String PYTHON_PLUGIN_U = "Pythonid";
-    private static final String PYTHON_PLUGIN_CE = "PythonCore";
 
     private static synchronized boolean hasPython(Project project) {
         if (hasPython == null) {
