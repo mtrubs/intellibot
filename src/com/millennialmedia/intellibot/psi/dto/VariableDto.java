@@ -41,4 +41,18 @@ public class VariableDto implements DefinedVariable {
     public PsiElement reference() {
         return this.reference;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VariableDto that = (VariableDto) o;
+        return this.name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 }

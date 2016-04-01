@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author mrubino
@@ -28,12 +28,12 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
 
     @NotNull
     public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {
-        List<FoldingDescriptor> descriptors = new ArrayList<FoldingDescriptor>();
+        Collection<FoldingDescriptor> descriptors = new ArrayList<FoldingDescriptor>();
         appendDescriptors(node, descriptors);
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    private void appendDescriptors(ASTNode node, List<FoldingDescriptor> descriptors) {
+    private void appendDescriptors(ASTNode node, Collection<FoldingDescriptor> descriptors) {
         if (BLOCKS_TO_FOLD.contains(node.getElementType()) && node.getTextRange().getLength() >= 2) {
             descriptors.add(new FoldingDescriptor(node, node.getTextRange()));
         }
