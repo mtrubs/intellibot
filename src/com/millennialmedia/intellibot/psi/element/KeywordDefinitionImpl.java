@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,7 +65,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     @NotNull
     @Override
     public Collection<DefinedVariable> getDeclaredVariables() {
-        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         results.addAll(getArguments());
         results.addAll(getInlineVariables());
         return results;
@@ -89,7 +90,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     private Collection<DefinedVariable> collectInlineVariables() {
-        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         for (PsiElement child : getChildren()) {
             if (child instanceof KeywordDefinitionId) {
                 for (PsiElement grandChild : child.getChildren()) {
@@ -116,7 +117,7 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @NotNull
     private Collection<DefinedVariable> determineArguments() {
-        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         for (PsiElement child : getChildren()) {
             if (child instanceof BracketSetting) {
                 BracketSetting bracket = (BracketSetting) child;

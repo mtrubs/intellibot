@@ -23,7 +23,7 @@ public class RobotFindUsagesProvider implements FindUsagesProvider {
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
         if (element instanceof Argument && element.getParent() instanceof Import) {
-            // if the Argument is the first child of Import, then it is hte file reference
+            // if the Argument is the first child of Import, then it is the file reference
             // everything else will be covered by Variables
             return element == element.getParent().getFirstChild();
         }
