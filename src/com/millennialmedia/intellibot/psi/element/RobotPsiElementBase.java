@@ -67,7 +67,7 @@ public abstract class RobotPsiElementBase extends ASTWrapperPsiElement implement
     }
 
     public PsiElement setName(@NotNull String var1) throws IncorrectOperationException {
-        // TODO
+        // TODO: for renaming an element
         return this;
     }
 }

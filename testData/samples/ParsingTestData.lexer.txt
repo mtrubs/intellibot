@@ -216,7 +216,8 @@
 "${Total_Requests}", RobotTokenTypes.VARIABLE, 7
 "\n", RobotTokenTypes.WHITESPACE, 8
 "    ", RobotTokenTypes.WHITESPACE, 8
-"${var1} =", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"${var1}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+" =", RobotTokenTypes.WHITESPACE, 9
 "  ", RobotTokenTypes.WHITESPACE, 9
 "This works", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6
@@ -230,7 +231,8 @@
 "    ", RobotTokenTypes.WHITESPACE, 8
 "${var2}", RobotTokenTypes.VARIABLE_DEFINITION, 9
 "  ", RobotTokenTypes.WHITESPACE, 9
-"${var3} =", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"${var3}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+" =", RobotTokenTypes.WHITESPACE, 9
 "  ", RobotTokenTypes.WHITESPACE, 9
 "This should work", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6

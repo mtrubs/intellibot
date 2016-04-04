@@ -513,7 +513,9 @@ public class RobotLexerTest extends TestCase {
         lexer.advance();
         assertState(lexer, "    ", RobotTokenTypes.WHITESPACE, KEYWORD_DEFINITION);
         lexer.advance();
-        assertState(lexer, "${var1} =", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        assertState(lexer, "${var1}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, " =", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();
@@ -541,7 +543,9 @@ public class RobotLexerTest extends TestCase {
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();
-        assertState(lexer, "${var3} =", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        assertState(lexer, "${var3}", RobotTokenTypes.VARIABLE_DEFINITION, VARIABLE_DEFINITION);
+        lexer.advance();
+        assertState(lexer, " =", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();
         assertState(lexer, "  ", RobotTokenTypes.WHITESPACE, VARIABLE_DEFINITION);
         lexer.advance();

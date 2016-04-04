@@ -153,7 +153,9 @@ public class RobotParser implements PsiParser {
                     seenKeyword = true;
                     boolean isPartOfKeywordDefinition = builder.rawLookup(-1) == RobotTokenTypes.KEYWORD_DEFINITION ||
                             isNextToken(builder, RobotTokenTypes.KEYWORD_DEFINITION);
+                    PsiBuilder.Marker id = builder.mark();
                     builder.advanceLexer();
+                    done(id, RobotTokenTypes.VARIABLE_DEFINITION_ID);
                     inline = isPartOfKeywordDefinition;
                     if (!isPartOfKeywordDefinition && builder.getTokenType() == RobotTokenTypes.KEYWORD) {
                         parseKeywordStatement(builder, RobotTokenTypes.KEYWORD_STATEMENT, true);
@@ -206,7 +208,9 @@ public class RobotParser implements PsiParser {
         assert RobotTokenTypes.VARIABLE_DEFINITION == type;
         PsiBuilder.Marker argMarker = builder.mark();
         PsiBuilder.Marker definitionMarker = builder.mark();
+        PsiBuilder.Marker definitionIdMarker = builder.mark();
         builder.advanceLexer();
+        definitionIdMarker.done(RobotTokenTypes.VARIABLE_DEFINITION_ID);
         definitionMarker.done(RobotTokenTypes.VARIABLE_DEFINITION);
         IElementType token = builder.getTokenType();
         while (!builder.eof() && (token == RobotTokenTypes.ARGUMENT || token == RobotTokenTypes.VARIABLE)) {
@@ -231,7 +235,14 @@ public class RobotParser implements PsiParser {
         IElementType type = builder.getTokenType();
         assert markType == type;
         PsiBuilder.Marker importMarker = builder.mark();
+        PsiBuilder.Marker id = null;
+        if (type == RobotTokenTypes.VARIABLE_DEFINITION) {
+            id = builder.mark();
+        }
         builder.advanceLexer();
+        if (id != null) {
+            id.done(RobotTokenTypes.VARIABLE_DEFINITION_ID);
+        }
         while (!builder.eof()) {
             type = builder.getTokenType();
             if (RobotTokenTypes.ARGUMENT == type || RobotTokenTypes.VARIABLE == type) {

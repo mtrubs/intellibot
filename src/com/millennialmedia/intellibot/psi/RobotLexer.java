@@ -10,16 +10,6 @@ import java.util.Stack;
 
 public class RobotLexer extends LexerBase {
 
-    private CharSequence buffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
-    private int startOffset;
-    private int endOffset;
-    private int position;
-    private IElementType currentToken;
-
-    private final RobotKeywordProvider keywordProvider;
-
-    private Stack<Integer> level = new Stack<Integer>();
-    private static final int NONE = 0;
     protected static final int SETTINGS_HEADING = 1;
     protected static final int TEST_CASES_HEADING = 2;
     protected static final int KEYWORDS_HEADING = 3;
@@ -31,11 +21,62 @@ public class RobotLexer extends LexerBase {
     protected static final int VARIABLE_DEFINITION = 9;
     protected static final int SYNTAX = 10;
     protected static final int GHERKIN = 11;
+    private static final int NONE = 0;
     // we might run into max int issues at some point
     private static final int RATE = 12; // this should always be the last state + 1
+    private final RobotKeywordProvider keywordProvider;
+    private CharSequence buffer = ArrayUtil.EMPTY_CHAR_SEQUENCE;
+    private int startOffset;
+    private int endOffset;
+    private int position;
+    private IElementType currentToken;
+    private Stack<Integer> level = new Stack<Integer>();
 
     public RobotLexer(RobotKeywordProvider provider) {
         this.keywordProvider = provider;
+    }
+
+    private static boolean isSettings(String line) {
+        return "*** Settings ***".equals(line) || "*** Setting ***".equals(line);
+    }
+
+    private static boolean isTestCases(String line) {
+        return "*** Test Cases ***".equals(line) || "*** Test Case ***".equals(line);
+    }
+
+    private static boolean isKeywords(String line) {
+        return "*** Keywords ***".equals(line) || "*** Keyword ***".equals(line);
+    }
+
+    private static boolean isUserKeywords(String line) {
+        return "*** User Keywords ***".equals(line) || "*** User Keyword ***".equals(line);
+    }
+
+    private static boolean isVariables(String line) {
+        return "*** Variables ***".equals(line) || "*** Variable ***".equals(line);
+    }
+
+    protected static int toState(Stack<Integer> stack) {
+        int value = 0;
+        if (!stack.isEmpty()) {
+            int rate = 1;
+            for (Integer i : stack) {
+                value += i * rate;
+                rate *= RATE;
+            }
+        }
+        return value;
+    }
+
+    protected static Stack<Integer> fromState(int state) {
+        Stack<Integer> stack = new Stack<Integer>();
+        if (state > 0) {
+            while (state > 0) {
+                stack.push(state % RATE);
+                state /= RATE;
+            }
+        }
+        return stack;
     }
 
     @Override
@@ -149,7 +190,8 @@ public class RobotLexer extends LexerBase {
                 if (isSuperSpace(this.position)) {
                     skipWhitespace();
                 }
-                goToNextNewLineOrSuperSpace();
+                goToVariableEnd();
+                //goToNextNewLineOrSuperSpace();
                 this.level.push(VARIABLE_DEFINITION);
                 this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
@@ -173,7 +215,7 @@ public class RobotLexer extends LexerBase {
                 } else if (isVariable(this.position)) {
                     goToVariableEnd();
                     if (isVariableDefinition(this.position)) {
-                        goToNextNewLineOrSuperSpace();
+//                        goToNextNewLineOrSuperSpace();
                         this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
                         this.level.push(VARIABLE_DEFINITION);
                     } else {
@@ -230,15 +272,18 @@ public class RobotLexer extends LexerBase {
                         goToNextNewLineOrSuperSpace();
                         this.currentToken = RobotTokenTypes.ARGUMENT;
                     }
+                } else if (VARIABLE_DEFINITION == state && isVariableEnd(this.position - 1)) {
+                    goToNextNewLineOrSuperSpace();
+                    this.currentToken = RobotTokenTypes.WHITESPACE;
                 } else {
                     if (VARIABLE_DEFINITION == state && KEYWORD_DEFINITION == parentState) {
                         // this is a variable assignment inside a keyword definition: "${var} =  some keyword  arg1  arg2"
                         // next token may be another variable or a keyword
                         if (isVariable(this.position)) {
                             goToVariableEnd();
-                            if (isVariableDefinition(this.position)) {
-                                goToNextNewLineOrSuperSpace();
-                            }
+//                            if (isVariableDefinition(this.position)) {
+//                                goToNextNewLineOrSuperSpace();
+//                            }
                             this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
                         } else {
                             goToNextNewLineOrSuperSpace();
@@ -393,26 +438,6 @@ public class RobotLexer extends LexerBase {
         return isSuperSpace(position) || isNewLine(position);
     }
 
-    private static boolean isSettings(String line) {
-        return "*** Settings ***".equals(line) || "*** Setting ***".equals(line);
-    }
-
-    private static boolean isTestCases(String line) {
-        return "*** Test Cases ***".equals(line) || "*** Test Case ***".equals(line);
-    }
-
-    private static boolean isKeywords(String line) {
-        return "*** Keywords ***".equals(line) || "*** Keyword ***".equals(line);
-    }
-
-    private static boolean isUserKeywords(String line) {
-        return "*** User Keywords ***".equals(line) || "*** User Keyword ***".equals(line);
-    }
-
-    private static boolean isVariables(String line) {
-        return "*** Variables ***".equals(line) || "*** Variable ***".equals(line);
-    }
-
     private boolean isImport(String nextWord) {
         return this.keywordProvider.isSyntaxOfType(RobotTokenTypes.IMPORT, nextWord);
     }
@@ -430,29 +455,6 @@ public class RobotLexer extends LexerBase {
 
     public int peekState() {
         return this.level.isEmpty() ? NONE : this.level.peek();
-    }
-
-    protected static int toState(Stack<Integer> stack) {
-        int value = 0;
-        if (!stack.isEmpty()) {
-            int rate = 1;
-            for (Integer i : stack) {
-                value += i * rate;
-                rate *= RATE;
-            }
-        }
-        return value;
-    }
-
-    protected static Stack<Integer> fromState(int state) {
-        Stack<Integer> stack = new Stack<Integer>();
-        if (state > 0) {
-            while (state > 0) {
-                stack.push(state % RATE);
-                state /= RATE;
-            }
-        }
-        return stack;
     }
 
     @Nullable

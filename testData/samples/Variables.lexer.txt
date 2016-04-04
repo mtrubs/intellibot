@@ -136,6 +136,7 @@
 "\n", RobotTokenTypes.WHITESPACE, 8
 "    ", RobotTokenTypes.WHITESPACE, 8
 "${h}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"=", RobotTokenTypes.WHITESPACE, 9
 "  ", RobotTokenTypes.WHITESPACE, 9
 "log", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6
@@ -144,7 +145,8 @@
 "    ", RobotTokenTypes.WHITESPACE, 8
 "${${h}}", RobotTokenTypes.VARIABLE_DEFINITION, 9
 "  ", RobotTokenTypes.WHITESPACE, 9
-"${${g}}=", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"${${g}}", RobotTokenTypes.VARIABLE_DEFINITION, 9
+"=", RobotTokenTypes.WHITESPACE, 9
 "  ", RobotTokenTypes.WHITESPACE, 9
 "log", RobotTokenTypes.KEYWORD, 6
 "  ", RobotTokenTypes.WHITESPACE, 6
