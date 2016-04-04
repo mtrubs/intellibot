@@ -65,6 +65,7 @@ public class RobotParserDefinition implements ParserDefinition {
         if (node.getElementType() == RobotTokenTypes.KEYWORD_STATEMENT) return new KeywordStatementImpl(node);
         if (node.getElementType() == RobotTokenTypes.KEYWORD) return new KeywordInvokableImpl(node);
         if (node.getElementType() == RobotTokenTypes.VARIABLE_DEFINITION) return new VariableDefinitionImpl(node);
+        if (node.getElementType() == RobotTokenTypes.VARIABLE_DEFINITION_ID) return new VariableDefinitionIdImpl(node);
         if (node.getElementType() == RobotTokenTypes.HEADING) return new HeadingImpl(node);
         if (node.getElementType() == RobotTokenTypes.ARGUMENT) return new ArgumentImpl(node);
         if (node.getElementType() == RobotTokenTypes.VARIABLE) return new VariableImpl(node);
