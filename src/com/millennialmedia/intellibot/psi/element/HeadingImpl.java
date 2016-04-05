@@ -31,6 +31,7 @@ import java.util.LinkedHashSet;
 public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     private static final String ROBOT_BUILT_IN = "BuiltIn";
+    private static final String WITH_NAME = "WITH NAME";
     private static Collection<DefinedVariable> BUILT_IN_VARIABLES = null;
     private Collection<KeywordInvokable> invokedKeywords;
     private MultiMap<String, KeywordInvokable> invokableReferences;
@@ -372,12 +373,12 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                         PsiElement resolved = resolveImport(argument);
                         PyClass resolution = PythonResolver.castClass(resolved);
                         if (resolution != null) {
-                            files.add(new RobotPythonClass(argument.getPresentableText(), resolution,
+                            files.add(new RobotPythonClass(getNamespace(imp, argument), resolution,
                                     ImportType.getType(imp.getPresentableText())));
                         }
                         PyFile file = PythonResolver.castFile(resolved);
                         if (file != null) {
-                            files.add(new RobotPythonFile(argument.getPresentableText(), file,
+                            files.add(new RobotPythonFile(getNamespace(imp, argument), file,
                                     ImportType.getType(imp.getPresentableText())));
                         }
                     }
@@ -385,6 +386,32 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
             }
         }
         return files;
+    }
+
+    /**
+     * Gets the namespace of the current import.  This looks for the 'WITH NAME' tag else returns the first argument.
+     *
+     * @param imp     the import statement to get the namespace of.
+     * @param library the first argument; aka the default namespace
+     * @return the namespace of the import.
+     */
+    private String getNamespace(Import imp, Argument library) {
+        Argument[] args = PsiTreeUtil.getChildrenOfType(imp, Argument.class);
+        int index = -1;
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                Argument arg = args[i];
+                if (WITH_NAME.equals(arg.getPresentableText())) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        String results = library.getPresentableText();
+        if (index > 0 && index + 1 < args.length) {
+            results = args[index + 1].getPresentableText();
+        }
+        return results;
     }
 
     private void addBuiltInImports(@NotNull Collection<KeywordFile> files) {
