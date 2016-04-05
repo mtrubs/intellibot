@@ -28,6 +28,7 @@ public class PatternUtil {
     private static final String VARIABLE_CLOSE = "}";
     private static final String VARIABLE_START_PATTERN = "[\\$\\@\\%\\&]\\{";
     private static final String VARIABLE_END_PATTERN = "((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?";
+    private static final String VARIABLE_SEPARATOR = "[ _]*?";
 
     static {
         VARIABLE_SETTERS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
@@ -40,23 +41,42 @@ public class PatternUtil {
     }
 
     @NotNull
-    public static String getVariablePattern(@NotNull String text) {
-        text = text.trim();
+    public static String getVariablePattern(@NotNull String original) {
+        String text = original.trim();
         if (text.length() == 0) {
             return text;
         }
+        // strip any equals
         if (text.endsWith(EQUAL)) {
             text = text.substring(0, text.length() - 1);
         }
         text = text.trim();
+        // strip the starting marker
         if (text.startsWith(SCALAR_START) || text.startsWith(LIST_START) ||
                 text.startsWith(DICTIONARY_START) || text.startsWith(ENVIRONMENT_START)) {
             text = text.substring(2);
         }
+        // strip the ending marker
         if (text.endsWith(VARIABLE_CLOSE)) {
             text = text.substring(0, text.length() - 1);
         }
-        return VARIABLE_START_PATTERN + Pattern.quote(text) + VARIABLE_END_PATTERN;
+        if (text.isEmpty()) {
+            return original;
+        }
+        // put it all back together allowing for ' ' or '_' optionally anywhere
+        StringBuilder pattern = new StringBuilder();
+        pattern.append(VARIABLE_START_PATTERN);
+        for (char c : text.toCharArray()) {
+            if (c == '_' || c == ' ') {
+                continue;
+            }
+            pattern.append(VARIABLE_SEPARATOR);
+            pattern.append(Pattern.quote(Character.toString(c)));
+        }
+        pattern.append(VARIABLE_SEPARATOR);
+        pattern.append(VARIABLE_END_PATTERN);
+
+        return pattern.toString();
     }
 
     public static boolean isVariableSettingKeyword(String keyword) {

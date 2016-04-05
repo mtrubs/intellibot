@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface DefinedVariable {
 
-    boolean matches(String text);
+    boolean matches(@Nullable String text);
 
     boolean isInScope(@Nullable PsiElement position);
 
