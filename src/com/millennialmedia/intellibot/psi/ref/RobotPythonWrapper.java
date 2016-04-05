@@ -9,6 +9,7 @@ import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.DefinedVariable;
+import com.millennialmedia.intellibot.psi.util.ReservedVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,8 +39,7 @@ public abstract class RobotPythonWrapper {
     }
 
     protected static String functionToKeyword(@Nullable String function) {
-        // these keeps out intended private functions
-        if (function == null || function.startsWith(UNDERSCORE)) {
+        if (function == null || isPrivate(function)) {
             return null;
         } else {
             return function;
@@ -52,14 +52,20 @@ public abstract class RobotPythonWrapper {
                     @Override
                     public boolean process(PyTargetExpression expression) {
                         String keyword = expression.getName();
-                        if (keyword != null) {
-                            results.add(new VariableDto(expression, keyword));
+                        if (keyword != null && !isPrivate(keyword)) {
+                            // not formatted ${X}, assume scalar
+                            results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword), null));
                         }
                         return true;
                     }
                 },
                 true
         );
+    }
+
+    private static boolean isPrivate(@NotNull String keyword) {
+        // these keeps out intended private functions
+        return keyword.startsWith(UNDERSCORE) || keyword.startsWith("ROBOT_LIBRARY_");
     }
 
     protected static void addDefinedKeywords(@NotNull PyClass pythonClass, @NotNull final String namespace, @NotNull final Collection<DefinedKeyword> results) {

@@ -11,6 +11,11 @@ public interface DefinedVariable {
 
     boolean matches(String text);
 
+    boolean isInScope(@Nullable PsiElement position);
+
     @Nullable
     PsiElement reference();
+
+    @Nullable
+    String getLookup();
 }

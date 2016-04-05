@@ -44,10 +44,21 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
         return pattern.matcher(text).matches();
     }
 
+    @Override
+    public boolean isInScope(@Nullable PsiElement position) {
+        return true;
+    }
+
     @Nullable
     @Override
     public PsiElement reference() {
         return this;
+    }
+
+    @Nullable
+    @Override
+    public String getLookup() {
+        return getText();
     }
 
     @Override

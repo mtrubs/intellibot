@@ -13,6 +13,7 @@ import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
+import com.millennialmedia.intellibot.psi.util.ReservedVariable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -70,7 +71,8 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
         for (PyTargetExpression expression : this.pythonFile.getTopLevelAttributes()) {
             String keyword = expression.getName();
             if (keyword != null) {
-                results.add(new VariableDto(expression, keyword));
+                // not formatted ${X}, assume scalar
+                results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword), null));
             }
         }
         for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {
