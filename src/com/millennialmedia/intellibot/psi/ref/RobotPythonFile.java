@@ -100,12 +100,14 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
         if (o == null || getClass() != o.getClass()) return false;
 
         RobotPythonFile that = (RobotPythonFile) o;
-        return this.pythonFile.equals(that.pythonFile);
+        return this.library.equals(that.library) && this.pythonFile.equals(that.pythonFile);
     }
 
     @Override
     public int hashCode() {
-        return this.pythonFile.hashCode();
+        int result = this.library.hashCode();
+        result = 31 * result + this.pythonFile.hashCode();
+        return result;
     }
 
     @Override
