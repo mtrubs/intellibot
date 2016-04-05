@@ -27,7 +27,7 @@ public class VariableDto implements DefinedVariable {
     }
 
     @Override
-    public boolean matches(String text) {
+    public boolean matches(@Nullable String text) {
         if (text == null) {
             return false;
         }
