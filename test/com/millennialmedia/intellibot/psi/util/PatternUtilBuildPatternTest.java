@@ -26,12 +26,35 @@ public class PatternUtilBuildPatternTest {
         this.expected = expected;
     }
 
+    @Parameterized.Parameters
+    public static Collection patterns() {
+        return Arrays.asList(new Object[][]{
+                {"variable", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"${variable}", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"${variable}=", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"${variable} =", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {" ${variable} = ", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"@{variable}", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"@{variable}=", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"@{variable} =", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {" @{variable} = ", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"%{variable}", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"%{variable}=", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"%{variable} =", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {" %{variable} = ", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"&{variable}", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"&{variable}=", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {"&{variable} =", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+                {" &{variable} = ", "[\\$\\@\\%\\&]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
+        });
+    }
+
     @Test
     public void testBuildPattern() {
         String actual = PatternUtil.getVariablePattern(this.name);
         assertEquals(this.expected, actual);
         Pattern pattern = Pattern.compile(actual);
-        // TODO: asserts that either an @ or a $ or a % are interchangeable in terms of variable matching/linking; acceptable?
+        // TODO: asserts that either [@,$,%,&] are interchangeable in terms of variable matching/linking; acceptable?
         assertTrue(pattern.matcher("${variable}").matches());
         assertTrue(pattern.matcher("${variable['a']['b']}").matches());
         assertTrue(pattern.matcher("${variable['a'].name}").matches());
@@ -49,24 +72,11 @@ public class PatternUtilBuildPatternTest {
         assertTrue(pattern.matcher("%{variable['a'].name}").matches());
         assertTrue(pattern.matcher("%{variable.name}").matches());
         assertTrue(pattern.matcher("%{variable.name['a']}").matches());
-    }
 
-    @Parameterized.Parameters
-    public static Collection patterns() {
-        return Arrays.asList(new Object[][]{
-                {"variable", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"${variable}", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"${variable}=", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"${variable} =", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {" ${variable} = ", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"@{variable}", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"@{variable}=", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"@{variable} =", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {" %{variable} = ", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"%{variable}", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"%{variable}=", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {"%{variable} =", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-                {" %{variable} = ", "[\\$\\@\\%]\\{\\Qvariable\\E((\\..*?)*?(\\[.*?\\])*?)*?\\}(\\[\\d+\\])?"},
-        });
+        assertTrue(pattern.matcher("&{variable}").matches());
+        assertTrue(pattern.matcher("&{variable['a']['b']}").matches());
+        assertTrue(pattern.matcher("&{variable['a'].name}").matches());
+        assertTrue(pattern.matcher("&{variable.name}").matches());
+        assertTrue(pattern.matcher("&{variable.name['a']}").matches());
     }
 }
