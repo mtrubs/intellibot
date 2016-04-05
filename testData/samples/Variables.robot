@@ -42,6 +42,6 @@ User types "${f}"
 
 Enter
   [Arguments]  ${g}
-    ${h}  log  ${g}
+    ${h}=  log  ${g}
     ${${h}}  ${${g}}=  log  stuff
   [Return]  ${h}

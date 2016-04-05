@@ -10,15 +10,20 @@ import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
 import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
+import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonFile;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
+import com.millennialmedia.intellibot.psi.util.ReservedVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * @author Stephen Abrams
@@ -26,7 +31,8 @@ import java.util.*;
 public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     private static final String ROBOT_BUILT_IN = "BuiltIn";
-
+    private static final String WITH_NAME = "WITH NAME";
+    private static Collection<DefinedVariable> BUILT_IN_VARIABLES = null;
     private Collection<KeywordInvokable> invokedKeywords;
     private MultiMap<String, KeywordInvokable> invokableReferences;
     private Collection<Variable> usedVariables;
@@ -117,25 +123,47 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     @NotNull
     private Collection<DefinedVariable> collectVariables() {
+        Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
+        addBuiltInVariables(results);
         if (containsVariables()) {
-            List<DefinedVariable> results = new ArrayList<DefinedVariable>();
             for (PsiElement child : getChildren()) {
                 if (child instanceof DefinedVariable) {
                     results.add((DefinedVariable) child);
                 }
             }
-            return results;
         } else if (containsImports()) {
-            List<DefinedVariable> results = new ArrayList<DefinedVariable>();
             for (KeywordFile imported : getImportedFiles()) {
                 if (imported.getImportType() == ImportType.VARIABLES) {
                     results.addAll(imported.getDefinedVariables());
                 }
             }
-            return results;
-        } else {
-            return Collections.emptySet();
         }
+        return results;
+    }
+
+    private void addBuiltInVariables(@NotNull Collection<DefinedVariable> variables) {
+        variables.addAll(getBuiltInVariables());
+    }
+
+    // TODO: code highlight is not quite working; see KyleEtlPubAdPart.robot; think it has to do with name difference GLOBAL_VARIABLE vs CURDIR etc
+    private synchronized Collection<DefinedVariable> getBuiltInVariables() {
+        if (BUILT_IN_VARIABLES == null) {
+            Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
+
+            for (ReservedVariable variable : ReservedVariable.values()) {
+                PsiElement pythonVariable = variable.getVariable(getProject());
+                if (pythonVariable != null) {
+                    // already formatted ${X}
+                    results.add(new VariableDto(pythonVariable, variable.getVariable(), variable.getScope()));
+                }
+            }
+
+            BUILT_IN_VARIABLES = results.isEmpty() ?
+                    Collections.<DefinedVariable>emptySet() :
+                    Collections.unmodifiableCollection(results);
+        }
+
+        return BUILT_IN_VARIABLES;
     }
 
     @NotNull
@@ -156,7 +184,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         if (!containsKeywordDefinitions()) {
             return Collections.emptySet();
         }
-        List<DefinedKeyword> results = new ArrayList<DefinedKeyword>();
+        Collection<DefinedKeyword> results = new LinkedHashSet<DefinedKeyword>();
         for (PsiElement child : getChildren()) {
             if (child instanceof DefinedKeyword) {
                 results.add(((DefinedKeyword) child));
@@ -183,7 +211,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         if (!containsTestCases()) {
             return Collections.emptySet();
         }
-        List<DefinedKeyword> results = new ArrayList<DefinedKeyword>();
+        Collection<DefinedKeyword> results = new LinkedHashSet<DefinedKeyword>();
         for (PsiElement child : getChildren()) {
             if (child instanceof DefinedKeyword) {
                 results.add(((DefinedKeyword) child));
@@ -327,45 +355,66 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         return results;
     }
 
+    @NotNull
     private Collection<KeywordFile> collectImportFiles() {
-        if (!containsImports()) {
-            return Collections.emptySet();
-        }
-        List<KeywordFile> files = new ArrayList<KeywordFile>();
-        for (PsiElement child : getChildren()) {
-            if (child instanceof Import) {
-                Import imp = (Import) child;
-                if (imp.isResource()) {
-                    Argument argument = PsiTreeUtil.findChildOfType(imp, Argument.class);
-                    if (argument != null) {
+        Collection<KeywordFile> files = new LinkedHashSet<KeywordFile>();
+        addBuiltInImports(files);
+        if (containsImports()) {
+            Collection<Import> imports = PsiTreeUtil.findChildrenOfType(this, Import.class);
+            for (Import imp : imports) {
+                Argument argument = PsiTreeUtil.findChildOfType(imp, Argument.class);
+                if (argument != null) {
+                    if (imp.isResource()) {
                         PsiElement resolution = resolveImport(argument);
                         if (resolution instanceof KeywordFile) {
                             files.add((KeywordFile) resolution);
                         }
-                    }
-                } else if (imp.isLibrary() || imp.isVariables()) {
-                    Argument argument = PsiTreeUtil.findChildOfType(imp, Argument.class);
-                    if (argument != null) {
+                    } else if (imp.isLibrary() || imp.isVariables()) {
                         PsiElement resolved = resolveImport(argument);
                         PyClass resolution = PythonResolver.castClass(resolved);
                         if (resolution != null) {
-                            files.add(new RobotPythonClass(argument.getPresentableText(), resolution,
+                            files.add(new RobotPythonClass(getNamespace(imp, argument), resolution,
                                     ImportType.getType(imp.getPresentableText())));
                         }
                         PyFile file = PythonResolver.castFile(resolved);
                         if (file != null) {
-                            files.add(new RobotPythonFile(argument.getPresentableText(), file,
+                            files.add(new RobotPythonFile(getNamespace(imp, argument), file,
                                     ImportType.getType(imp.getPresentableText())));
                         }
                     }
                 }
             }
         }
-        addBuiltIn(files);
         return files;
     }
 
-    private void addBuiltIn(List<KeywordFile> files) {
+    /**
+     * Gets the namespace of the current import.  This looks for the 'WITH NAME' tag else returns the first argument.
+     *
+     * @param imp     the import statement to get the namespace of.
+     * @param library the first argument; aka the default namespace
+     * @return the namespace of the import.
+     */
+    private String getNamespace(Import imp, Argument library) {
+        Argument[] args = PsiTreeUtil.getChildrenOfType(imp, Argument.class);
+        int index = -1;
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                Argument arg = args[i];
+                if (WITH_NAME.equals(arg.getPresentableText())) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        String results = library.getPresentableText();
+        if (index > 0 && index + 1 < args.length) {
+            results = args[index + 1].getPresentableText();
+        }
+        return results;
+    }
+
+    private void addBuiltInImports(@NotNull Collection<KeywordFile> files) {
         PyClass builtIn = PythonResolver.findClass(ROBOT_BUILT_IN, getProject());
         if (builtIn != null) {
             files.add(new RobotPythonClass(ROBOT_BUILT_IN, builtIn, ImportType.LIBRARY));

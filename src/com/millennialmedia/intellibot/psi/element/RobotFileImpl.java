@@ -13,7 +13,6 @@ import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -44,7 +43,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     @NotNull
     @Override
     public Collection<DefinedVariable> getDefinedVariables() {
-        Collection<DefinedVariable> results = new ArrayList<DefinedVariable>();
+        Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         for (Heading heading : getHeadings()) {
             results.addAll(heading.getDefinedVariables());
         }
@@ -60,7 +59,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     @NotNull
     @Override
     public Collection<DefinedKeyword> getDefinedKeywords() {
-        Collection<DefinedKeyword> results = new ArrayList<DefinedKeyword>();
+        Collection<DefinedKeyword> results = new LinkedHashSet<DefinedKeyword>();
         for (Heading heading : getHeadings()) {
             results.addAll(heading.getDefinedKeywords());
         }
@@ -109,7 +108,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     @NotNull
     @Override
     public Collection<KeywordInvokable> getKeywordReferences(@Nullable KeywordDefinition definition) {
-        Collection<KeywordInvokable> results = new ArrayList<KeywordInvokable>();
+        Collection<KeywordInvokable> results = new LinkedHashSet<KeywordInvokable>();
         for (Heading heading : getHeadings()) {
             results.addAll(heading.getKeywordReferences(definition));
         }
@@ -130,7 +129,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
 
     @NotNull
     private Collection<Heading> collectHeadings() {
-        Collection<Heading> results = new ArrayList<Heading>();
+        Collection<Heading> results = new LinkedHashSet<Heading>();
         for (PsiElement child : getChildren()) {
             if (child instanceof Heading) {
                 results.add((Heading) child);

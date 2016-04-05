@@ -69,7 +69,6 @@ public class ResolverUtils {
             }
         }
         // TODO: __init__ files...
-        // TODO: global variables: ~/.robot-env/lib/python2.7/site-packages/robot/variables/__init__.py
         return null;
     }
 

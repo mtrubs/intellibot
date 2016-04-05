@@ -3,6 +3,8 @@ package com.millennialmedia.intellibot.psi.element;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * @author mrubino
  */
-public class VariableDefinitionImpl extends RobotPsiElementBase implements VariableDefinition, DefinedVariable {
+public class VariableDefinitionImpl extends RobotPsiElementBase implements VariableDefinition, DefinedVariable, PsiNameIdentifierOwner {
 
     private Pattern pattern;
 
@@ -42,10 +44,21 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
         return pattern.matcher(text).matches();
     }
 
+    @Override
+    public boolean isInScope(@Nullable PsiElement position) {
+        return true;
+    }
+
     @Nullable
     @Override
     public PsiElement reference() {
         return this;
+    }
+
+    @Nullable
+    @Override
+    public String getLookup() {
+        return getText();
     }
 
     @Override
@@ -59,5 +72,11 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
     @NotNull
     public Icon getIcon(int flags) {
         return RobotIcons.VARIABLE_DEFINITION;
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return PsiTreeUtil.findChildOfType(this, VariableDefinitionId.class);
     }
 }
