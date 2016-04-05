@@ -94,7 +94,8 @@ public class KeywordStatementImpl extends RobotPsiElementBase implements Keyword
                 List<Argument> arguments = getArguments();
                 if (arguments.size() > 0) {
                     Argument variable = arguments.get(0);
-                    return new VariableDto(variable, variable.getPresentableText());
+                    // already formatted ${X}
+                    return new VariableDto(variable, variable.getPresentableText(), null);
                 }
             }
         }

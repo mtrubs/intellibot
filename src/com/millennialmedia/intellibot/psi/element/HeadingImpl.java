@@ -152,7 +152,8 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
             for (ReservedVariable variable : ReservedVariable.values()) {
                 PsiElement pythonVariable = variable.getVariable(getProject());
                 if (pythonVariable != null) {
-                    results.add(new VariableDto(pythonVariable, variable.getVariable()));
+                    // already formatted ${X}
+                    results.add(new VariableDto(pythonVariable, variable.getVariable(), variable.getScope()));
                 }
             }
 

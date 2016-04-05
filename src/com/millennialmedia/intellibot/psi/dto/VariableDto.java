@@ -3,6 +3,7 @@ package com.millennialmedia.intellibot.psi.dto;
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
+import com.millennialmedia.intellibot.psi.util.ReservedVariableScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,11 +17,13 @@ public class VariableDto implements DefinedVariable {
 
     private final PsiElement reference;
     private final String name;
+    private final ReservedVariableScope scope;
     private Pattern pattern;
 
-    public VariableDto(@NotNull PsiElement reference, @NotNull String name) {
+    public VariableDto(@NotNull PsiElement reference, @NotNull String name, @Nullable ReservedVariableScope scope) {
         this.reference = reference;
         this.name = name.trim();
+        this.scope = scope;
     }
 
     @Override
@@ -36,10 +39,21 @@ public class VariableDto implements DefinedVariable {
         return pattern.matcher(text).matches();
     }
 
+    @Override
+    public boolean isInScope(@Nullable PsiElement position) {
+        return this.scope == null || position == null || this.scope.isInScope(position);
+    }
+
     @Nullable
     @Override
     public PsiElement reference() {
         return this.reference;
+    }
+
+    @Nullable
+    @Override
+    public String getLookup() {
+        return this.scope == null ? this.reference.getText() : this.name;
     }
 
     @Override

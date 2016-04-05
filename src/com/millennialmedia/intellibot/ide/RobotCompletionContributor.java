@@ -51,41 +51,6 @@ public class RobotCompletionContributor extends CompletionContributor {
         }
     };
 
-    private static PsiElement getHeading(PsiElement current) {
-        if (current == null) {
-            return null;
-        }
-        if (current instanceof Heading) {
-            return current;
-        } else {
-            return getHeading(current.getParent());
-        }
-    }
-
-    private static boolean isInSettings(@Nullable PsiElement element) {
-        boolean result = false;
-        if (element instanceof Heading) {
-            result = ((Heading) element).isSettings();
-        }
-        return result;
-    }
-
-    private static boolean isInTestCases(@Nullable PsiElement element) {
-        boolean result = false;
-        if (element instanceof Heading) {
-            result = ((Heading) element).containsTestCases();
-        }
-        return result;
-    }
-
-    private static boolean isInKeywords(@Nullable PsiElement element) {
-        boolean result = false;
-        if (element instanceof Heading) {
-            result = ((Heading) element).containsKeywordDefinitions();
-        }
-        return result;
-    }
-
     public RobotCompletionContributor() {
         // This is the rule for adding Headings (*** Settings ***, *** Test Cases ***)
         extend(CompletionType.BASIC,
@@ -166,17 +131,46 @@ public class RobotCompletionContributor extends CompletionContributor {
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
-                        if (isInTestCases(heading) || isInKeywords(heading)) {
-                            addRobotVariables(result, parameters.getOriginalFile());
+                        if (isInTestCases(heading) || isInKeywords(heading) || isInSettings(heading)) {
+                            addRobotVariables(result, parameters.getOriginalFile(), parameters.getOriginalPosition());
                         }
                     }
                 });
     }
 
-    @Override
-    public void fillCompletionVariants(@NotNull final CompletionParameters parameters, @NotNull CompletionResultSet result) {
-        // debugging point
-        super.fillCompletionVariants(parameters, result);
+    private static PsiElement getHeading(PsiElement current) {
+        if (current == null) {
+            return null;
+        }
+        if (current instanceof Heading) {
+            return current;
+        } else {
+            return getHeading(current.getParent());
+        }
+    }
+
+    private static boolean isInSettings(@Nullable PsiElement element) {
+        boolean result = false;
+        if (element instanceof Heading) {
+            result = ((Heading) element).isSettings();
+        }
+        return result;
+    }
+
+    private static boolean isInTestCases(@Nullable PsiElement element) {
+        boolean result = false;
+        if (element instanceof Heading) {
+            result = ((Heading) element).containsTestCases();
+        }
+        return result;
+    }
+
+    private static boolean isInKeywords(@Nullable PsiElement element) {
+        boolean result = false;
+        if (element instanceof Heading) {
+            result = ((Heading) element).containsKeywordDefinitions();
+        }
+        return result;
     }
 
     private static void addRobotKeywords(CompletionResultSet result, PsiFile file) {
@@ -195,26 +189,29 @@ public class RobotCompletionContributor extends CompletionContributor {
         }
     }
 
-    private static void addRobotVariables(CompletionResultSet result, PsiFile file) {
+    private static void addRobotVariables(@NotNull CompletionResultSet result, @NotNull PsiFile file, @Nullable PsiElement position) {
         if (!(file instanceof RobotFile)) {
             return;
         }
         RobotFile robotFile = (RobotFile) file;
-        addVariablesToResult(robotFile.getDefinedVariables(), result);
+        addVariablesToResult(robotFile.getDefinedVariables(), result, position);
 
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
         for (KeywordFile f : importedFiles) {
-            addVariablesToResult(f.getDefinedVariables(), result);
+            addVariablesToResult(f.getDefinedVariables(), result, position);
         }
     }
 
-    private static void addVariablesToResult(final Collection<DefinedVariable> variables,
-                                             final CompletionResultSet result) {
+    private static void addVariablesToResult(@NotNull final Collection<DefinedVariable> variables,
+                                             @NotNull final CompletionResultSet result,
+                                             @Nullable PsiElement position) {
         for (DefinedVariable variable : variables) {
-            PsiElement reference = variable.reference();
-            if (reference != null) {
-                String text = reference.getText();
+            if (!variable.isInScope(position)) {
+                continue;
+            }
+            String text = variable.getLookup();
+            if (text != null) {
                 // we only want the first word of the variable
                 String[] words = text.split("\\s+");
                 String lookupString = words.length > 0 ? words[0] : text;
@@ -258,5 +255,11 @@ public class RobotCompletionContributor extends CompletionContributor {
                     tail);
             results.addElement(element);
         }
+    }
+
+    @Override
+    public void fillCompletionVariants(@NotNull final CompletionParameters parameters, @NotNull CompletionResultSet result) {
+        // debugging point
+        super.fillCompletionVariants(parameters, result);
     }
 }
