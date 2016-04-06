@@ -248,7 +248,10 @@ public class RobotParser implements PsiParser {
             if (RobotTokenTypes.ARGUMENT == type || RobotTokenTypes.VARIABLE == type) {
                 parseWith(builder, RobotTokenTypes.ARGUMENT);
             } else if (markType != RobotTokenTypes.VARIABLE_DEFINITION && RobotTokenTypes.VARIABLE_DEFINITION == type) {
-                if (builder.rawLookup(-1) == RobotTokenTypes.WHITESPACE && builder.rawLookup(-2) == RobotTokenTypes.WHITESPACE) {
+                // we check the first two to see if we are in a new statement; the third handles ... cases
+                if (builder.rawLookup(-1) == RobotTokenTypes.WHITESPACE &&
+                        builder.rawLookup(-2) == RobotTokenTypes.WHITESPACE &&
+                        builder.rawLookup(-3) != RobotTokenTypes.WHITESPACE) {
                     break;
                 }
                 parseVariableDefinitionWithDefaults(builder);
