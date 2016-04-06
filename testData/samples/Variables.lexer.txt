@@ -156,5 +156,27 @@
 "[Return]", RobotTokenTypes.BRACKET_SETTING, 5
 "  ", RobotTokenTypes.WHITESPACE, 5
 "${h}", RobotTokenTypes.VARIABLE, 5
+"\n", RobotTokenTypes.WHITESPACE, 8
+"\n", RobotTokenTypes.WHITESPACE, 3
+"Leave", RobotTokenTypes.KEYWORD_DEFINITION, 8
+"\n", RobotTokenTypes.WHITESPACE, 8
+"  ", RobotTokenTypes.WHITESPACE, 8
+"[Arguments]", RobotTokenTypes.BRACKET_SETTING, 7
+"  ", RobotTokenTypes.WHITESPACE, 7
+"${i}", RobotTokenTypes.VARIABLE_DEFINITION, 7
+"=1", RobotTokenTypes.ARGUMENT, 7
+"\n", RobotTokenTypes.WHITESPACE, 7
+"  ", RobotTokenTypes.WHITESPACE, 7
+"...", RobotTokenTypes.WHITESPACE, 7
+"          ", RobotTokenTypes.WHITESPACE, 7
+"${j}", RobotTokenTypes.VARIABLE_DEFINITION, 7
+"=2", RobotTokenTypes.ARGUMENT, 7
+"\n", RobotTokenTypes.WHITESPACE, 8
+"    ", RobotTokenTypes.WHITESPACE, 8
+"Log", RobotTokenTypes.KEYWORD, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${i}", RobotTokenTypes.VARIABLE, 6
+"  ", RobotTokenTypes.WHITESPACE, 6
+"${j}", RobotTokenTypes.VARIABLE, 6
 "\n", RobotTokenTypes.WHITESPACE, 3
 "\n", RobotTokenTypes.null, 3

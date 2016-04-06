@@ -45,3 +45,8 @@ Enter
     ${h}=  log  ${g}
     ${${h}}  ${${g}}=  log  stuff
   [Return]  ${h}
+
+Leave
+  [Arguments]  ${i}=1
+  ...          ${j}=2
+    Log  ${i}  ${j}
