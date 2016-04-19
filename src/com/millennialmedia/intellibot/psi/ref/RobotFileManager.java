@@ -28,19 +28,29 @@ public class RobotFileManager {
     private static final Map<String, PsiElement> FILE_CACHE = new HashMap<String, PsiElement>();
     private static final MultiMap<PsiElement, String> FILE_NAMES = MultiMap.createSet();
 
+    private RobotFileManager() {
+        NotificationsConfiguration.getNotificationsConfiguration().register(
+                "intellibot.debug", NotificationDisplayType.NONE);
+    }
+
     @Nullable
     private static synchronized PsiElement getFromCache(@NotNull String value) {
-        return FILE_CACHE.get(value);
+        PsiElement element = FILE_CACHE.get(value);
+        // evict the element if it is from an old instance
+        if (element != null && element.getProject().isDisposed()) {
+            evict(element);
+            return null;
+        }
+        return element;
     }
 
     private static synchronized void addToCache(@Nullable PsiElement element, @NotNull String value) {
-        if (element != null) {
+        if (element != null && !element.getProject().isDisposed()) {
             FILE_CACHE.put(value, element);
             FILE_NAMES.putValue(element, value);
         }
     }
 
-    // TODO: not sure when
     public static synchronized void evict(@Nullable PsiElement element) {
         if (element != null) {
             Collection<String> keys = FILE_NAMES.remove(element);
@@ -50,11 +60,6 @@ public class RobotFileManager {
                 }
             }
         }
-    }
-
-    private RobotFileManager() {
-        NotificationsConfiguration.getNotificationsConfiguration().register(
-                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     @Nullable
