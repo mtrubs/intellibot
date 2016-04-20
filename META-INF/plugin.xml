@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.9.143.381</version>
+    <version>0.9.107.105</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -38,7 +38,7 @@
       ]]>
     </change-notes>
 
-    <idea-version since-build="143.381"/>
+    <idea-version since-build="107.105"/>
 
     <application-components>
         <!-- Add your application components here -->
@@ -71,7 +71,7 @@
                 implementation="com.millennialmedia.intellibot.ide.usage.RobotKeywordGroupingRuleProvider"/>
         <referencesSearch implementation="com.millennialmedia.intellibot.ide.search.RobotPythonReferenceSearch"/>
 
-        <lang.syntaxHighlighterFactory language="Robot"
+        <lang.syntaxHighlighterFactory key="Robot"
                                        implementationClass="com.millennialmedia.intellibot.psi.RobotSyntaxHighlightingFactory"/>
         <lang.commenter language="Robot"
                         implementationClass="com.millennialmedia.intellibot.ide.RobotCommenter"/>
