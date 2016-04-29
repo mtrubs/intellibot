@@ -216,7 +216,13 @@ public enum ReservedVariableScope {
 
     @Nullable
     public PsiElement getVariable(@NotNull Project project) {
-        return PythonResolver.findVariable("GLOBAL_VARIABLES", project);
+        // Robot 2.x
+        PsiElement element = PythonResolver.findVariable("GLOBAL_VARIABLES", project);
+        if (element == null) {
+            // Robot 3.x
+            element = PythonResolver.findClass("GlobalVariables", project);
+        }
+        return element;
     }
 
     public abstract boolean isInScope(@NotNull PsiElement position);
