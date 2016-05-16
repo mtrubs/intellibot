@@ -10,6 +10,7 @@ public class PatternBuilder {
     private static final String ANY = ".*?";
     private static final String DOT = ".";
 
+    @NotNull
     static private String parseFunction(@NotNull String keyword) {
         Matcher matcher = PATTERN.matcher(keyword);
         String result = "";
@@ -24,8 +25,7 @@ public class PatternBuilder {
             if (end.length() > 0) {
                 result += end;
             }
-        }
-        else {
+        } else {
             result = !keyword.isEmpty() ? Pattern.quote(keyword) : keyword;
         }
         return result;
