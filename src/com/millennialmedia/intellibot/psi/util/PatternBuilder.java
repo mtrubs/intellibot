@@ -5,18 +5,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KeywordParser {
+public class PatternBuilder {
     private static final Pattern PATTERN = Pattern.compile("(.*?)(\\$\\{.*?\\})(.*)");
     private static final String ANY = ".*?";
     private static final String DOT = ".";
 
-    @NotNull
-    static public String buildPattern(@NotNull String namespace, @NotNull String python_function_name) {
-        Matcher matcher = PATTERN.matcher(python_function_name);
+    static private String parseFunction(@NotNull String keyword) {
+        Matcher matcher = PATTERN.matcher(keyword);
         String result = "";
         if (matcher.matches()) {
             String start = matcher.group(1);
-            String end = buildPattern("", matcher.group(3));
+            String end = parseFunction(matcher.group(3));
 
             if (start.length() > 0) {
                 result = Pattern.quote(start);
@@ -25,9 +24,16 @@ public class KeywordParser {
             if (end.length() > 0) {
                 result += end;
             }
-        } else {
-            result = !python_function_name.isEmpty() ? Pattern.quote(python_function_name) : python_function_name;
         }
+        else {
+            result = !keyword.isEmpty() ? Pattern.quote(keyword) : keyword;
+        }
+        return result;
+    }
+
+    @NotNull
+    static public String parseNamespaceKeyword(@NotNull String namespace, @NotNull String keyword) {
+        String result = parseFunction(keyword);
 
         if (!namespace.isEmpty()) {
             result = "(" + Pattern.quote(namespace + DOT) + ")?" + result;

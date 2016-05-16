@@ -26,7 +26,7 @@ public class KeywordParserTest {
 
     @Test
     public void testBuildPattern() throws Throwable {
-        String actual = KeywordParser.buildPattern(namespace, keyword);
+        String actual = PatternBuilder.parseNamespaceKeyword(namespace, keyword);
         assertEquals(pattern, actual);
 
         assertTrue(Pattern.compile(actual).matcher(keyword).matches());
