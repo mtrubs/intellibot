@@ -32,12 +32,17 @@ public class PatternBuilder {
     }
 
     @NotNull
-    static public String parseNamespaceKeyword(@NotNull String namespace, @NotNull String keyword) {
-        String result = parseFunction(keyword);
-
+    static private String parseNamespace(@NotNull String namespace) {
+        String result = "";
         if (!namespace.isEmpty()) {
-            result = "(" + Pattern.quote(namespace + DOT) + ")?" + result;
+            result = "(" + Pattern.quote(namespace + DOT) + ")?";
         }
         return result;
+    }
+
+
+    @NotNull
+    static public String parseNamespaceKeyword(@NotNull String namespace, @NotNull String keyword) {
+        return parseNamespace(namespace) + parseFunction(keyword);
     }
 }
