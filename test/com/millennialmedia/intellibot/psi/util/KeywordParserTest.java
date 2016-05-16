@@ -1,10 +1,9 @@
-package com.millennialmedia.intellibot.psi.dto;
+package com.millennialmedia.intellibot.psi.util;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -13,13 +12,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
-public class KeywordDtoTest {
+public class KeywordParserTest {
 
     private String namespace;
     private String keyword;
     private String pattern;
 
-    public KeywordDtoTest(String namespace, String keyword, String pattern) {
+    public KeywordParserTest(String namespace, String keyword, String pattern) {
         this.namespace = namespace;
         this.keyword = keyword;
         this.pattern = pattern;
@@ -27,9 +26,7 @@ public class KeywordDtoTest {
 
     @Test
     public void testBuildPattern() throws Throwable {
-        Method method = KeywordDto.class.getDeclaredMethod("buildPattern", String.class, String.class);
-        method.setAccessible(true);
-        String actual = (String) method.invoke(null, namespace, keyword);
+        String actual = KeywordParser.buildPattern(namespace, keyword);
         assertEquals(pattern, actual);
 
         assertTrue(Pattern.compile(actual).matcher(keyword).matches());

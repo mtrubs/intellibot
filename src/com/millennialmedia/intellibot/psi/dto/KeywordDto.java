@@ -2,6 +2,7 @@ package com.millennialmedia.intellibot.psi.dto;
 
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.util.KeywordParser;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class KeywordDto implements DefinedKeyword {
 
-    private static final String DOT = ".";
+
 
     private final PsiElement reference;
     private final String name;
@@ -26,36 +27,8 @@ public class KeywordDto implements DefinedKeyword {
     public KeywordDto(@NotNull PsiElement reference, @NotNull String namespace, @NotNull String name, boolean args) {
         this.reference = reference;
         this.name = PatternUtil.functionToKeyword(name).trim();
-        this.namePattern = Pattern.compile(buildPattern(namespace, this.name), Pattern.CASE_INSENSITIVE);
+        this.namePattern = Pattern.compile(KeywordParser.buildPattern(namespace, this.name), Pattern.CASE_INSENSITIVE);
         this.args = args;
-    }
-
-    static private String buildPattern(@NotNull String namespace, @NotNull String name) {
-        final Pattern PATTERN = Pattern.compile("(.*?)(\\$\\{.*?\\})(.*)");
-        final String ANY = ".*?";
-
-        Matcher matcher = PATTERN.matcher(name);
-
-        String result = "";
-        if (matcher.matches()) {
-            String start = matcher.group(1);
-            String end = buildPattern("", matcher.group(3));
-
-            if (start.length() > 0) {
-                result = Pattern.quote(start);
-            }
-            result += ANY;
-            if (end.length() > 0) {
-                result += end;
-            }
-        } else {
-            result = !name.isEmpty() ? Pattern.quote(name) : name;
-        }
-
-        if (!namespace.isEmpty()) {
-            result = "(" + Pattern.quote(namespace + DOT) + ")?" + result;
-        }
-        return result;
     }
 
     @Override
