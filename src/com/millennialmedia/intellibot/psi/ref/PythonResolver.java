@@ -83,9 +83,18 @@ public class PythonResolver {
         PyClass matchedByName = null;
         for (PyClass pyClass : classes) {
             String qName = pyClass.getQualifiedName();
-            if (qName != null && qName.equals(name)) {
-                return pyClass;
+            if (qName != null) {
+                // For importing 'Library foo.bar.bar'
+                if( qName.equals(name)) {
+                    return pyClass;
+                }
+
+                // For importing 'Library foo.bar'
+                if( qName.equals(name + "." + shortName )) {
+                    return pyClass;
+                }
             }
+
             // save last match on full name should qualified name never match
             String className = pyClass.getName();
             if (className != null && className.equals(name)) {

@@ -2,6 +2,7 @@ package com.millennialmedia.intellibot.psi.dto;
 
 import com.intellij.psi.PsiElement;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
+import com.millennialmedia.intellibot.psi.util.PatternBuilder;
 import com.millennialmedia.intellibot.psi.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class KeywordDto implements DefinedKeyword {
 
-    private static final String DOT = ".";
+
 
     private final PsiElement reference;
     private final String name;
@@ -25,15 +26,8 @@ public class KeywordDto implements DefinedKeyword {
     public KeywordDto(@NotNull PsiElement reference, @NotNull String namespace, @NotNull String name, boolean args) {
         this.reference = reference;
         this.name = PatternUtil.functionToKeyword(name).trim();
-        this.namePattern = Pattern.compile(buildPattern(namespace, this.name), Pattern.CASE_INSENSITIVE);
+        this.namePattern = Pattern.compile(PatternBuilder.parseNamespaceKeyword(namespace, this.name), Pattern.CASE_INSENSITIVE);
         this.args = args;
-    }
-
-    private String buildPattern(@NotNull String namespace, @NotNull String name) {
-        if (namespace.length() > 0) {
-            namespace = "(" + Pattern.quote(namespace + DOT) + ")?";
-        }
-        return namespace + Pattern.quote(name);
     }
 
     @Override
