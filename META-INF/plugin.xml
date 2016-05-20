@@ -30,6 +30,8 @@
       <h2>0.10</h2>
       <ul>
         <li>corrected RobotFramework 3.x built in variables</li>
+        <li>improved some python library imports (thanks to Tillaert)</li>
+        <li>added 'keyword' decorator for python keywords (thanks to Tillaert)</li>
       </ul>
       ]]>
     </change-notes>
