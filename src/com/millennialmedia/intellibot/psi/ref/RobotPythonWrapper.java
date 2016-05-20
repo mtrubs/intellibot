@@ -1,10 +1,7 @@
 package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.util.Processor;
-import com.jetbrains.python.psi.PyClass;
-import com.jetbrains.python.psi.PyFunction;
-import com.jetbrains.python.psi.PyParameter;
-import com.jetbrains.python.psi.PyTargetExpression;
+import com.jetbrains.python.psi.*;
 import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
@@ -77,6 +74,29 @@ public abstract class RobotPythonWrapper {
                     public boolean process(PyFunction function) {
                         String keyword = functionToKeyword(function.getName());
                         if (keyword != null) {
+                            // Get info from @keyword
+                            PyDecoratorList decorators = function.getDecoratorList();
+                            if (decorators != null) {
+                                PyDecorator keyword_decorator = decorators.findDecorator("keyword");
+                                if (keyword_decorator != null) {
+                                    if (keyword_decorator.hasArgumentList()) {
+                                        // Get case 'name =' argument
+                                        PyExpression kwa = keyword_decorator.getKeywordArgument("name");
+                                        if (kwa != null) {
+                                            keyword = kwa.getText().replaceAll("^\"|\"$", "");
+                                        }
+                                        else {
+                                            // Otherwise, check if first argument is unnamed
+                                            PyExpression[] kda = keyword_decorator.getArguments();
+
+                                            // Argument exists and is unnamed
+                                            if (kda.length > 0 && kda[0].getName() == null) {
+                                                keyword = kda[0].getText().replaceAll("^\"|\"$", "");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             results.add(new KeywordDto(function, namespace, keyword, hasArguments(function.getParameterList().getParameters())));
                         }
                         return true;
