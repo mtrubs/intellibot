@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
-    <version>0.9.143.381</version>
+    <version>0.10.143.381</version>
     <vendor email="intellibot@millennialmedia.com" url="http://www.millennialmedia.com">Millennial Media</vendor>
 
     <depends>com.intellij.modules.lang</depends>
@@ -27,13 +27,11 @@
       ]]></description>
 
     <change-notes><![CDATA[
-      <h2>0.6.9</h2>
+      <h2>0.10</h2>
       <ul>
-        <li>added much better support for built in variables</li>
-        <li>corrected a bug around not having a settings header</li>
-        <li>added WITH NAME support</li>
-        <li>support dictionary variables</li>
-        <li>minor improvements around variable resolution, scope highlighting and auto-complete</li>
+        <li>corrected RobotFramework 3.x built in variables</li>
+        <li>improved some python library imports (thanks to Tillaert)</li>
+        <li>added 'keyword' decorator for python keywords (thanks to Tillaert)</li>
       </ul>
       ]]>
     </change-notes>
