@@ -1,4 +1,4 @@
-"invalid", RobotTokenTypes.ERROR, 0
+"invalid", RobotTokenTypes.COMMENT, 0
 "\n", RobotTokenTypes.WHITESPACE, 0
 "*** Settings ***", RobotTokenTypes.HEADING, 1
 "\n", RobotTokenTypes.WHITESPACE, 1

@@ -1,3 +1,6 @@
+documentation
+this is a sample file
+
 *** Settings ***
 # fun things going on here
 Documentation  Test the account dashboard

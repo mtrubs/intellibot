@@ -6,10 +6,12 @@ import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Stack;
 
 public class RobotLexer extends LexerBase {
 
+    protected static final int NONE = 0;
     protected static final int SETTINGS_HEADING = 1;
     protected static final int TEST_CASES_HEADING = 2;
     protected static final int KEYWORDS_HEADING = 3;
@@ -21,7 +23,6 @@ public class RobotLexer extends LexerBase {
     protected static final int VARIABLE_DEFINITION = 9;
     protected static final int SYNTAX = 10;
     protected static final int GHERKIN = 11;
-    private static final int NONE = 0;
     // we might run into max int issues at some point
     private static final int RATE = 12; // this should always be the last state + 1
     private final RobotKeywordProvider keywordProvider;
@@ -56,7 +57,7 @@ public class RobotLexer extends LexerBase {
         return "*** Variables ***".equals(line) || "*** Variable ***".equals(line);
     }
 
-    protected static int toState(Stack<Integer> stack) {
+    protected static int toState(List<Integer> stack) {
         int value = 0;
         if (!stack.isEmpty()) {
             int rate = 1;
@@ -158,8 +159,9 @@ public class RobotLexer extends LexerBase {
 
         // the rest is based on state
         if (NONE == state) {
+            // this is the instance where no '*** setting ***' has been detected yet.
             goToEndOfLine();
-            this.currentToken = RobotTokenTypes.ERROR;
+            this.currentToken = RobotTokenTypes.COMMENT;
         } else {
             if (SETTINGS_HEADING == state) {
                 if (isSuperSpace(this.position)) {

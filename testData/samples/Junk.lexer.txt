@@ -1,3 +1,3 @@
-"some junk", RobotTokenTypes.ERROR, 0
+"some junk", RobotTokenTypes.COMMENT, 0
 "\n", RobotTokenTypes.WHITESPACE, 0
 "\n", RobotTokenTypes.null, 0

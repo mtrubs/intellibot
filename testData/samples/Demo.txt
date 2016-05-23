@@ -1,5 +1,5 @@
 FILE(0,614)
-  PsiElement(ERROR)('invalid')(0,7)
+  PsiComment(COMMENT)('invalid')(0,7)
   HeadingImpl(HEADING)(8,101)
     PsiElement(HEADING)('*** Settings ***')(8,24)
     SettingImpl(SETTING)(25,65)
