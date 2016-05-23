@@ -61,7 +61,9 @@ public class PythonResolver {
         }
         Collection<PyTargetExpression> variables = safeFindVariable(name, project);
         for (PyTargetExpression variable : variables) {
-            String qName = variable.getQualifiedName();
+            // TODO: not sure we can support this?
+            String qName = null; //variable.getQualifiedName();
+            //noinspection ConstantConditions
             if (qName != null && qName.equals(name)) {
                 return variable;
             }
@@ -121,7 +123,7 @@ public class PythonResolver {
         if (PlatformUtils.isPyCharm()) {
             return true;
         } else {
-            String pluginId = PlatformUtils.isCommunityEdition() ? PYTHON_PLUGIN_CE : PYTHON_PLUGIN_U;
+            String pluginId = PlatformUtils.isIdeaCommunity() ? PYTHON_PLUGIN_CE : PYTHON_PLUGIN_U;
             PluginId pythonPluginId = PluginId.getId(pluginId);
             IdeaPluginDescriptor pythonPlugin = PluginManager.getPlugin(pythonPluginId);
             if (pythonPlugin != null && pythonPlugin.isEnabled()) {

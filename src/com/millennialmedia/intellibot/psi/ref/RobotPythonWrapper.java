@@ -56,8 +56,7 @@ public abstract class RobotPythonWrapper {
                         return true;
                     }
                 },
-                true,
-                null
+                true
         );
     }
 
@@ -102,8 +101,7 @@ public abstract class RobotPythonWrapper {
                         return true;
                     }
                 },
-                true,
-                null
+                true
         );
         pythonClass.visitClassAttributes(
                 new Processor<PyTargetExpression>() {
@@ -117,8 +115,7 @@ public abstract class RobotPythonWrapper {
                         return true;
                     }
                 },
-                true,
-                null
+                true
         );
     }
 }

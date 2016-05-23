@@ -46,9 +46,9 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
             if (element instanceof KeywordDefinition) {
                 KeywordDefinition definition = (KeywordDefinition) element;
                 // this should really be part of the search options
-                boolean enableInlineSearch = RobotOptionsProvider.getInstance(params.getProject()).inlineVariableSearch();
+                boolean enableInlineSearch = RobotOptionsProvider.getInstance(element.getProject()).inlineVariableSearch();
                 if (definition.hasInlineVariables() && (localScope || enableInlineSearch)) {
-                    processKeywordWithInline(definition, searchScope, processor, params.getProject());
+                    processKeywordWithInline(definition, searchScope, processor, element.getProject());
                 } else {
                     processRobotStatement(definition, params, searchScope);
                 }
