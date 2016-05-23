@@ -77,6 +77,16 @@ public class RobotLexerTest extends TestCase {
 
         RobotLexer lexer = new RobotLexer(RobotKeywordProvider.getInstance());
         lexer.start(data);
+        assertState(lexer, "documentation", RobotTokenTypes.COMMENT, NONE);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, NONE);
+        lexer.advance();
+        assertState(lexer, "this is a sample file", RobotTokenTypes.COMMENT, NONE);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, NONE);
+        lexer.advance();
+        assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, NONE);
+        lexer.advance();
         assertState(lexer, "*** Settings ***", RobotTokenTypes.HEADING, SETTINGS_HEADING);
         lexer.advance();
         assertState(lexer, "\n", RobotTokenTypes.WHITESPACE, SETTINGS_HEADING);

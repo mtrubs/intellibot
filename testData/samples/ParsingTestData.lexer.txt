@@ -1,3 +1,8 @@
+"documentation", RobotTokenTypes.COMMENT, 0
+"\n", RobotTokenTypes.WHITESPACE, 0
+"this is a sample file", RobotTokenTypes.COMMENT, 0
+"\n", RobotTokenTypes.WHITESPACE, 0
+"\n", RobotTokenTypes.WHITESPACE, 0
 "*** Settings ***", RobotTokenTypes.HEADING, 1
 "\n", RobotTokenTypes.WHITESPACE, 1
 "# fun things going on here", RobotTokenTypes.COMMENT, 1
