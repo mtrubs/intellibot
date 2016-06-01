@@ -15,15 +15,19 @@ Addition
     And user pushes equals
     Then result is "2"
 
-#Subtraction
-#  [Tags]  Calculator
-#    TODO: implement me
+Subtraction
+  [Tags]  Calculator
+    Given calculator has been cleared
+    When user types "2 - 1"
+    And user pushes equals
+    Then result is "1"
 
 *** Keywords ***
 Calculator has been cleared
     Push button    C
+    Log  ${var2}
 
-User types "${expression}"
+User types "${<caret>expression}"
     Push buttons    ${expression}
 
 User pushes equals

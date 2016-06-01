@@ -6,7 +6,7 @@ package com.millennialmedia.intellibot.ide;
  */
 public class RobotFoldingTest extends AbstractRobotIdeTest {
 
-    public void testDemo() {
+    public void testKeywordFolding() {
         doTest();
     }
 
