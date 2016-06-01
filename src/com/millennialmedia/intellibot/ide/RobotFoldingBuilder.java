@@ -11,6 +11,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
 import com.millennialmedia.intellibot.psi.element.Heading;
 import com.millennialmedia.intellibot.psi.element.KeywordDefinition;
+import com.millennialmedia.intellibot.psi.element.RobotStatement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +35,9 @@ public class RobotFoldingBuilder implements FoldingBuilder, DumbAware {
     }
 
     private void appendDescriptors(ASTNode node, Collection<FoldingDescriptor> descriptors) {
-        if (BLOCKS_TO_FOLD.contains(node.getElementType()) && node.getTextRange().getLength() >= 2) {
+        if (BLOCKS_TO_FOLD.contains(node.getElementType()) &&
+                node.getTextRange().getLength() >= 2 &&
+                node.getPsi() instanceof RobotStatement) {
             descriptors.add(new FoldingDescriptor(node, node.getTextRange()));
         }
         ASTNode child = node.getFirstChildNode();
