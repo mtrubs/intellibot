@@ -11,6 +11,7 @@ import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.DefinedVariable;
 import com.millennialmedia.intellibot.psi.element.KeywordFile;
+import com.millennialmedia.intellibot.psi.util.PythonParser;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.PerformanceEntity;
 import com.millennialmedia.intellibot.psi.util.ReservedVariable;
@@ -44,13 +45,13 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
         PerformanceCollector debug = new PerformanceCollector(this, "get defined keywords");
         Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
         for (PyFunction function : this.pythonFile.getTopLevelFunctions()) {
-            String keyword = functionToKeyword(function.getName());
+            String keyword = PythonParser.keywordName(function);
             if (keyword != null) {
-                results.add(new KeywordDto(function, this.library, keyword, hasArguments(function.getParameterList().getParameters())));
+                results.add(new KeywordDto(function, this.library, keyword, PythonParser.keywordHasArguments(function)));
             }
         }
         for (PyTargetExpression expression : this.pythonFile.getTopLevelAttributes()) {
-            String keyword = functionToKeyword(expression.getName());
+            String keyword = PythonParser.keywordName(expression);
             if (keyword != null) {
                 results.add(new KeywordDto(expression, this.library, keyword, false));
             }
