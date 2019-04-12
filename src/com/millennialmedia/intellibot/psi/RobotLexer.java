@@ -42,7 +42,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private static boolean isTestCases(String line) {
-        return "*** Test Cases ***".equals(line) || "*** Test Case ***".equals(line);
+        return line.matches("\\*\\*\\* (Test Cases?|Tasks?) \\*\\*\\*");
     }
 
     private static boolean isKeywords(String line) {

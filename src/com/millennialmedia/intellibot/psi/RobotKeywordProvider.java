@@ -31,6 +31,8 @@ public class RobotKeywordProvider {
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Setting ***");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Test Cases ***");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Test Case ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Tasks ***");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Task ***");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Keywords ***");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Keyword ***");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.HEADING, "*** Metadata ***");
@@ -41,6 +43,7 @@ public class RobotKeywordProvider {
 
         addRecommendation(RobotTokenTypes.HEADING, "*** Settings ***", "Settings");
         addRecommendation(RobotTokenTypes.HEADING, "*** Test Cases ***", "Test Cases");
+        addRecommendation(RobotTokenTypes.HEADING, "*** Tasks ***", "Task");
         addRecommendation(RobotTokenTypes.HEADING, "*** Keywords ***", "Keywords");
         addRecommendation(RobotTokenTypes.HEADING, "*** Variables ***", "Variables");
 
@@ -54,6 +57,10 @@ public class RobotKeywordProvider {
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Teardown");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Postcondition");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Test Template");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Task Timeout");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Task Setup");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Task Teardown");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Task Template");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Documentation");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Metadata");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.SETTING, "Force Tags");
@@ -77,6 +84,10 @@ public class RobotKeywordProvider {
         addRecommendation(RobotTokenTypes.SETTING, "Test Teardown", "Test Teardown");
         addRecommendation(RobotTokenTypes.SETTING, "Test Template", "Test Template");
         addRecommendation(RobotTokenTypes.SETTING, "Test Timeout", "Test Timeout");
+        addRecommendation(RobotTokenTypes.SETTING, "Task Setup", "Task Setup");
+        addRecommendation(RobotTokenTypes.SETTING, "Task Teardown", "Task Teardown");
+        addRecommendation(RobotTokenTypes.SETTING, "Task Template", "Task Template");
+        addRecommendation(RobotTokenTypes.SETTING, "Task Timeout", "Task Timeout");
 
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Setup]");
         KEYWORD_TABLE.addSyntax(RobotTokenTypes.BRACKET_SETTING, "[Precondition]");
@@ -127,25 +138,32 @@ public class RobotKeywordProvider {
         GLOBAL_SETTINGS.add("Suite Teardown");
         GLOBAL_SETTINGS.add("Suite Postcondition");
         GLOBAL_SETTINGS.add("Test Setup");
+        GLOBAL_SETTINGS.add("Task Setup");
         GLOBAL_SETTINGS.add("Test Precondition");
         GLOBAL_SETTINGS.add("Test Teardown");
+        GLOBAL_SETTINGS.add("Task Teardown");
         GLOBAL_SETTINGS.add("Test PostCondition");
         GLOBAL_SETTINGS.add("Test Template");
+        GLOBAL_SETTINGS.add("Task Template");
         GLOBAL_SETTINGS.add("Documentation");
         GLOBAL_SETTINGS.add("Metadata");
         GLOBAL_SETTINGS.add("Force Tags");
         GLOBAL_SETTINGS.add("Default Tags");
         GLOBAL_SETTINGS.add("Test Timeout");
+        GLOBAL_SETTINGS.add("Task Timeout");
 
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Setup");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Precondition");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Teardown");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Suite Postcondition");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Setup");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Task Setup");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Precondition");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Teardown");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Task Teardown");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test PostCondition");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Test Template");
+        SETTINGS_FOLLOWED_BY_KEYWORDS.add("Task Template");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Setup");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("[Setup]");
         SETTINGS_FOLLOWED_BY_KEYWORDS.add("Precondition");
@@ -163,6 +181,7 @@ public class RobotKeywordProvider {
         SETTINGS_FOLLOWED_BY_STRINGS.add("Force Tags");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Default Tags");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Test Timeout");
+        SETTINGS_FOLLOWED_BY_STRINGS.add("Task Timeout");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Tags");
         SETTINGS_FOLLOWED_BY_STRINGS.add("[Tags]");
         SETTINGS_FOLLOWED_BY_STRINGS.add("Return");
