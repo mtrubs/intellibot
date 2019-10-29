@@ -36,17 +36,25 @@ public class RobotCompletionContributor extends CompletionContributor {
             Document document = editor.getDocument();
             int textLength = document.getTextLength();
             CharSequence chars = document.getCharsSequence();
-            if (tailOffset < textLength - 1 && chars.charAt(tailOffset) == ' ' && chars.charAt(tailOffset + 1) == ' ') {
-                // if we already have the two spaces then move the caret to after them
-                return moveCaret(editor, tailOffset, 2);
-            } else if (tailOffset < textLength && chars.charAt(tailOffset) == ' ') {
-                // if we only have one space then add the second and move the caret after both
+            if (tailOffset < textLength - 3 && chars.charAt(tailOffset) == ' ' && chars.charAt(tailOffset + 1) == ' ' && chars.charAt(tailOffset + 2) == ' ' && chars.charAt(tailOffset + 3) == ' ') {
+                // if we already have the 4 spaces then move the caret to after them
+                return moveCaret(editor, tailOffset, 4);
+            } else if (tailOffset < textLength - 2 && chars.charAt(tailOffset) == ' ' && chars.charAt(tailOffset + 1) == ' ' && chars.charAt(tailOffset + 2) == ' ') {
+                // if we only have 3 space then add 1 and move the caret after both
                 document.insertString(tailOffset, " ");
-                return moveCaret(editor, tailOffset, 2);
-            } else {
-                // if there are not spaces then add two and move the caret after them
+                return moveCaret(editor, tailOffset, 4);
+            } else if (tailOffset < textLength - 1 && chars.charAt(tailOffset) == ' ' && chars.charAt(tailOffset + 1) == ' ' ) {
+                // if we only have 2 space then add 2 and move the caret after both
                 document.insertString(tailOffset, "  ");
-                return moveCaret(editor, tailOffset, 2);
+                return moveCaret(editor, tailOffset, 4);
+            } else if (tailOffset < textLength && chars.charAt(tailOffset) == ' ') {
+                // if we only have 1 space then add 3 and move the caret after both
+                document.insertString(tailOffset, "   ");
+                return moveCaret(editor, tailOffset, 4);
+            } else {
+                // if there are not spaces then add 4 and move the caret after them
+                document.insertString(tailOffset, "    ");
+                return moveCaret(editor, tailOffset, 4);
             }
         }
     };
