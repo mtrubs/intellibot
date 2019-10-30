@@ -23,6 +23,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox allowGlobalVariables;
     private JCheckBox capitalizeKeywords;
     private JCheckBox inlineVariableSearch;
+    private JCheckBox stripVariableInLibraryPath;
 
     public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
@@ -64,7 +65,8 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
                 this.provider.allowTransitiveImports() != this.allowTransitiveImports.isSelected() ||
                 this.provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected() ||
                 this.provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected() ||
-                this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected();
+                this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected() ||
+                this.provider.stripVariableInLibraryPath() != this.stripVariableInLibraryPath.isSelected();
     }
 
     @Override
@@ -74,6 +76,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.provider.setGlobalVariables(this.allowGlobalVariables.isSelected());
         this.provider.setCapitalizeKeywords(this.capitalizeKeywords.isSelected());
         this.provider.setInlineVariableSearch(this.inlineVariableSearch.isSelected());
+        this.provider.setStripVariableInLibraryPath(this.stripVariableInLibraryPath.isSelected());
     }
 
     @Override
@@ -83,6 +86,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.allowGlobalVariables.setSelected(this.provider.allowGlobalVariables());
         this.capitalizeKeywords.setSelected(this.provider.capitalizeKeywords());
         this.inlineVariableSearch.setSelected(this.provider.inlineVariableSearch());
+        this.stripVariableInLibraryPath.setSelected(this.provider.stripVariableInLibraryPath());
     }
 
     @Override

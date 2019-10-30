@@ -386,7 +386,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 }
             }
         }
-        findChildrenClass(files, "keywords");
+        //findChildrenClass(files, "keywords");
         // forcePatch(files);
         return files;
     }

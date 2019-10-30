@@ -72,7 +72,7 @@ public class RobotFileManager {
         if (result != null) {
             return result;
         }
-        String[] file = getFilename(resource, "");
+        String[] file = getFilename(resource, "", project);
         debug(resource, "Attempting global search", project);
         result = findGlobalFile(resource, file[0], file[1], project, originalElement);
         addToCache(result, resource);
@@ -100,7 +100,7 @@ public class RobotFileManager {
         while (mod.contains("//")) {
             mod = mod.replace("//", "/");
         }
-        String[] file = getFilename(mod, ".py");
+        String[] file = getFilename(mod, ".py", project);
         // search project scope
         debug(library, "Attempting project search", project);
         result = findProjectFile(library, file[0], file[1], project, originalElement);
@@ -193,7 +193,7 @@ public class RobotFileManager {
     }
 
     @NotNull
-    private static String[] getFilename(@NotNull String path, @NotNull String suffix) {
+    private static String[] getFilename(@NotNull String path, @NotNull String suffix, @NotNull Project project) {
         // support either / or ${/}
         String[] pathElements = path.split("(\\$\\{)?/(\\})?");
         String result;
@@ -204,7 +204,9 @@ public class RobotFileManager {
         }
         String[] results = new String[2];
         results[0] = path.replace(result, "").replace("${/}", "/");
-        results[0] = results[0].replace("${", "").replace("%{", "").replace("}", "");
+//        if (RobotOptionsProvider.getInstance(project).stripVariableInLibraryPath()) {
+//            results[0] = results[0].replace("${", "").replace("%{", "").replace("}", "");
+//        }
         if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
             result += suffix;
         }
