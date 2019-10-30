@@ -204,6 +204,7 @@ public class RobotFileManager {
         }
         String[] results = new String[2];
         results[0] = path.replace(result, "").replace("${/}", "/");
+        results[0] = results[0].replace("${", "").replace("%{", "").replace("}", "");
         if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
             result += suffix;
         }
