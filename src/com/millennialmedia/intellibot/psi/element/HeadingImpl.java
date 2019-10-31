@@ -1,6 +1,8 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
+//import com.intellij.notification.*;
+//import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
@@ -45,7 +47,17 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     public HeadingImpl(@NotNull final ASTNode node) {
         super(node);
+//        NotificationsConfiguration.getNotificationsConfiguration().register(
+//                "intellibot.debug", NotificationDisplayType.NONE);
     }
+
+//    private static void debug(@NotNull String lookup, String data, @NotNull Project project) {
+//        if (RobotOptionsProvider.getInstance(project).isDebug()) {
+//            String message = String.format("[HeadlingImpl][%s] %s", lookup, data);
+//            Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
+//        }
+//
+//    }
 
     @Override
     public boolean isSettings() {
@@ -386,8 +398,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 }
             }
         }
-        //findChildrenClass(files, "keywords");
-        // forcePatch(files);
+        if (RobotOptionsProvider.getInstance(getProject()).searchChildKeywords()) {
+            findChildrenClass(files, "keywords");
+            // forcePatch(files);
+        }
         return files;
     }
 
@@ -400,17 +414,43 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
      * @param files       all pyClass
      * @param libraryName default search is keywords.
      */
-    void findChildrenClass(Collection files, String libraryName) {
+    void findChildrenClass(Collection<KeywordFile> files, String libraryName) {
         Collection<PyFile> fileList = PyModuleNameIndex.find(libraryName, getProject(), true);
+        /* TODO: judge whether the PyFile is in subdirectory of a RobotPythonClass need import(in files)
+           if no, don't import this library
+           pyFile.getParent().getParent() ==
+           RobotPythonClass.pythonClass.getContainingFile().getVirtualFile().getParent() ?
+         */
+
         List<PsiFile> allFiles = new ArrayList<PsiFile>();
         for (PyFile pyFile : fileList) {
+            /* tested, SeleniumLibrary,
+            pyFile.getName() == "__init__.py"
+            pyFile.getParent().getName() == "keywords"
+            pyFile.getParent().getParent().getName() == "SeleniumLibrary"
+            */
             if (pyFile.getParent() != null) {
-                allFiles.addAll(Arrays.asList(pyFile.getParent().getFiles()));
+                boolean toBeAdded = false;
+                if (pyFile.getParent().getParent() != null) {
+                    String name = pyFile.getParent().getParent().getName();
+                    for (KeywordFile file: files) {
+                        if (file instanceof RobotPythonClass) {
+                            if (((RobotPythonClass) file).getDebugFileName().equals(name)) {
+                                toBeAdded = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (toBeAdded) {
+                    allFiles.addAll(Arrays.asList(pyFile.getParent().getFiles()));
+                }
             }
         }
         for (PsiFile psiFile : allFiles) {
             // this is static library ,do not need to gen
-            if (psiFile.getNextSibling() instanceof RobotFileImpl) {
+            //if (psiFile.getNextSibling() instanceof RobotFileImpl) {
+            if (psiFile instanceof RobotFileImpl) {
                 continue;
             }
             PsiElement[] all = psiFile.getChildren();
@@ -422,33 +462,33 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         }
     }
 
-    public void forcePatch(Collection files) {
-        //Force Patch by Selenium
-        String[] sourcelist = {
-                "open_browser",
-                "get_cookies",
-                "input_text_into_prompt",
-                "get_webelement",
-                "submit_form",
-                "select_frame",
-                "execute_javascript",
-                "register_keyword_to_run_on_failure",
-                "set_screenshot_directory",
-                "get_list_items",
-                "get_table_cell",
-                "wait_for_condition",
-                "active_drivers",
-                "create_driver",
-                "select_window"
-        };
-        for (String str : sourcelist) {
-            Collection<PyFunction> funcs = PyFunctionNameIndex.find(str, getProject());
-            for (PyFunction pyfunc : funcs) {
-                PyClass cs = pyfunc.getContainingClass();
-                files.add(new RobotPythonClass(cs.getName(), cs, ImportType.LIBRARY));
-            }
-        }
-    }
+//    public void forcePatch(Collection files) {
+//        //Force Patch by Selenium
+//        String[] sourcelist = {
+//                "open_browser",
+//                "get_cookies",
+//                "input_text_into_prompt",
+//                "get_webelement",
+//                "submit_form",
+//                "select_frame",
+//                "execute_javascript",
+//                "register_keyword_to_run_on_failure",
+//                "set_screenshot_directory",
+//                "get_list_items",
+//                "get_table_cell",
+//                "wait_for_condition",
+//                "active_drivers",
+//                "create_driver",
+//                "select_window"
+//        };
+//        for (String str : sourcelist) {
+//            Collection<PyFunction> funcs = PyFunctionNameIndex.find(str, getProject());
+//            for (PyFunction pyfunc : funcs) {
+//                PyClass cs = pyfunc.getContainingClass();
+//                files.add(new RobotPythonClass(cs.getName(), cs, ImportType.LIBRARY));
+//            }
+//        }
+//    }
 
 
     /**
