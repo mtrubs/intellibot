@@ -1,20 +1,22 @@
 package com.millennialmedia.intellibot.psi.element;
 
 import com.intellij.lang.ASTNode;
-//import com.intellij.notification.*;
-//import com.intellij.openapi.project.Project;
+import com.intellij.notification.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.MultiMap;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
-import com.jetbrains.python.psi.PyFunction;
-import com.jetbrains.python.psi.stubs.PyFunctionNameIndex;
 import com.jetbrains.python.psi.stubs.PyModuleNameIndex;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.ide.icons.RobotIcons;
+import com.millennialmedia.intellibot.psi.RobotProjectData;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.ref.PythonResolver;
@@ -27,15 +29,18 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.*;
+import java.io.File;
 
 /**
  * @author Stephen Abrams
  */
 public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
-    private static final String ROBOT_BUILT_IN = "BuiltIn";
+    private static final String ROBOT_BUILT_IN = "robot.libraries.BuiltIn";
     private static final String WITH_NAME = "WITH NAME";
+    private static final String DEFAULT_RESOURCE_NAME = "_ProjectDefaultResource_.robot";
     private static Collection<DefinedVariable> BUILT_IN_VARIABLES = null;
+    private static Collection<DefinedVariable> GLOBAL_DEFAULT_VARIABLES = null;
     private Collection<KeywordInvokable> invokedKeywords;
     private MultiMap<String, KeywordInvokable> invokableReferences;
     private Collection<Variable> usedVariables;
@@ -47,17 +52,17 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
     public HeadingImpl(@NotNull final ASTNode node) {
         super(node);
-//        NotificationsConfiguration.getNotificationsConfiguration().register(
-//                "intellibot.debug", NotificationDisplayType.NONE);
+        NotificationsConfiguration.getNotificationsConfiguration().register(
+                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
-//    private static void debug(@NotNull String lookup, String data, @NotNull Project project) {
-//        if (RobotOptionsProvider.getInstance(project).isDebug()) {
-//            String message = String.format("[HeadlingImpl][%s] %s", lookup, data);
-//            Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
-//        }
-//
-//    }
+    private static void debug(@NotNull String lookup, String data, @NotNull Project project) {
+        if (RobotOptionsProvider.getInstance(project).isDebug()) {
+            String message = String.format("[HeadlingImpl][%s] %s", lookup, data);
+            Notifications.Bus.notify(new Notification("intellibot.debug", "Debug", message, NotificationType.INFORMATION));
+        }
+
+    }
 
     @Override
     public boolean isSettings() {
@@ -107,6 +112,8 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         this.usedVariables = null;
         this.referencedFiles = null;
         this.declaredVariables = null;
+        if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME))
+            RobotProjectData.getInstance(getProject()).setProjectGlobalDefaultVariables(null);
     }
 
     @Override
@@ -137,7 +144,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     @NotNull
     private Collection<DefinedVariable> collectVariables() {
         Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
-        addBuiltInVariables(results);
+        if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME)) {
+            addBuiltInVariables(results);
+        }
         if (containsVariables()) {
             for (PsiElement child : getChildren()) {
                 if (child instanceof DefinedVariable) {
@@ -150,6 +159,9 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                     results.addAll(imported.getDefinedVariables());
                 }
             }
+        }
+        if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME)) {
+            addProjectDefaultVariables(results);
         }
         return results;
     }
@@ -177,6 +189,48 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         }
 
         return BUILT_IN_VARIABLES;
+    }
+
+    // bug?
+    // Project A, open Project B (this windows), then open Project A (this windows)
+    // The first time of call sequence like below:
+    // HeadlingImpl.collectVariables -> getImportedFiles -> collectImportFiles -> addBuiltInImports -> PythonResolver.findClass -> PythonResolver.safeFindClass -> PyClassNameIndex.find
+    // will be hang, no return from PyClassNameIndex.find
+    // But the second and subsequent call is successful.
+    private void addProjectDefaultVariables(@NotNull Collection<DefinedVariable> variables) {
+        variables.addAll(getProjectDefaultVariables());
+    }
+
+    // use service RobotProjectData to provide project instanced of default varaibles
+    private synchronized Collection<DefinedVariable> getProjectDefaultVariables() {
+        Project project = getProject();
+        RobotProjectData robotProjectData = RobotProjectData.getInstance(project);
+        if (! RobotOptionsProvider.getInstance(project).loadProjectDefaultVariable()) {
+            robotProjectData.setProjectGlobalDefaultVariables(null);
+            return Collections.<DefinedVariable>emptySet();
+        }
+        Collection<DefinedVariable> variables = robotProjectData.projectGlobalDefaultVariables();
+        if (variables == null) {
+            Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
+            PsiFile psiFile = null;
+            String filename = project.getBasePath() + "/" + DEFAULT_RESOURCE_NAME;
+            VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(new File(filename));
+            if (virtualFile != null) {
+                psiFile = PsiManager.getInstance(project).findFile(virtualFile);
+                if (psiFile != null) {
+                    results.addAll(new RobotFileImpl(psiFile.getViewProvider()).getDefinedVariables());
+                }
+            }
+            if (psiFile == null) {
+                debug("getProjectDefaultVariables", filename + " : not found.", project);
+            }
+
+            variables = results.isEmpty() ?
+                    Collections.<DefinedVariable>emptySet() :
+                    Collections.unmodifiableCollection(results);
+            robotProjectData.setProjectGlobalDefaultVariables(variables);
+        }
+        return variables;
     }
 
     @NotNull
@@ -371,7 +425,8 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     @NotNull
     private Collection<KeywordFile> collectImportFiles() {
         Collection<KeywordFile> files = new LinkedHashSet<KeywordFile>();
-        addBuiltInImports(files);
+        if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME))
+            addBuiltInImports(files);
         if (containsImports()) {
             Collection<Import> imports = PsiTreeUtil.findChildrenOfType(this, Import.class);
             for (Import imp : imports) {

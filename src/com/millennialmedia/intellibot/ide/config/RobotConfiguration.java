@@ -25,6 +25,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox inlineVariableSearch;
     private JCheckBox stripVariableInLibraryPath;
     private JCheckBox searchChildKeywords;
+    private JCheckBox loadProjectDefaultVariable;
 
     public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
@@ -68,7 +69,8 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
                 this.provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected() ||
                 this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected() ||
                 this.provider.stripVariableInLibraryPath() != this.stripVariableInLibraryPath.isSelected() ||
-                this.provider.searchChildKeywords() != this.searchChildKeywords.isSelected();
+                this.provider.searchChildKeywords() != this.searchChildKeywords.isSelected() ||
+                this.provider.loadProjectDefaultVariable() != this.loadProjectDefaultVariable.isSelected();
     }
 
     @Override
@@ -80,6 +82,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.provider.setInlineVariableSearch(this.inlineVariableSearch.isSelected());
         this.provider.setStripVariableInLibraryPath(this.stripVariableInLibraryPath.isSelected());
         this.provider.setSearchChildKeywords(this.searchChildKeywords.isSelected());
+        this.provider.setLoadProjectDefaultVariable(this.loadProjectDefaultVariable.isSelected());
     }
 
     @Override
@@ -91,6 +94,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.inlineVariableSearch.setSelected(this.provider.inlineVariableSearch());
         this.stripVariableInLibraryPath.setSelected(this.provider.stripVariableInLibraryPath());
         this.searchChildKeywords.setSelected(this.provider.searchChildKeywords());
+        this.loadProjectDefaultVariable.setSelected(this.provider.loadProjectDefaultVariable());
     }
 
     @Override

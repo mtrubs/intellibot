@@ -85,23 +85,6 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
                 addKeywordFiles(results, file, includeTransitive);
             }
         }
-//        //String fileName = project.getBasePath() + "/" + "Default_Resource.robot";
-//        Project project = getProject();
-//        if (default_resource == null) {
-//            String fileName = "Default_Resource.robot";
-//            PsiFile[] filesfound = FilenameIndex.getFilesByName(project, fileName, ProjectScope.getContentScope(project));
-//            if (filesfound.length != 1) {
-////            debug("addBuiltInImports", fileName + " count: " + String.valueOf(filesfound.length), project);
-//            } else {
-////            debug("addBuiltInImports", fileName + " found.", project);
-//                default_resource = new RobotFileImpl(filesfound[0].getViewProvider());
-//            }
-//        }
-//        if (default_resource != null && ! results.contains(default_resource)) {
-//            count += 1;
-//            debug("getImportedFiles", " count: " + String.valueOf(count), project);
-//            addKeywordFiles_noDefault(results, default_resource, false);
-//        }
         return results;
     }
 

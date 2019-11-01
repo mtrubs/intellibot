@@ -73,6 +73,9 @@ public class PythonResolver {
         return null;
     }
 
+    // TODO: for the "Library Process", findClass may get unwanted class, e.g. multiprocessing.Process
+    // do some cook here for name.equals("Process") ?
+    // or add robot/library in project interpreter's path
     @Nullable
     public static PyClass findClass(@NotNull String name, @NotNull Project project) {
         if (!hasPython(project)) {

@@ -24,6 +24,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean inlineVariableSearch = false;
         public boolean stripVariableInLibraryPath = false;
         public boolean searchChildKeywords = false;
+        public boolean loadProjectDefaultVariable = false;
     }
 
     private State state = new State();
@@ -47,6 +48,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         this.state.inlineVariableSearch = state.inlineVariableSearch;
         this.state.stripVariableInLibraryPath = state.stripVariableInLibraryPath;
         this.state.searchChildKeywords = state.searchChildKeywords;
+        this.state.loadProjectDefaultVariable = state.loadProjectDefaultVariable;
     }
 
     public boolean isDebug() {
@@ -103,5 +105,13 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
 
     public void setSearchChildKeywords(boolean searchChildKeywords) {
         this.state.searchChildKeywords = searchChildKeywords;
+    }
+
+    public boolean loadProjectDefaultVariable() {
+        return this.state.loadProjectDefaultVariable;
+    }
+
+    public void setLoadProjectDefaultVariable(boolean loadProjectDefaultVariable) {
+        this.state.loadProjectDefaultVariable = loadProjectDefaultVariable;
     }
 }
