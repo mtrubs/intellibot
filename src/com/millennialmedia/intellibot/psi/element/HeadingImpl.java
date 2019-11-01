@@ -36,11 +36,13 @@ import java.io.File;
  */
 public class HeadingImpl extends RobotPsiElementBase implements Heading {
 
-    private static final String ROBOT_BUILT_IN = "robot.libraries.BuiltIn";
+    // ROBOT_BUILT_IN = "robot.libraries.BuiltIn" is more precise, but if PYTHONPATH include robot.libraries,
+    // PythonResolver.findClass - safeFindClass will return BuiltIn.BuiltIn instead of robot.libraries.BuiltIn.BuiltIn,
+    // So it will think class not found.
+    private static final String ROBOT_BUILT_IN = "BuiltIn";
     private static final String WITH_NAME = "WITH NAME";
     private static final String DEFAULT_RESOURCE_NAME = "_ProjectDefaultResource_.robot";
     private static Collection<DefinedVariable> BUILT_IN_VARIABLES = null;
-    private static Collection<DefinedVariable> GLOBAL_DEFAULT_VARIABLES = null;
     private Collection<KeywordInvokable> invokedKeywords;
     private MultiMap<String, KeywordInvokable> invokableReferences;
     private Collection<Variable> usedVariables;

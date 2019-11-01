@@ -8,14 +8,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.ProjectScope;
-import com.intellij.util.containers.MultiMap;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
+import com.millennialmedia.intellibot.psi.RobotProjectData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This handles finding Robot files or python classes/files.
@@ -24,9 +20,9 @@ import java.util.Map;
  * @since 2014-06-28
  */
 public class RobotFileManager {
-
-    private static final Map<String, PsiElement> FILE_CACHE = new HashMap<String, PsiElement>();
-    private static final MultiMap<PsiElement, String> FILE_NAMES = MultiMap.createSet();
+//    put CACHE into RobotProjectData, avoid project disposed exception when switch between project
+//    private static final Map<String, PsiElement> FILE_CACHE = new HashMap<String, PsiElement>();
+//    private static final MultiMap<PsiElement, String> FILE_NAMES = MultiMap.createSet();
 
     private RobotFileManager() {
         NotificationsConfiguration.getNotificationsConfiguration().register(
@@ -34,31 +30,13 @@ public class RobotFileManager {
     }
 
     @Nullable
-    private static synchronized PsiElement getFromCache(@NotNull String value) {
-        PsiElement element = FILE_CACHE.get(value);
-        // evict the element if it is from an old instance
-        if (element != null && element.getProject().isDisposed()) {
-            evict(element);
-            return null;
-        }
-        return element;
+    private static PsiElement getFromCache(@NotNull String value, @NotNull Project project) {
+        return RobotProjectData.getInstance(project).getFromCache(value);
     }
 
-    private static synchronized void addToCache(@Nullable PsiElement element, @NotNull String value) {
-        if (element != null && !element.getProject().isDisposed()) {
-            FILE_CACHE.put(value, element);
-            FILE_NAMES.putValue(element, value);
-        }
-    }
-
-    public static synchronized void evict(@Nullable PsiElement element) {
+    private static void addToCache(@Nullable PsiElement element, @NotNull String value) {
         if (element != null) {
-            Collection<String> keys = FILE_NAMES.remove(element);
-            if (keys != null) {
-                for (String key : keys) {
-                    FILE_CACHE.remove(key);
-                }
-            }
+            RobotProjectData.getInstance(element.getProject()).addToCache(element, value);
         }
     }
 
@@ -68,7 +46,7 @@ public class RobotFileManager {
         if (resource == null) {
             return null;
         }
-        PsiElement result = getFromCache(resource);
+        PsiElement result = getFromCache(resource, project);
         if (result != null) {
             return result;
         }
@@ -85,7 +63,7 @@ public class RobotFileManager {
         if (library == null) {
             return null;
         }
-        PsiElement result = getFromCache(library);
+        PsiElement result = getFromCache(library, project);
         if (result != null) {
             return result;
         }
