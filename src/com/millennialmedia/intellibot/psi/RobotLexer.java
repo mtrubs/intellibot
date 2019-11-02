@@ -335,6 +335,8 @@ public class RobotLexer extends LexerBase {
         // potential start of variable
         if (isVariableStart(position)) {
             position += 2;
+            if (isNumber(position))
+                return false;
             int count = 1;
             while (count > 0 && position < this.endOffset && position >= 0) {
                 if (isVariableEnd(position)) {
@@ -373,7 +375,8 @@ public class RobotLexer extends LexerBase {
     private boolean isVariableStart(int position) {
         return (charAtEquals(position, '$') ||
                 charAtEquals(position, '@') ||
-                charAtEquals(position, '%')) && charAtEquals(position + 1, '{');
+                charAtEquals(position, '%') ||
+                charAtEquals(position, '&')) && charAtEquals(position + 1, '{');
     }
 
     private boolean isVariableEnd(int position) {
@@ -535,5 +538,9 @@ public class RobotLexer extends LexerBase {
 
     private boolean isWhitespace(int position) {
         return position < this.endOffset && !isNewLine(position) && Character.isWhitespace(this.buffer.charAt(position));
+    }
+
+    private boolean isNumber(int position) {
+        return position < this.endOffset && (Character.isDigit(this.buffer.charAt(position)) || this.buffer.charAt(position) == '-');
     }
 }
