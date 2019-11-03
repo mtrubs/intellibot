@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
+import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,10 +36,13 @@ public class ResolverUtils {
             }
         }
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+        // ROBOTFRAMEWORK only import keyword from Library and Resource
         for (KeywordFile imported : robotFile.getImportedFiles(includeTransitive)) {
-            for (DefinedKeyword keyword : imported.getDefinedKeywords()) {
-                if (keyword.matches(keywordText)) {
-                    return keyword.reference();
+            if (imported.getImportType() == ImportType.LIBRARY || imported.getImportType() == ImportType.RESOURCE) {
+                for (DefinedKeyword keyword : imported.getDefinedKeywords()) {
+                    if (keyword.matches(keywordText)) {
+                        return keyword.reference();
+                    }
                 }
             }
         }
@@ -60,14 +64,16 @@ public class ResolverUtils {
                 return variable.reference();
             }
         }
-        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
-        for (KeywordFile imported : robotFile.getImportedFiles(includeTransitive)) {
-            for (DefinedVariable variable : imported.getDefinedVariables()) {
-                if (variable.matches(variableText)) {
-                    return variable.reference();
-                }
-            }
-        }
+        // ROBOTFRAMEWORK only import variable from Variable and Resource
+        // following code done in RobotFileImpl.getDefinedVariables()
+//        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+//        for (KeywordFile imported : robotFile.getImportedFiles(includeTransitive)) {
+//            for (DefinedVariable variable : imported.getDefinedVariables()) {
+//                if (variable.matches(variableText)) {
+//                    return variable.reference();
+//                }
+//            }
+//        }
         // TODO: __init__ files...
         return null;
     }

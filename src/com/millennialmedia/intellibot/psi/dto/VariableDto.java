@@ -53,7 +53,9 @@ public class VariableDto implements DefinedVariable {
     @Nullable
     @Override
     public String getLookup() {
-        return this.scope == null ? this.reference.getText() : this.name;
+        // TODO: why return this.reference.getText() ?
+        // return this.scope == null ? this.reference.getText() : this.name;
+        return this.name;
     }
 
     @Override

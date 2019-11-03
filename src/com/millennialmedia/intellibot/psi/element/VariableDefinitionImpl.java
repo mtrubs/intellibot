@@ -58,6 +58,8 @@ public class VariableDefinitionImpl extends RobotPsiElementBase implements Varia
     @Nullable
     @Override
     public String getLookup() {
+        // getName() return full variable definition line in robot file
+        // getText() return the part before SUPER_SPACE or TAB
         return getText();
     }
 

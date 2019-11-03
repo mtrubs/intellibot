@@ -18,6 +18,9 @@ public interface KeywordFile {
     
     @NotNull
     Collection<DefinedVariable> getDefinedVariables();
+
+    @NotNull
+    Collection<DefinedVariable> getOwnDefinedVariables();
     
     @NotNull
     ImportType getImportType();

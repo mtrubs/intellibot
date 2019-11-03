@@ -5,6 +5,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.RobotFeatureFileType;
 import com.millennialmedia.intellibot.psi.RobotLanguage;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
@@ -43,6 +44,22 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     @NotNull
     @Override
     public Collection<DefinedVariable> getDefinedVariables() {
+        // now getDefinedVariables include all variable in imported files, also see ResolverUtil.java and RobotCompletionContributor.java
+        // ROBOTFRAMEWORK only import variable from Variable and Resource
+        // to avoid recursive call, any method called by getDefinedVariables (transitively) should call getOwnDefinedVariables
+        Collection<DefinedVariable> results = getOwnDefinedVariables();
+        boolean includeTransitive = RobotOptionsProvider.getInstance(getProject()).allowTransitiveImports();
+        for (KeywordFile imported : getImportedFiles(includeTransitive)) {
+            if (imported.getImportType() == ImportType.VARIABLES || imported.getImportType() == ImportType.RESOURCE) {
+                results.addAll(imported.getOwnDefinedVariables());
+            }
+        }
+        return results;
+    }
+
+    @NotNull
+    @Override
+    public Collection<DefinedVariable> getOwnDefinedVariables() {
         Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         for (Heading heading : getHeadings()) {
             results.addAll(heading.getDefinedVariables());
@@ -92,7 +109,11 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         if (files.add(current)) {
             if (includeTransitive) {
                 for (KeywordFile file : current.getImportedFiles(false)) {
-                    addKeywordFiles(files, file, true);
+                    // avoid recursive import
+                    if (! files.contains(file)) {
+                        addKeywordFiles(files, file, true);
+                    }
+                    // TODO: check same python file imported twice, but with different import type
                 }
             }
         }

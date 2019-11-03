@@ -15,6 +15,7 @@ import com.millennialmedia.intellibot.psi.RecommendationWord;
 import com.millennialmedia.intellibot.psi.RobotElementType;
 import com.millennialmedia.intellibot.psi.RobotKeywordProvider;
 import com.millennialmedia.intellibot.psi.RobotTokenTypes;
+import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.apache.commons.lang.WordUtils;
 import org.jetbrains.annotations.NotNull;
@@ -192,8 +193,11 @@ public class RobotCompletionContributor extends CompletionContributor {
 
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
+        // ROBOTFRAMEWORK only import keyword from Library and Resource
         for (KeywordFile f : importedFiles) {
-            addKeywordsToResult(f.getDefinedKeywords(), result, capitalize);
+            if (f.getImportType() == ImportType.LIBRARY || f.getImportType() == ImportType.RESOURCE) {
+                addKeywordsToResult(f.getDefinedKeywords(), result, capitalize);
+            }
         }
     }
 
@@ -204,11 +208,14 @@ public class RobotCompletionContributor extends CompletionContributor {
         RobotFile robotFile = (RobotFile) file;
         addVariablesToResult(robotFile.getDefinedVariables(), result, position);
 
-        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
-        Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
-        for (KeywordFile f : importedFiles) {
-            addVariablesToResult(f.getDefinedVariables(), result, position);
-        }
+        // ROBOTFRAMEWORK only import variable from Variable and Resource
+        // following code done in RobotFileImpl.getDefinedVariables()
+        // bug: following will add variable in "Library xx.py" which should not
+//        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+//        Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
+//        for (KeywordFile f : importedFiles) {
+//            addVariablesToResult(f.getDefinedVariables(), result, position);
+//        }
     }
 
     private static void addVariablesToResult(@NotNull final Collection<DefinedVariable> variables,

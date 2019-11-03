@@ -51,6 +51,12 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile,
 
     @NotNull
     @Override
+    public Collection<DefinedVariable> getOwnDefinedVariables() {
+        return getDefinedVariables();
+    }
+
+    @NotNull
+    @Override
     public ImportType getImportType() {
         return this.importType;
     }

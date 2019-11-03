@@ -148,6 +148,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME)) {
             addBuiltInVariables(results);
+            addProjectDefaultVariables(results);
         }
         if (containsVariables()) {
             for (PsiElement child : getChildren()) {
@@ -155,16 +156,28 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                     results.add((DefinedVariable) child);
                 }
             }
-        } else if (containsImports()) {
-            for (KeywordFile imported : getImportedFiles()) {
-                if (imported.getImportType() == ImportType.VARIABLES) {
-                    results.addAll(imported.getDefinedVariables());
-                }
-            }
         }
-        if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME)) {
-            addProjectDefaultVariables(results);
-        }
+        // now only collect its own defined variable
+        // all variable defined in imported files is processed in RobotFileImpl.java
+//        else if (containsImports()) {
+//            Set<String> added = new HashSet<String>();
+//            for (KeywordFile imported : getImportedFiles()) {
+//                if (imported.getImportType() == ImportType.VARIABLES) {
+//                    if (imported instanceof RobotFileImpl) {
+//                        String fn = ((RobotFileImpl) imported).getVirtualFile().getCanonicalPath();
+//                        if (added.contains(fn)) {
+//                            continue;
+//                        } else {
+//                            added.add(fn);
+//                        }
+//                    }
+//                    results.addAll(imported.getDefinedVariables());
+//                }
+//            }
+//        }
+//        if (! getContainingFile().getName().equals(DEFAULT_RESOURCE_NAME)) {
+//            addProjectDefaultVariables(results);
+//        }
         return results;
     }
 
@@ -177,8 +190,14 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         if (BUILT_IN_VARIABLES == null) {
             Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
 
+            PsiElement tmp = null;
+            // optimized here: all variable.getVariable(getProject()) return same object,
+            // so now only call variable.getVariable(getProject()) only once
+            PsiElement pythonVariable = null;
             for (ReservedVariable variable : ReservedVariable.values()) {
-                PsiElement pythonVariable = variable.getVariable(getProject());
+                if (pythonVariable == null) {
+                    pythonVariable = variable.getVariable(getProject());
+                }
                 if (pythonVariable != null) {
                     // already formatted ${X}
                     results.add(new VariableDto(pythonVariable, variable.getVariable(), variable.getScope()));
@@ -196,7 +215,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     // bug?
     // Project A, open Project B (this windows), then open Project A (this windows)
     // The first time of call sequence like below:
-    // HeadlingImpl.collectVariables -> getImportedFiles -> collectImportFiles -> addBuiltInImports -> PythonResolver.findClass -> PythonResolver.safeFindClass -> PyClassNameIndex.find
+    //     HeadlingImpl.collectVariables -> getImportedFiles -> collectImportFiles -> addBuiltInImports -> PythonResolver.findClass -> PythonResolver.safeFindClass -> PyClassNameIndex.find
     // will be hang, no return from PyClassNameIndex.find
     // But the second and subsequent call is successful.
     private void addProjectDefaultVariables(@NotNull Collection<DefinedVariable> variables) {
