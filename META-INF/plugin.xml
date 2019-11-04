@@ -57,6 +57,7 @@
         <projectConfigurable groupId="language" instance="com.millennialmedia.intellibot.ide.config.RobotConfiguration"/>
         <projectService serviceImplementation="com.millennialmedia.intellibot.ide.config.RobotOptionsProvider"/>
         <projectService serviceImplementation="com.millennialmedia.intellibot.psi.RobotProjectData"/>
+        <typedHandler implementation="com.millennialmedia.intellibot.ide.RobotTypedHandlerDelegate"/>
 
         <fileTypeFactory implementation="com.millennialmedia.intellibot.psi.RobotFileTypeHandler"/>
         <colorSettingsPage implementation="com.millennialmedia.intellibot.ide.config.RobotColorsPage"/>
