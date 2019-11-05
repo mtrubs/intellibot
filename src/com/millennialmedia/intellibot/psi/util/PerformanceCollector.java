@@ -21,8 +21,6 @@ public class PerformanceCollector {
         this.entity = entity;
         this.context = context;
         this.start = System.currentTimeMillis();
-        NotificationsConfiguration.getNotificationsConfiguration().register(
-                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     public void complete() {

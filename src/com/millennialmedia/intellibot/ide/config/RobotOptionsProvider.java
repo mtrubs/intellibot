@@ -1,5 +1,7 @@
 package com.millennialmedia.intellibot.ide.config;
 
+import com.intellij.notification.NotificationDisplayType;
+import com.intellij.notification.NotificationsConfiguration;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +17,10 @@ import org.jetbrains.annotations.Nullable;
         }
 )
 public class RobotOptionsProvider implements PersistentStateComponent<RobotOptionsProvider.State> {
+    static {
+        NotificationsConfiguration.getNotificationsConfiguration().register(
+                "intellibot.debug", NotificationDisplayType.NONE);
+    }
 
     public static class State {
         public boolean globalVariables = true;

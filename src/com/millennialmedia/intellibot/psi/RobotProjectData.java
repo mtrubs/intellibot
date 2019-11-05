@@ -19,6 +19,7 @@ import java.util.Map;
 
 public class RobotProjectData {
     private Collection<DefinedVariable> GLOBAL_DEFAULT_VARIABLES = null;
+    private Collection<DefinedVariable> BUILT_IN_VARIABLES = null;
     private final Map<String, PsiElement> FILE_CACHE = new HashMap<String, PsiElement>();
     private final MultiMap<PsiElement, String> FILE_NAMES = MultiMap.createSet();
 
@@ -31,6 +32,13 @@ public class RobotProjectData {
     }
     public synchronized void setProjectGlobalDefaultVariables(Collection<DefinedVariable> variables) {
         this.GLOBAL_DEFAULT_VARIABLES = variables;
+    }
+
+    public Collection<DefinedVariable> builtInVariables() {
+        return this.BUILT_IN_VARIABLES;
+    }
+    public synchronized void setBuiltInVariables(Collection<DefinedVariable> variables) {
+        this.BUILT_IN_VARIABLES = variables;
     }
 
     @Nullable

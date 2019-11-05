@@ -25,8 +25,6 @@ public class RobotFileManager {
 //    private static final MultiMap<PsiElement, String> FILE_NAMES = MultiMap.createSet();
 
     private RobotFileManager() {
-        NotificationsConfiguration.getNotificationsConfiguration().register(
-                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     @Nullable

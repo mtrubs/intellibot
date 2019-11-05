@@ -30,8 +30,6 @@ public class PythonResolver {
     private static Boolean hasPython;
 
     private PythonResolver() {
-        NotificationsConfiguration.getNotificationsConfiguration().register(
-                "intellibot.debug", NotificationDisplayType.NONE);
     }
 
     @Nullable
