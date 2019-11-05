@@ -31,6 +31,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean searchChildKeywords = false;
         public boolean loadProjectDefaultVariable = false;
         public int maxTransitiveDepth = 1;
+        public boolean expandSuperSpaces = true;
     }
 
     private State state = new State();
@@ -55,6 +56,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         this.state.searchChildKeywords = state.searchChildKeywords;
         this.state.loadProjectDefaultVariable = state.loadProjectDefaultVariable;
         this.state.maxTransitiveDepth = state.maxTransitiveDepth;
+        this.state.expandSuperSpaces = state.expandSuperSpaces;
     }
 
     public boolean isDebug() {
@@ -120,4 +122,13 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
     public void setMaxTransitiveDepth(int maxTransitiveDepth) {
         this.state.maxTransitiveDepth = maxTransitiveDepth;
     }
+
+    public boolean expandSuperSpaces() {
+        return this.state.expandSuperSpaces;
+    }
+
+    public void setExpandSuperSpaces(boolean expandSuperSpaces) {
+        this.state.expandSuperSpaces = expandSuperSpaces;
+    }
+
 }

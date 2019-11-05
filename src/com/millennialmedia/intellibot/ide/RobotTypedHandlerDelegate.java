@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import org.jetbrains.annotations.NotNull;
 
 import static com.millennialmedia.intellibot.ide.RobotCompletionContributor.CELL_SEPRATOR_SPACE;
@@ -22,6 +23,8 @@ public class RobotTypedHandlerDelegate extends TypedHandlerDelegate {
     @Override
     public TypedHandlerDelegate.Result charTyped(char c, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
         if (c == ' ') {
+            if (! RobotOptionsProvider.getInstance(project).expandSuperSpaces())
+                return Result.CONTINUE;
             Document document = editor.getDocument();
             CharSequence chars = document.getCharsSequence();
             CaretModel caretModel = editor.getCaretModel();

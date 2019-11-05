@@ -27,6 +27,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox searchChildKeywords;
     private JCheckBox loadProjectDefaultVariable;
     private JSpinner maxTransitiveDepth;
+    private JCheckBox expandSuperSpaces;
 
     public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
@@ -72,7 +73,8 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
                 this.provider.stripVariableInLibraryPath() != this.stripVariableInLibraryPath.isSelected() ||
                 this.provider.searchChildKeywords() != this.searchChildKeywords.isSelected() ||
                 this.provider.loadProjectDefaultVariable() != this.loadProjectDefaultVariable.isSelected() ||
-                this.provider.maxTransitiveDepth() != (int) this.maxTransitiveDepth.getValue();
+                this.provider.maxTransitiveDepth() != (int) this.maxTransitiveDepth.getValue() ||
+                this.provider.expandSuperSpaces() != this.expandSuperSpaces.isSelected();
     }
 
     @Override
@@ -88,6 +90,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
             this.maxTransitiveDepth.commitEdit();
         } catch (Exception ignore) {}
         this.provider.setMaxTransitiveDepth((int)this.maxTransitiveDepth.getValue());
+        this.provider.setExpandSuperSpaces(this.expandSuperSpaces.isSelected());
     }
 
     @Override
@@ -100,6 +103,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.searchChildKeywords.setSelected(this.provider.searchChildKeywords());
         this.loadProjectDefaultVariable.setSelected(this.provider.loadProjectDefaultVariable());
         this.maxTransitiveDepth.setValue(this.provider.maxTransitiveDepth());
+        this.expandSuperSpaces.setSelected(this.provider.expandSuperSpaces());
     }
 
     @Override
