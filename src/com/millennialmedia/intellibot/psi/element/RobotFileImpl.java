@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
@@ -41,15 +42,15 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
         this.headings = null;
     }
 
+    /* now getDefinedVariables include all variable in imported files, also see ResolverUtil.java and RobotCompletionContributor.java
+     * ROBOTFRAMEWORK only import variable from Variable and Resource
+     * to avoid recursive call, any method called by getDefinedVariables (transitively) should call getOwnDefinedVariables
+     */
     @NotNull
     @Override
     public Collection<DefinedVariable> getDefinedVariables() {
-        // now getDefinedVariables include all variable in imported files, also see ResolverUtil.java and RobotCompletionContributor.java
-        // ROBOTFRAMEWORK only import variable from Variable and Resource
-        // to avoid recursive call, any method called by getDefinedVariables (transitively) should call getOwnDefinedVariables
         Collection<DefinedVariable> results = getOwnDefinedVariables();
-        boolean includeTransitive = RobotOptionsProvider.getInstance(getProject()).allowTransitiveImports();
-        for (KeywordFile imported : getImportedFiles(includeTransitive)) {
+        for (KeywordFile imported : getImportedFiles(-1)) {
             if (imported.getImportType() == ImportType.VARIABLES || imported.getImportType() == ImportType.RESOURCE) {
                 results.addAll(imported.getOwnDefinedVariables());
             }
@@ -95,23 +96,29 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
 
     @NotNull
     @Override
-    public Collection<KeywordFile> getImportedFiles(boolean includeTransitive) {
+    public Collection<KeywordFile> getImportedFiles(int maxTransitiveDepth) {
+        if (maxTransitiveDepth < 0) {
+            maxTransitiveDepth = RobotOptionsProvider.getInstance(getProject()).maxTransitiveDepth();
+        }
+        if (maxTransitiveDepth == 0) {
+            return Collections.emptyList();
+        }
         Collection<KeywordFile> results = new LinkedHashSet<KeywordFile>();
         for (Heading heading : getHeadings()) {
             for (KeywordFile file : heading.getImportedFiles()) {
-                addKeywordFiles(results, file, includeTransitive);
+                addKeywordFiles(results, file, maxTransitiveDepth - 1);
             }
         }
         return results;
     }
 
-    private void addKeywordFiles(Collection<KeywordFile> files, KeywordFile current, boolean includeTransitive) {
+    private void addKeywordFiles(Collection<KeywordFile> files, KeywordFile current, int maxTransitiveDepth) {
         if (files.add(current)) {
-            if (includeTransitive) {
-                for (KeywordFile file : current.getImportedFiles(false)) {
+            if (maxTransitiveDepth > 0) {
+                for (KeywordFile file : current.getImportedFiles(1)) {
                     // avoid recursive import
                     if (! files.contains(file)) {
-                        addKeywordFiles(files, file, true);
+                        addKeywordFiles(files, file, maxTransitiveDepth - 1);
                     }
                     // TODO: check same python file imported twice, but with different import type
                 }

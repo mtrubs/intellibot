@@ -182,8 +182,7 @@ public class RobotCompletionContributor extends CompletionContributor {
         boolean capitalize = RobotOptionsProvider.getInstance(robotFile.getProject()).capitalizeKeywords();
         addKeywordsToResult(robotFile.getDefinedKeywords(), result, capitalize);
 
-        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
-        Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
+        Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(-1);
         // ROBOTFRAMEWORK only import keyword from Library and Resource
         for (KeywordFile f : importedFiles) {
             if (f.getImportType() == ImportType.LIBRARY || f.getImportType() == ImportType.RESOURCE) {

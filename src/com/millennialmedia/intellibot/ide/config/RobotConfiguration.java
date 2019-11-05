@@ -19,16 +19,18 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
 
     private JPanel panel;
     private JCheckBox enableDebug;
-    private JCheckBox allowTransitiveImports;
+    private JLabel transitiveImports;
     private JCheckBox allowGlobalVariables;
     private JCheckBox capitalizeKeywords;
     private JCheckBox inlineVariableSearch;
     private JCheckBox stripVariableInLibraryPath;
     private JCheckBox searchChildKeywords;
     private JCheckBox loadProjectDefaultVariable;
+    private JSpinner maxTransitiveDepth;
 
     public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
+        maxTransitiveDepth.setModel(new SpinnerNumberModel(this.provider.maxTransitiveDepth(), 0, 99, 1));
     }
 
     @NotNull
@@ -64,37 +66,40 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     @Override
     public boolean isModified() {
         return this.provider.isDebug() != this.enableDebug.isSelected() ||
-                this.provider.allowTransitiveImports() != this.allowTransitiveImports.isSelected() ||
                 this.provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected() ||
                 this.provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected() ||
                 this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected() ||
                 this.provider.stripVariableInLibraryPath() != this.stripVariableInLibraryPath.isSelected() ||
                 this.provider.searchChildKeywords() != this.searchChildKeywords.isSelected() ||
-                this.provider.loadProjectDefaultVariable() != this.loadProjectDefaultVariable.isSelected();
+                this.provider.loadProjectDefaultVariable() != this.loadProjectDefaultVariable.isSelected() ||
+                this.provider.maxTransitiveDepth() != (int) this.maxTransitiveDepth.getValue();
     }
 
     @Override
     public void apply() throws ConfigurationException {
         this.provider.setDebug(this.enableDebug.isSelected());
-        this.provider.setTransitiveImports(this.allowTransitiveImports.isSelected());
         this.provider.setGlobalVariables(this.allowGlobalVariables.isSelected());
         this.provider.setCapitalizeKeywords(this.capitalizeKeywords.isSelected());
         this.provider.setInlineVariableSearch(this.inlineVariableSearch.isSelected());
         this.provider.setStripVariableInLibraryPath(this.stripVariableInLibraryPath.isSelected());
         this.provider.setSearchChildKeywords(this.searchChildKeywords.isSelected());
         this.provider.setLoadProjectDefaultVariable(this.loadProjectDefaultVariable.isSelected());
+        try {
+            this.maxTransitiveDepth.commitEdit();
+        } catch (Exception ignore) {}
+        this.provider.setMaxTransitiveDepth((int)this.maxTransitiveDepth.getValue());
     }
 
     @Override
     public void reset() {
         this.enableDebug.setSelected(this.provider.isDebug());
-        this.allowTransitiveImports.setSelected(this.provider.allowTransitiveImports());
         this.allowGlobalVariables.setSelected(this.provider.allowGlobalVariables());
         this.capitalizeKeywords.setSelected(this.provider.capitalizeKeywords());
         this.inlineVariableSearch.setSelected(this.provider.inlineVariableSearch());
         this.stripVariableInLibraryPath.setSelected(this.provider.stripVariableInLibraryPath());
         this.searchChildKeywords.setSelected(this.provider.searchChildKeywords());
         this.loadProjectDefaultVariable.setSelected(this.provider.loadProjectDefaultVariable());
+        this.maxTransitiveDepth.setValue(this.provider.maxTransitiveDepth());
     }
 
     @Override

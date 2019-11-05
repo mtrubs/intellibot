@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 public class RobotOptionsProvider implements PersistentStateComponent<RobotOptionsProvider.State> {
 
     public static class State {
-        public boolean transitiveImports = true;
         public boolean globalVariables = true;
         public boolean debug = false;
         public boolean capitalizeKeywords = false;
@@ -25,6 +24,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean stripVariableInLibraryPath = false;
         public boolean searchChildKeywords = false;
         public boolean loadProjectDefaultVariable = false;
+        public int maxTransitiveDepth = 1;
     }
 
     private State state = new State();
@@ -42,13 +42,13 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
     @Override
     public void loadState(State state) {
         this.state.debug = state.debug;
-        this.state.transitiveImports = state.transitiveImports;
         this.state.globalVariables = state.globalVariables;
         this.state.capitalizeKeywords = state.capitalizeKeywords;
         this.state.inlineVariableSearch = state.inlineVariableSearch;
         this.state.stripVariableInLibraryPath = state.stripVariableInLibraryPath;
         this.state.searchChildKeywords = state.searchChildKeywords;
         this.state.loadProjectDefaultVariable = state.loadProjectDefaultVariable;
+        this.state.maxTransitiveDepth = state.maxTransitiveDepth;
     }
 
     public boolean isDebug() {
@@ -57,14 +57,6 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
 
     public void setDebug(boolean debug) {
         this.state.debug = debug;
-    }
-
-    public boolean allowTransitiveImports() {
-        return this.state.transitiveImports;
-    }
-
-    public void setTransitiveImports(boolean transitiveImports) {
-        this.state.transitiveImports = transitiveImports;
     }
 
     public boolean allowGlobalVariables() {
@@ -113,5 +105,13 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
 
     public void setLoadProjectDefaultVariable(boolean loadProjectDefaultVariable) {
         this.state.loadProjectDefaultVariable = loadProjectDefaultVariable;
+    }
+
+    public int maxTransitiveDepth() {
+        return this.state.maxTransitiveDepth;
+    }
+
+    public void setMaxTransitiveDepth(int maxTransitiveDepth) {
+        this.state.maxTransitiveDepth = maxTransitiveDepth;
     }
 }

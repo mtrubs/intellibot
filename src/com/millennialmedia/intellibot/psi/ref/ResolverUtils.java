@@ -3,7 +3,6 @@ package com.millennialmedia.intellibot.psi.ref;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.element.*;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +34,9 @@ public class ResolverUtils {
                 return keyword.reference();
             }
         }
-        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
+
         // ROBOTFRAMEWORK only import keyword from Library and Resource
-        for (KeywordFile imported : robotFile.getImportedFiles(includeTransitive)) {
+        for (KeywordFile imported : robotFile.getImportedFiles(-1)) {
             if (imported.getImportType() == ImportType.LIBRARY || imported.getImportType() == ImportType.RESOURCE) {
                 for (DefinedKeyword keyword : imported.getDefinedKeywords()) {
                     if (keyword.matches(keywordText)) {

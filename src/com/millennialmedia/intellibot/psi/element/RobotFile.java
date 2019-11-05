@@ -27,10 +27,13 @@ public interface RobotFile extends PsiFile {
      * Gets all the imported keyword files that are considered in scope for this file.  This
      * includes python libraries and robot resource files.
      *
+     * maxTransitiveDepth == 0, no imported files
+     * maxTransitiveDepth == 1, only level 1 imported files (as includeTransitive = false before)
+     * maxTransitiveDepth ==-1, get the value from configuration options
      * @return a collection of keyword files that this files knows about.
      */
     @NotNull
-    Collection<KeywordFile> getImportedFiles(boolean includeTransitive);
+    Collection<KeywordFile> getImportedFiles(int maxTransitiveDepth);
 
     @NotNull
     Collection<DefinedVariable> getDefinedVariables();

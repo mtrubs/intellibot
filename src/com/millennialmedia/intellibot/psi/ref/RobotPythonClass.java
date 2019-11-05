@@ -63,7 +63,7 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile,
 
     @NotNull
     @Override
-    public Collection<KeywordFile> getImportedFiles(boolean includeTransitive) {
+    public Collection<KeywordFile> getImportedFiles(int maxTransitiveDepth) {
         return Collections.emptyList();
     }
 

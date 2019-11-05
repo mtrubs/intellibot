@@ -25,6 +25,11 @@ public interface KeywordFile {
     @NotNull
     ImportType getImportType();
 
+    /*
+     * maxTransitiveDepth == 0, no imported files
+     * maxTransitiveDepth == 1, only level 1 imported files (as includeTransitive = false before)
+     * maxTransitiveDepth ==-1, get the value from configuration options
+     */
     @NotNull
-    Collection<KeywordFile> getImportedFiles(boolean includeTransitive);
+    Collection<KeywordFile> getImportedFiles(int maxTransitiveDepth);
 }
