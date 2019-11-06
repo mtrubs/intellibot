@@ -72,7 +72,11 @@ public class RobotFileManager {
             return result;
         }
 
-        String mod = library.replace(".py", "").replaceAll("\\.", "\\/");
+        // only chop .py at the end
+        String mod = library.replaceAll("\\.py$", "");
+        // if mod contain "/", then "." is most probably part of pathname, not to be replaced with "/"
+        if (! mod.contains("/"))
+            mod = mod.replaceAll("\\.", "\\/");
         while (mod.contains("//")) {
             mod = mod.replace("//", "/");
         }
@@ -127,10 +131,7 @@ public class RobotFileManager {
         }
 
         PsiFile[] files = FilenameIndex.getFilesByName(project, fileName, search);
-        StringBuilder builder = new StringBuilder();
-        builder.append(path);
-        builder.append(fileName);
-        path = builder.reverse().toString();
+        path = path + fileName;
         debug(original, "matching: " + arrayToString(files), project);
         for (PsiFile file : files) {
             debug(original, "trying: " + file.getVirtualFile().getCanonicalPath(), project);
@@ -164,8 +165,7 @@ public class RobotFileManager {
         if (virtualFilePath == null) {
             return false;
         }
-        String filePath = new StringBuilder(virtualFilePath).reverse().toString();
-        return filePath.startsWith(path);
+        return virtualFilePath.endsWith(path);
     }
 
     @NotNull
@@ -173,15 +173,12 @@ public class RobotFileManager {
         // support either / or ${/}
         String[] pathElements = path.split("(\\$\\{)?/(\\})?");
         String result;
-        if (pathElements.length == 0) {
-            result = path;
-        } else {
-            result = pathElements[pathElements.length - 1];
-        }
+        result = pathElements[pathElements.length - 1];
         String[] results = new String[2];
-        results[0] = path.replace(result, "").replace("${/}", "/");
+        pathElements[pathElements.length - 1] = "";
+        results[0] = String.join("/", pathElements);
         if (RobotOptionsProvider.getInstance(project).stripVariableInLibraryPath()) {
-            results[0] = results[0].replace("${", "").replace("%{", "").replace("}", "");
+            results[0] = results[0].replaceAll("(\\$|%)\\{|\\}", "");
         }
         if (!result.toLowerCase().endsWith(suffix.toLowerCase())) {
             result += suffix;
