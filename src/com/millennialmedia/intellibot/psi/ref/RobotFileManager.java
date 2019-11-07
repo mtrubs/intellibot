@@ -80,6 +80,9 @@ public class RobotFileManager {
         while (mod.contains("//")) {
             mod = mod.replace("//", "/");
         }
+        if (mod.endsWith("/")) {
+            mod += "__init__.py";
+        }
         String[] file = getFilename(mod, ".py", project);
         // search project scope
         debug(library, "Attempting project search", project);

@@ -1,10 +1,8 @@
 package com.millennialmedia.intellibot.psi.ref;
 
 import com.intellij.openapi.project.Project;
-import com.jetbrains.python.psi.PyClass;
-import com.jetbrains.python.psi.PyFile;
-import com.jetbrains.python.psi.PyFunction;
-import com.jetbrains.python.psi.PyTargetExpression;
+import com.jetbrains.python.psi.*;
+import com.jetbrains.python.psi.resolve.RatedResolveResult;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
@@ -19,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author mrubino
@@ -31,11 +30,13 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
     private final String library;
     private final PyFile pythonFile;
     private final ImportType importType;
+    private final String originalLibrary;
 
-    public RobotPythonFile(@NotNull String library, @NotNull PyFile pythonFile, @NotNull ImportType importType) {
+    public RobotPythonFile(@NotNull String library, @NotNull String originalLibrary, @NotNull PyFile pythonFile, @NotNull ImportType importType) {
         this.library = library;
         this.pythonFile = pythonFile;
         this.importType = importType;
+        this.originalLibrary = originalLibrary;
     }
 
     @NotNull
@@ -43,6 +44,18 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
     public Collection<DefinedKeyword> getDefinedKeywords() {
         PerformanceCollector debug = new PerformanceCollector(this, "get defined keywords");
         Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
+        // find class with same name as library first
+        boolean found = false;
+        List<RatedResolveResult> ratedResolveResultList = this.pythonFile.multiResolveName(this.originalLibrary);
+        for (RatedResolveResult ratedResolveResult: ratedResolveResultList) {
+            if (ratedResolveResult.getElement() instanceof PyClass) {
+                found = true;
+                addDefinedKeywords((PyClass) ratedResolveResult.getElement(), this.library, results);
+            }
+        }
+        if (found) {
+            return results;
+        }
         for (PyFunction function : this.pythonFile.getTopLevelFunctions()) {
             String keyword = functionToKeyword(function.getName());
             if (keyword != null) {
@@ -55,10 +68,12 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
                 results.add(new KeywordDto(expression, this.library, keyword, false));
             }
         }
-        for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {
-            String namespace = subClass.getQualifiedName() == null ? EMPTY : subClass.getQualifiedName();
-            addDefinedKeywords(subClass, namespace, results);
-        }
+        // if class name is not same as library name, robotframework will not use the method in that class as keyword, only function is imported
+//        for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {
+//            //String namespace = subClass.getQualifiedName() == null ? EMPTY : subClass.getQualifiedName();
+//            String namespace = this.library;
+//            addDefinedKeywords(subClass, namespace, results);
+//        }
         debug.complete();
         return results;
     }
@@ -125,6 +140,16 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
     @Override
     public String getDebugFileName() {
         return toString();
+    }
+
+    @NotNull
+    public String getOriginalLibrary() {
+        return this.originalLibrary;
+    }
+
+    @NotNull
+    public String getLibrary() {
+        return this.library;
     }
 
     @NotNull

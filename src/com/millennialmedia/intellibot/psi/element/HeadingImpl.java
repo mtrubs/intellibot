@@ -3,6 +3,7 @@ package com.millennialmedia.intellibot.psi.element;
 import com.intellij.lang.ASTNode;
 import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
@@ -361,12 +362,14 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                     PsiElement resolved = resolveImport(argument);
                     PyClass resolution = PythonResolver.castClass(resolved);
                     if (resolution != null) {
-                        files.add(new RobotPythonClass(getNamespace(imp, argument), resolution,
+                        String originalNamespace = getOriginalNamespace(argument, resolution);
+                        files.add(new RobotPythonClass(getNamespace(imp, originalNamespace), originalNamespace, resolution,
                                 ImportType.getType(imp.getPresentableText())));
                     }
                     PyFile file = PythonResolver.castFile(resolved);
                     if (file != null) {
-                        files.add(new RobotPythonFile(getNamespace(imp, argument), file,
+                        String originalNamespace = getOriginalNamespace(argument, file);
+                        files.add(new RobotPythonFile(getNamespace(imp, originalNamespace), originalNamespace, file,
                                 ImportType.getType(imp.getPresentableText())));
                     }
                 }
@@ -396,7 +399,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
            RobotPythonClass.pythonClass.getContainingFile().getVirtualFile().getParent() ?
          */
 
-        List<PsiFile> allFiles = new ArrayList<PsiFile>();
+        String withName = "";
         for (PyFile pyFile : fileList) {
             /* tested, SeleniumLibrary:
             pyFile.getName() == "__init__.py"
@@ -409,7 +412,8 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                     String name = pyFile.getParent().getParent().getName();
                     for (KeywordFile file: files) {
                         if (file instanceof RobotPythonClass) {
-                            if (((RobotPythonClass) file).getDebugFileName().equals(name)) {
+                            if (((RobotPythonClass) file).getOriginalLibrary().equals(name)) {
+                                withName = ((RobotPythonClass) file).getLibrary();
                                 toBeAdded = true;
                                 break;
                             }
@@ -417,20 +421,19 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                     }
                 }
                 if (toBeAdded) {
-                    allFiles.addAll(Arrays.asList(pyFile.getParent().getFiles()));
-                }
-            }
-        }
-        for (PsiFile psiFile : allFiles) {
-            // this is static library ,do not need to gen
-            //if (psiFile.getNextSibling() instanceof RobotFileImpl) {
-            if (psiFile instanceof RobotFileImpl) {
-                continue;
-            }
-            PsiElement[] all = psiFile.getChildren();
-            for (PsiElement psiElement : all) {
-                if (psiElement instanceof PyClass) {
-                    files.add(new RobotPythonClass(((PyClass) psiElement).getName(), (PyClass) psiElement, ImportType.LIBRARY));
+                    for (PsiFile psiFile : pyFile.getParent().getFiles()) {
+                        // this is static library ,do not need to gen
+                        //if (psiFile.getNextSibling() instanceof RobotFileImpl) {
+                        if (psiFile instanceof RobotFileImpl) {
+                            continue;
+                        }
+                        PsiElement[] all = psiFile.getChildren();
+                        for (PsiElement psiElement : all) {
+                            if (psiElement instanceof PyClass) {
+                                files.add(new RobotPythonClass(withName, ((PyClass) psiElement).getName(), (PyClass) psiElement, ImportType.LIBRARY));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -469,10 +472,10 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
      * Gets the namespace of the current import.  This looks for the 'WITH NAME' tag else returns the first argument.
      *
      * @param imp     the import statement to get the namespace of.
-     * @param library the first argument; aka the default namespace
+     * @param originalNameSpace     the namespace from module or classname; aka the default namespace
      * @return the namespace of the import.
      */
-    private String getNamespace(Import imp, Argument library) {
+    private String getNamespace(Import imp, String originalNameSpace) {
         Argument[] args = PsiTreeUtil.getChildrenOfType(imp, Argument.class);
         int index = -1;
         if (args != null) {
@@ -484,9 +487,25 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
                 }
             }
         }
-        String results = library.getPresentableText();
+        String results = originalNameSpace;
         if (index > 0 && index + 1 < args.length) {
             results = args[index + 1].getPresentableText();
+        }
+        return results;
+    }
+
+    private String getOriginalNamespace(Argument library, PsiElement resolved) {
+        String results = library.getPresentableText();
+        if (resolved instanceof PyClass) {
+            results = ((PyClass) resolved).getName();
+        } else if (resolved instanceof PyFile) {
+            VirtualFile virtualFile = ((PyFile) resolved).getVirtualFile();
+            String fileName = virtualFile.getName();
+            if (fileName.equals("__init__.py")) {
+                results = virtualFile.getParent().getName();
+            } else {
+                results = fileName.replaceAll("\\.py", "");
+            }
         }
         return results;
     }
