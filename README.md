@@ -1,4 +1,14 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
+### Changes in IntelliBot@master.dev-0.10.143.383:
+* add option to control when expand 2 spaces to 4 spaces when type
+* Library import handling
+  * don't replace "." to "/" in library path if it contain "/"
+  * improve resolve Library WITH NAME
+  * support Library is a directory
+  * if Library path contain "/", don't resolve it as class
+  * if Library path not end with ".py", regard it as directory
+  * follow robot framework userguide as much as possbile
+  
 ### Changes in IntelliBot@master.dev-0.10.143.382:
 * merge patch for SeleniumLibrary/keywords 2e2947e from youwi
   * with fix
