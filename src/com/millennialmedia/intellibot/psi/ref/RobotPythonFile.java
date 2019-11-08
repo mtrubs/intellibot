@@ -44,7 +44,10 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
     public Collection<DefinedKeyword> getDefinedKeywords() {
         PerformanceCollector debug = new PerformanceCollector(this, "get defined keywords");
         Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
-        // find class with same name as library first
+        // robotframework
+        //   A limitation of this approach is that libraries implemented as Python classes must be in a
+        //   module with the same name as the class.
+        // find class with same name as module first
         boolean found = false;
         List<RatedResolveResult> ratedResolveResultList = this.pythonFile.multiResolveName(this.originalLibrary);
         for (RatedResolveResult ratedResolveResult: ratedResolveResultList) {
@@ -56,6 +59,9 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
         if (found) {
             return results;
         }
+        // if the library is implemented as class (class name == module name), robotframework
+        // will not import other functions. Otherwise, robotframework only import function as
+        // keyword, all class is ignored.
         for (PyFunction function : this.pythonFile.getTopLevelFunctions()) {
             String keyword = functionToKeyword(function.getName());
             if (keyword != null) {
@@ -68,7 +74,7 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
                 results.add(new KeywordDto(expression, this.library, keyword, false));
             }
         }
-        // if class name is not same as library name, robotframework will not use the method in that class as keyword, only function is imported
+
 //        for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {
 //            //String namespace = subClass.getQualifiedName() == null ? EMPTY : subClass.getQualifiedName();
 //            String namespace = this.library;

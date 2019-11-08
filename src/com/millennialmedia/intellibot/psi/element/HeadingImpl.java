@@ -504,7 +504,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
             if (fileName.equals("__init__.py")) {
                 results = virtualFile.getParent().getName();
             } else {
-                results = fileName.replaceAll("\\.py", "");
+                results = fileName.replaceAll("\\.py$", "");
             }
         }
         return results;
