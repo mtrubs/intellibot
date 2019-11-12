@@ -146,15 +146,10 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     }
 
     private void addKeywordFiles(Collection<KeywordFile> files, KeywordFile current, int maxTransitiveDepth) {
-        if (files.add(current)) {
-            if (maxTransitiveDepth > 0) {
-                for (KeywordFile file : current.getImportedFiles(1)) {
-                    // avoid recursive import
-                    if (! files.contains(file)) {
-                        addKeywordFiles(files, file, maxTransitiveDepth - 1);
-                    }
-                    // TODO: check same python file imported twice, but with different import type
-                }
+        files.add(current);
+        if (maxTransitiveDepth > 0) {
+            for (KeywordFile file : current.getImportedFiles(1)) {
+                addKeywordFiles(files, file, maxTransitiveDepth - 1);
             }
         }
     }
