@@ -61,7 +61,7 @@ public class PatternUtil {
             text = text.substring(0, text.length() - 1);
         }
         if (text.isEmpty()) {
-            return original;
+            return Pattern.quote(original);
         }
         // put it all back together allowing for ' ' or '_' optionally anywhere
         StringBuilder pattern = new StringBuilder();
