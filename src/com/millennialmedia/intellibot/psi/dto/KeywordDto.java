@@ -22,9 +22,11 @@ public class KeywordDto implements DefinedKeyword {
     private final String name;
     private final boolean args;
     private final Pattern namePattern;
+    private final String namespace;
 
     public KeywordDto(@NotNull PsiElement reference, @NotNull String namespace, @NotNull String name, boolean args) {
         this.reference = reference;
+        this.namespace = namespace;
         this.name = PatternUtil.functionToKeyword(name).trim();
         this.namePattern = Pattern.compile(PatternBuilder.parseNamespaceKeyword(namespace, this.name), Pattern.CASE_INSENSITIVE);
         this.args = args;
@@ -42,8 +44,18 @@ public class KeywordDto implements DefinedKeyword {
 
     @Override
     public boolean matches(String text) {
-        return text != null &&
-                this.namePattern.matcher(PatternUtil.functionToKeyword(text).trim()).matches();
+        if (text == null)
+            return false;
+        text = text.trim();
+        int p = text.lastIndexOf('.');
+        if (p >= 0) {
+            String lib = text.substring(0, p);
+            String kw = PatternUtil.functionToKeyword(text.substring(p+1));
+            text = lib + "." + kw;
+        } else {
+            text = PatternUtil.functionToKeyword(text);
+        }
+        return this.namePattern.matcher(text).matches();
     }
 
     @Override
@@ -70,5 +82,10 @@ public class KeywordDto implements DefinedKeyword {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public String getNamespace() {
+        return this.namespace;
     }
 }

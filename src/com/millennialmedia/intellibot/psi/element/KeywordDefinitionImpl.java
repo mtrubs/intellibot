@@ -33,9 +33,11 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private List<KeywordInvokable> invokedKeywords;
     private Collection<DefinedVariable> definedInlineVariables;
     private Collection<DefinedVariable> definedArguments;
+    private final String namespace;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node);
+        this.namespace = retrieveNamespace(getContainingFile());
     }
 
     @NotNull
@@ -154,12 +156,22 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         String myText = getPresentableText();
         Pattern namePattern = this.pattern;
         if (namePattern == null) {
-            String myNamespace = getNamespace(getContainingFile());
+            String myNamespace = getNamespace();
             namePattern = Pattern.compile(buildPattern(myNamespace, myText.trim()), Pattern.CASE_INSENSITIVE);
             this.pattern = namePattern;
         }
-
-        return namePattern.matcher(text.trim()).matches();
+        text = text.trim();
+        if (namePattern.matcher(text).matches())
+            return true;
+        int p = text.lastIndexOf('.');
+        if (p >= 0) {
+            String lib = text.substring(0, p);
+            String kw = text.substring(p+1).replaceAll("[_ ]", "");
+            text = lib + "." + kw;
+        } else {
+            text = text.replaceAll("[_ ]", "");
+        }
+        return namePattern.matcher(text).matches();
     }
 
     @Override
@@ -167,7 +179,12 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return this;
     }
 
-    private String getNamespace(@NotNull PsiFile file) {
+    @Override
+    public String getNamespace() {
+        return this.namespace;
+    }
+
+    private String retrieveNamespace(@NotNull PsiFile file) {
         VirtualFile virtualFile = file.getVirtualFile();
         if (virtualFile == null) {
             return null;
@@ -181,13 +198,36 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
         return name;
     }
 
+    // Keyword names used in the test data are compared with method names to find the method implementing these keywords.
+    // Name comparison is case-insensitive, and also spaces and underscores are ignored.
+    // For example, the method hello maps to the keyword name Hello, hello or even h e l l o.
+    // Similarly both the do_nothing and doNothing methods can be used as the Do Nothing keyword in the test data.
+    //   Embedding arguments into keyword name
+    // These kind of keywords are also used the same way as other keywords except that spaces and underscores are not ignored in their names.
+    // They are, however, case-insensitive like other keywords.
+    // For example, the keyword in the example above could be used like select x from list, but not like Select x fromlist.
     private String buildPattern(String namespace, String text) {
         Matcher matcher = PATTERN.matcher(text);
 
         String result = "";
         if (matcher.matches()) {
+            result = buildPatternEmbedding(text);
+        } else {
+            result = text.length() > 0 ? Pattern.quote(text.replaceAll("[_ ]", "")) : text;
+        }
+        if (namespace != null && namespace.length() > 0) {
+            result = "(" + Pattern.quote(namespace + DOT) + ")?" + result;
+        }
+        return result;
+    }
+
+    private String buildPatternEmbedding(String text) {
+        Matcher matcher = PATTERN.matcher(text);
+
+        String result = "";
+        if (matcher.matches()) {
             String start = matcher.group(1);
-            String end = buildPattern(null, matcher.group(3));
+            String end = buildPatternEmbedding(matcher.group(3));
 
             if (start.length() > 0) {
                 result = Pattern.quote(start);
@@ -198,9 +238,6 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
             }
         } else {
             result = text.length() > 0 ? Pattern.quote(text) : text;
-        }
-        if (namespace != null && namespace.length() > 0) {
-            result = "(" + Pattern.quote(namespace + DOT) + ")?" + result;
         }
         return result;
     }

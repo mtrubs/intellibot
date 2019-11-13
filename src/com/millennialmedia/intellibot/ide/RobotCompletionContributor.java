@@ -180,13 +180,13 @@ public class RobotCompletionContributor extends CompletionContributor {
         RobotFile robotFile = (RobotFile) file;
 
         boolean capitalize = RobotOptionsProvider.getInstance(robotFile.getProject()).capitalizeKeywords();
-        addKeywordsToResult(robotFile.getDefinedKeywords(), result, capitalize);
+        addKeywordsToResult(robotFile.getDefinedKeywords(), result, capitalize, false);
 
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(-1);
         // ROBOTFRAMEWORK only import keyword from Library and Resource
         for (KeywordFile f : importedFiles) {
             if (f.getImportType() == ImportType.LIBRARY || f.getImportType() == ImportType.RESOURCE) {
-                addKeywordsToResult(f.getDefinedKeywords(), result, capitalize);
+                addKeywordsToResult(f.getDefinedKeywords(), result, capitalize, true);
             }
         }
     }
@@ -236,7 +236,7 @@ public class RobotCompletionContributor extends CompletionContributor {
 
     private static void addKeywordsToResult(final Collection<DefinedKeyword> keywords,
                                             final CompletionResultSet result,
-                                            boolean capitalize) {
+                                            boolean capitalize, boolean addNamespace) {
         for (DefinedKeyword keyword : keywords) {
             String text = keyword.getKeywordName();
             String lookupString = capitalize ? WordUtils.capitalize(text) : text;
@@ -247,6 +247,16 @@ public class RobotCompletionContributor extends CompletionContributor {
                             .withCaseSensitivity(false),
                     keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
             result.addElement(element);
+            if (addNamespace) {
+                String ns = keyword.getNamespace() + ".";
+                element = TailTypeDecorator.withTail(
+                        LookupElementBuilder.create(ns + lookupString)
+                                .withLookupString(ns + text)
+                                .withPresentableText(ns + lookupString)
+                                .withCaseSensitivity(false),
+                        keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
+                result.addElement(element);
+            }
         }
     }
 

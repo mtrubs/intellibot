@@ -10,6 +10,8 @@ public interface DefinedKeyword {
 
     String getKeywordName();
 
+    String getNamespace();
+
     /**
      * @return true if this keyword definition has the [Arguments] setting.
      */
