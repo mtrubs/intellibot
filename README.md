@@ -1,4 +1,12 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
+### Changes in IntelliBot@master.dev-0.10.143.384:
+* file to be imported in shallow transitive position will be processed again if it is already imported with a deep transitive position.
+* keyword autocomplete support library and resource name
+* underscore and space will not be ignored in library and resource name
+* space expand will be invoked for robot file only
+* resolve exception:
+  * when type ${}
+  * when keyword containing file is null
 ### Changes in IntelliBot@master.dev-0.10.143.383:
 * add option to control when expand 2 spaces to 4 spaces when type
 * Library import handling
