@@ -33,11 +33,10 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
     private List<KeywordInvokable> invokedKeywords;
     private Collection<DefinedVariable> definedInlineVariables;
     private Collection<DefinedVariable> definedArguments;
-    private final String namespace;
+    private String namespace;
 
     public KeywordDefinitionImpl(@NotNull final ASTNode node) {
         super(node);
-        this.namespace = retrieveNamespace(getContainingFile());
     }
 
     @NotNull
@@ -181,19 +180,18 @@ public class KeywordDefinitionImpl extends RobotPsiElementBase implements Keywor
 
     @Override
     public String getNamespace() {
-        return this.namespace;
-    }
-
-    private String retrieveNamespace(@NotNull PsiFile file) {
-        VirtualFile virtualFile = file.getVirtualFile();
-        if (virtualFile == null) {
-            return null;
-        }
-        String name = virtualFile.getName();
-        // remove the extension
-        int index = name.lastIndexOf(DOT);
-        if (index > 0) {
-            name = name.substring(0, index);
+        String name = this.namespace;
+        if (name == null) {
+            PsiFile file = this.getContainingFile();
+            if (file != null) {
+                name = file.getName();
+                // remove the extension
+                int index = name.lastIndexOf(DOT);
+                if (index > 0) {
+                    name = name.substring(0, index);
+                }
+            }
+            this.namespace = name;
         }
         return name;
     }
