@@ -192,10 +192,15 @@ public class RobotLexer extends LexerBase {
                 if (isSuperSpace(this.position)) {
                     skipWhitespace();
                 }
-                goToVariableEnd();
-                //goToNextNewLineOrSuperSpace();
-                this.level.push(VARIABLE_DEFINITION);
-                this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
+                if (isVariable(this.position)) {
+                    goToVariableEnd();
+                    //goToNextNewLineOrSuperSpace();
+                    this.level.push(VARIABLE_DEFINITION);
+                    this.currentToken = RobotTokenTypes.VARIABLE_DEFINITION;
+                } else {
+                    goToEndOfLine();
+                    this.currentToken = RobotTokenTypes.ERROR;
+                }
             } else if (TEST_CASES_HEADING == state || KEYWORDS_HEADING == state) {
                 if (isSuperSpace(this.position)) {
                     skipWhitespace();
