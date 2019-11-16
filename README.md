@@ -1,4 +1,6 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
+### Changes in IntelliBot@master.dev-0.10.143.385:
+* improve the handling of ${ in variable table 
 ### Changes in IntelliBot@master.dev-0.10.143.384:
 * file to be imported in shallow transitive position will be processed again if it is already imported with a deep transitive position.
 * keyword autocomplete support library and resource name
