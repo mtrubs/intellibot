@@ -8,6 +8,8 @@ import com.millennialmedia.intellibot.psi.element.KeywordInvokable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Pattern;
+
 /**
  * @author mrubino
  * @since 2014-06-07
@@ -21,6 +23,8 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
         return RobotBundle.message("INSP.NAME.keyword.undefined");
     }
 
+    private static final Pattern SKIP_PATTERN = Pattern.compile("IN(?: (?:RANGE|ENUMERATE|ZIP))?");
+
     @Override
     public boolean skip(PsiElement element) {
         if (element instanceof KeywordInvokable) {
@@ -30,13 +34,15 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
             }
 
             String text = ((KeywordInvokable) element).getPresentableText();
-            if (text.startsWith(":")) {
-                // TODO: for loops
+            if (SKIP_PATTERN.matcher(text).matches())
                 return true;
-            } else if (text.startsWith("\\")) {
-                // TODO: for loops
-                return true;
-            }
+//            if (text.startsWith(":")) {
+//                // TODO: for loops
+//                return true;
+//            } else if (text.startsWith("\\")) {
+//                // TODO: for loops
+//                return true;
+//            }
             return false;
         } else {
             return true;

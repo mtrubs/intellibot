@@ -47,15 +47,15 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
             if (container instanceof KeywordStatement) {
                 KeywordInvokable invokable = ((KeywordStatement) container).getInvokable();
                 String text = invokable == null ? null : invokable.getPresentableText();
-                if (text != null) {
-                    if (text.startsWith(":")) {
-                        // TODO: for loops
-                        return true;
-                    } else if (text.startsWith("\\")) {
-                        // TODO: for loops
-                        return true;
-                    }
-                }
+//                if (text != null) {
+//                    if (text.startsWith(":")) {
+//                        // TODO: for loops
+//                        return true;
+//                    } else if (text.startsWith("\\")) {
+//                        // TODO: for loops
+//                        return true;
+//                    }
+//                }
                 // this is the case where we have a 'set test variable' call with more than one arg
                 // the first is the variable name, the second is the value
                 // if there is only one argument then we might want to see where it was created

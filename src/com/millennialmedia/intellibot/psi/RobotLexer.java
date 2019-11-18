@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class RobotLexer extends LexerBase {
 
@@ -218,6 +219,8 @@ public class RobotLexer extends LexerBase {
             } else if (KEYWORD_DEFINITION == state) {
                 if (isSuperSpace(this.position)) {
                     skipWhitespace();
+                    this.currentToken = RobotTokenTypes.WHITESPACE;
+                } else if (lookAheadForLoop()) {
                     this.currentToken = RobotTokenTypes.WHITESPACE;
                 } else if (isVariable(this.position)) {
                     goToVariableEnd();
@@ -547,5 +550,17 @@ public class RobotLexer extends LexerBase {
 
     private boolean isNumber(int position) {
         return position < this.endOffset && (Character.isDigit(this.buffer.charAt(position)) || this.buffer.charAt(position) == '-');
+    }
+
+    private static final Pattern FOR_PATTERN = Pattern.compile(": ?FOR|\\\\|END");
+    private boolean lookAheadForLoop() {
+        int p = this.position;
+        goToNextNewLineOrSuperSpace();
+        if (FOR_PATTERN.matcher(this.buffer.subSequence(this.startOffset, this.position)).matches()) {
+            return true;
+        } else {
+            this.position = p;
+            return false;
+        }
     }
 }
