@@ -5,10 +5,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.element.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author mrubino
@@ -48,6 +51,7 @@ public class ResolverUtils {
         return null;
     }
 
+    private static final Pattern VARIABLE_BASENAME = Pattern.compile("([\\$\\@\\%\\&]\\{[a-zA-Z0-9 _]+)[^a-zA-Z0-9 _}].*");
     @Nullable
     public static PsiElement resolveVariableFromFile(@Nullable String variableText, @Nullable PsiFile file) {
         if (variableText == null) {
@@ -63,6 +67,16 @@ public class ResolverUtils {
                 return variable.reference();
             }
         }
+        Matcher m = VARIABLE_BASENAME.matcher(variableText);
+        if (m.matches()) {
+            String baseName = m.group(1) + "}";
+            for (DefinedVariable variable : robotFile.getDefinedVariables()) {
+                if (variable.matches(baseName)) {
+                    return variable.reference();
+                }
+            }
+        }
+
         // ROBOTFRAMEWORK only import variable from Variable and Resource
         // following code done in RobotFileImpl.getDefinedVariables()
 //        boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
