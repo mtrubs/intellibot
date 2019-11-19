@@ -1,4 +1,7 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
+### Changes in IntelliBot@master.dev-0.10.143.386:
+* deal with for loop, both old and new syntax
+* resolve variable in extended syntax, e.g. ${var * 10 + 3}
 ### Changes in IntelliBot@master.dev-0.10.143.385:
 * improve the handling of ${ in variable table 
 ### Changes in IntelliBot@master.dev-0.10.143.384:
