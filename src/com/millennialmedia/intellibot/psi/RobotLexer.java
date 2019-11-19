@@ -552,7 +552,7 @@ public class RobotLexer extends LexerBase {
         return position < this.endOffset && (Character.isDigit(this.buffer.charAt(position)) || this.buffer.charAt(position) == '-');
     }
 
-    private static final Pattern FOR_PATTERN = Pattern.compile(": ?FOR|\\\\|END");
+    private static final Pattern FOR_PATTERN = Pattern.compile("(?:: ?)?FOR|\\\\|END");
     private boolean lookAheadForLoop() {
         int p = this.position;
         goToNextNewLineOrSuperSpace();
