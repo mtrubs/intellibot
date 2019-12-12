@@ -421,6 +421,7 @@ public class RobotLexer extends LexerBase {
     }
 
     private boolean isOnlyWhitespaceToPreviousLine(int position) {
+        // TODO: "..." in FOR loop body that begin with "\"
         while (position >= 0 && !isNewLine(position)) {
             if (!isWhitespace(position)) {
                 return false;
