@@ -1,57 +1,64 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
-### Changes in IntelliBot@master.dev-0.10.143.386:
-* deal with for loop, both old and new syntax
-* resolve variable in extended syntax, e.g. ${var * 10 + 3}
-### Changes in IntelliBot@master.dev-0.10.143.385:
-* improve the handling of ${ in variable table 
-### Changes in IntelliBot@master.dev-0.10.143.384:
-* file to be imported in shallow transitive position will be processed again if it is already imported with a deep transitive position.
-* keyword autocomplete support library and resource name
-* underscore and space will not be ignored in library and resource name
-* space expand will be invoked for robot file only
-* resolve exception:
-  * when type ${}
-  * when keyword containing file is null
-### Changes in IntelliBot@master.dev-0.10.143.383:
-* add option to control when expand 2 spaces to 4 spaces when type
-* Library import handling
+
+**INSTALLATION**  
+Download the [intellibot.jar](/intellibot.jar) file in this github project.  
+Then install this plugin to your IDE by using the 'Install plugin from disk...' option.
+
+**NEW OPTIONS**  
+This version of intellibot provide more options, see following picture:
+
+![New Options](/wiki/robot_options/new_options.png)
+
+### NEW FEATURE/ENHANCEMENT/FIX comparing to the original version
+
+* Support FOR loop, both old and new syntax
+
+* Variable
+  * support variable in extended syntax, e.g. ${var * 10 + 3}
+  * support scalar/dictionary/list variable resolve
+  * will not take number like ${123} as "variable not defined"
+  * improve the handling when type ${ in variable table
+  * correct the priority of variable according to the robot framework user guide
+
+* Library/Resource
+  * can limit transitive import depth to improve performance
+  * improve resolve library WITH NAME
+  * support implemented as a directory
   * don't replace "." to "/" in library path if it contain "/"
-  * improve resolve Library WITH NAME
-  * support Library is a directory
-  * if Library path contain "/", don't resolve it as class
-  * if Library path not end with ".py", regard it as directory
-  * follow robot framework userguide as much as possbile
-  
-### Changes in IntelliBot@master.dev-0.10.143.382:
-* merge patch for SeleniumLibrary/keywords 2e2947e from youwi
-  * with fix
-  * provide an option to switch on/off
-* change 2 spaces to 4 spaces
-  * insert 4 spaces after keyword
-  * if type 2 spaces, expand to 4 spaces according to surrounding space number
-* strip variable in library path to be part of path name
-  * "Resource %{PATH_1}/file1.robot" will search "Resource PATH_1/file1.robot"
-  * it is useful if there're variables in import path but there is not running environment in local
-  * provide an option to switch this behaviour on/off
-* will not take number like ${123} as "variable not defined"
-* solve "Project Disposed" exception when close current project and open new project without quit application
-* correct the behavior for Library, Resource and Variables files.
+  * don't resolve library as class if using physical path to library
+  * regard library as directory if using physical path and not end with ".py",
+  * follow the rule in robot framework user guide as much as possbile
+  * strip variable in library path to be part of path name
+    * e.g. "Resource %{PATH_1}/file1.robot" will search "Resource PATH_1/file1.robot"
+    * it is useful if there're variables in import path but there is not running environment in local
+    * provide an option to switch this behaviour on/off
+
+* Correct the import behavior for Library, Resource and Variables files.
   * import both variable and keyword from Resource.
   * import only keyword from Library.
   * import only variable from Variables.
-* correct the priority of variable
-* will search fake resource file "\_ProjectDefaultResource\_.robot" under project root directory
-  * it is useful if the variable is defined in command line "--variablefile"
-  * it is processed as a Resource file
-  * provide an option to switch on/off
-  * the variable in it is available globally to all testcase
-  * only variable in it is imported currently, keywords are ignored
-* change the option TransitiveImport from on/off to maxTransitiveDepth
-  * maxTransitiveDepth=1 is same as old TransitiveImport=off
-  * select your balance between performance and convenience
-* some optimization
 
-### original
+* User defined GLOBAL variables, like the one provided in command line "--variablefile"
+  * using fake resource file named **_\_ProjectDefaultResource\_.robot_** under the current Pycharm project's root directory
+  * it is processed as a Resource file, but only variables are imported, keywords are ignored
+  * provide an option to switch on/off
+
+* Support SeleniumLibrary keywords
+  * No exception
+
+* Autocompletion
+  * keyword autocompletion support input prefixed with library and resource name
+  * insert 4 spaces after keyword
+  * if type 2 spaces, expand to 4 spaces according to surrounding space count
+
+* resolve exception:
+  * when type ${}
+  * when keyword containing file is null
+  * solve "Project Disposed" exception when close current project and open new project without quit application
+  * type cast exception
+
+
+### original readme
 This is a work in progress (the product of a 24 hour hack match), though at this point I have devoted far more time than that.
 Related feature request to JetBrains: [IDEA-97678](http://youtrack.jetbrains.com/issue/IDEA-97678).
 **Here is a growing list of [features](https://github.com/millennialmedia/intellibot/wiki/Features).**
