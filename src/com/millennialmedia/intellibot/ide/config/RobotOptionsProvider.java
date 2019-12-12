@@ -28,9 +28,9 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean capitalizeKeywords = false;
         public boolean inlineVariableSearch = false;
         public boolean stripVariableInLibraryPath = false;
-        public boolean searchChildKeywords = false;
+        public boolean searchChildKeywords = true;
         public boolean loadProjectDefaultVariable = false;
-        public int maxTransitiveDepth = 1;
+        public int maxTransitiveDepth = 99;
         public boolean expandSuperSpaces = true;
     }
 
