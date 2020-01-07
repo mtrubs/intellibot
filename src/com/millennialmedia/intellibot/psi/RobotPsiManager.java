@@ -9,17 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author mrubino
  */
-public class RobotPsiManager extends AbstractModificationTracker implements ProjectComponent {
-
-    public RobotPsiManager(PsiManagerImpl psiManager) {
-        super(psiManager);
-    }
-
-    @Override
-    protected boolean isInsideCodeBlock(PsiElement element) {
-        // TODO: usage?
-        return false;
-    }
+public class RobotPsiManager implements ProjectComponent {
 
     public void projectOpened() {
         // nothing
