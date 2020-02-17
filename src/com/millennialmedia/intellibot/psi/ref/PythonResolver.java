@@ -97,9 +97,27 @@ public class PythonResolver {
             }
 
             // save last match on full name should qualified name never match
-            String className = pyClass.getName();
-            if (className != null && className.equals(name)) {
-                matchedByName = pyClass;
+//            String className = pyClass.getName();
+//            if (className != null && className.equals(name)) {
+//                matchedByName = pyClass;
+//            }
+        }
+        // depending on PYTHONPATH, pyClass.getQualifiedName() may return BuiltIn.BuiltIn or robot.libraries.BuiltIn.BuiltIn,
+        if (! name.startsWith("robot.libraries.")) {
+            name = "robot.libraries." + name;
+            for (PyClass pyClass : classes) {
+                String qName = pyClass.getQualifiedName();
+                if (qName != null) {
+                    // For importing 'Library foo.bar.bar'
+                    if (qName.equals(name)) {
+                        return pyClass;
+                    }
+
+                    // For importing 'Library foo.bar'
+                    if (qName.equals(name + "." + shortName)) {
+                        return pyClass;
+                    }
+                }
             }
         }
         return matchedByName;

@@ -9,12 +9,15 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.ProjectScope;
+import com.jetbrains.python.psi.PyFile;
+import com.jetbrains.python.psi.stubs.PyModuleNameIndex;
 import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.psi.RobotProjectData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This handles finding Robot files or python classes/files.
@@ -78,6 +81,13 @@ public class RobotFileManager {
             debug(library, "Attempting class search", project);
             result = PythonResolver.findClass(library, project);
             if (result != null) {
+                addToCache(result, library);
+                return result;
+            }
+            debug(library, "Attemping module search", project);
+            List<PyFile> results = PyModuleNameIndex.find(library, project, true);
+            if (! results.isEmpty()) {
+                result = (PsiFile)results.get(0);
                 addToCache(result, library);
                 return result;
             }
