@@ -32,7 +32,7 @@ public class RobotPythonReferenceSearch extends QueryExecutorBase<PsiReference, 
     }
 
     @Override
-    public void processQuery(@NotNull ReferencesSearch.SearchParameters params, @NotNull Processor<PsiReference> processor) {
+    public void processQuery(@NotNull ReferencesSearch.SearchParameters params, @NotNull Processor processor) {
         SearchScope searchScope = params.getEffectiveSearchScope();
         boolean localScope = false;
         if (searchScope instanceof GlobalSearchScope) {
